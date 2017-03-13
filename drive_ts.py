@@ -11,7 +11,7 @@ YAW_CHANNEL = 0
 class Rover:
 
     def __init__(self):
-        self.drift_gain = 0.05
+        self.drift_gain = 0.15
         
         self.throttle_center = 1500.0
         self.yaw_center = 1500.0
@@ -65,18 +65,14 @@ class Rover:
                 m9a, m9g, m9m = self.imu.getMotion9()
                 drift = m9g[2]
 
-                thbound = 0
-                if (throttle >= 0.145):
-                    thbound = min(0.145, throttle - 0.15)
-
-                th = min(1, max(-1, thbound))
-                st = min(1, max(-1, yaw + drift * self.drift_gain))
+                th = min(1, max(-1, -throttle))
+                st = min(1, max(-1, -yaw - drift * self.drift_gain))
 
                 self.set_throttle(value=th, pwm_in=self.th_pwm)
                 self.set_throttle(value=st, pwm_in=self.st_pwm)
             else:
-                self.set_throttle(0, self.th)
-                self.set_throttle(0, self.st)
+                self.set_throttle(0, self.th_pwm)
+                self.set_throttle(0, self.st_pwm)
                 self.calibrated = False
 
             videoChan = float(self.rcin.read(7))
@@ -99,8 +95,8 @@ class Rover:
         print("Please center your receiver sticks")
         self.led.setColor('Cyan')
         for x in range(0,100):
-            self.set_throttle(0, self.lr_pwm)
-            self.set_throttle(0, self.rr_pwm)
+            self.set_throttle(0, self.th_pwm)
+            self.set_throttle(0, self.st_pwm)
             time.sleep(0.03)
         
         print("Calibrating RC Input...")
@@ -114,8 +110,8 @@ class Rover:
             throttle += float(rcin.read(THROTTLE_CHANNEL))
             roll += float(rcin.read(3))
 
-            self.set_throttle(0, self.lr_pwm)
-            self.set_throttle(0, self.rr_pwm)
+            self.set_throttle(0, self.th_pwm)
+            self.set_throttle(0, self.st_pwm)
             time.sleep(0.03)
         
         yaw /= 100.0
