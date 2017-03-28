@@ -8,6 +8,7 @@ util.check_apm()
 THROTTLE_CHANNEL = 2
 YAW_CHANNEL = 0
 
+
 class Rover:
 
     def __init__(self):
@@ -22,10 +23,10 @@ class Rover:
         self.sysbus = dbus.SystemBus()
         self.systemd1 = self.sysbus.get_object('org.freedesktop.systemd1', '/org/freedesktop/systemd1')
         self.manager = dbus.Interface(self.systemd1, 'org.freedesktop.systemd1.Manager')
+	self.min_th = 5000
+
 
     def run(self):
-
-
         self.led = leds.Led()
         self.led.setColor('Yellow')
 
@@ -58,9 +59,16 @@ class Rover:
                     self.calibrated = True
 
                 self.led.setColor('Green')
+		
+		rc_th = float(self.rcin.read(THROTTLE_CHANNEL))
+		rc_st = float(self.rcin.read(YAW_CHANNEL))
+		
+		if self.min_th > rc_th:
+		     self.min_th = rc_th
+		     print rc_th
 
-                yaw = (float(self.rcin.read(YAW_CHANNEL)) - self.yaw_center) / 500.0
-                throttle = (float(self.rcin.read(THROTTLE_CHANNEL)) - self.throttle_center) / 500.0
+                yaw = (rc_st - self.yaw_center) / 500.0
+                throttle = (rc_th - self.throttle_center) / 500.0
 
                 m9a, m9g, m9m = self.imu.getMotion9()
                 drift = m9g[2]
