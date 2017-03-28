@@ -1,77 +1,139 @@
 import sys
 import time
-from navio import rcinput, pwm, util
+import dbus
+from navio import rcinput, pwm, leds, util, mpu9250
 
 util.check_apm()
 
-rcin = rcinput.RCInput()
+THROTTLE_CHANNEL = 2
+YAW_CHANNEL = 0
 
-lf_pwm = pwm.PWM(0)
-lf_f = pwm.PWM(1)
-lf_r = pwm.PWM(2)
-lf_f.set_period(200)
-lf_r.set_period(200)
-lf_pwm.set_period(200)
 
-rf_pwm = pwm.PWM(5)
-rf_f = pwm.PWM(4)
-rf_r = pwm.PWM(3)
-rf_f.set_period(200)
-rf_r.set_period(200)
-rf_pwm.set_period(200)
+class Rover:
 
-lr_pwm = pwm.PWM(6)
-lr_f = pwm.PWM(7)
-lr_r = pwm.PWM(8)
-lr_f.set_period(200)
-lr_r.set_period(200)
-lr_pwm.set_period(200)
+    def __init__(self):
+        self.drift_gain = 0.15
+        
+        self.throttle_center = 1500.0
+        self.yaw_center = 1500.0
+        self.roll_center = 1500.0
+        self.calibrated = False
+        self.videoRunning = False
 
-rr_pwm = pwm.PWM(11)
-rr_f = pwm.PWM(10)
-rr_r = pwm.PWM(9)
-rr_f.set_period(200)
-rr_r.set_period(200)
-rr_pwm.set_period(200)
+        self.sysbus = dbus.SystemBus()
+        self.systemd1 = self.sysbus.get_object('org.freedesktop.systemd1', '/org/freedesktop/systemd1')
+        self.manager = dbus.Interface(self.systemd1, 'org.freedesktop.systemd1.Manager')
+	self.min_th = 5000
 
-while (True):
-    yaw = float(rcin.read(1))
-    throttle = float(rcin.read(2))
-    roll = float(rcin.read(3))
 
-    if throttle > 1550:
-        lf_f.set_duty_cycle(5)
-        lf_r.set_duty_cycle(0)
-        rf_f.set_duty_cycle(5)
-        rf_r.set_duty_cycle(0)
-        lr_f.set_duty_cycle(5)
-        lr_r.set_duty_cycle(0)
-        rr_f.set_duty_cycle(5)
-        rr_r.set_duty_cycle(0)
+    def run(self):
+        self.led = leds.Led()
+        self.led.setColor('Yellow')
 
-    elif throttle < 1450:
-        lf_f.set_duty_cycle(0)
-        lf_r.set_duty_cycle(5)
-        rf_f.set_duty_cycle(0)
-        rf_r.set_duty_cycle(5)
-        lr_f.set_duty_cycle(0)
-        lr_r.set_duty_cycle(5)
-        rr_f.set_duty_cycle(0)
-        rr_r.set_duty_cycle(5)
-    else:
-        lf_f.set_duty_cycle(5)
-        lf_r.set_duty_cycle(5)
-        rf_f.set_duty_cycle(5)
-        rf_r.set_duty_cycle(5)
-        lr_f.set_duty_cycle(5)
-        lr_r.set_duty_cycle(5)
-        rr_f.set_duty_cycle(5)
-        rr_r.set_duty_cycle(5)
+        self.rcin = rcinput.RCInput()
 
-    pwm_val = max(0, abs(throttle-1500)-50) * 0.01
-    lf_pwm.set_duty_cycle(pwm_val)
-    rf_pwm.set_duty_cycle(pwm_val)
-    lr_pwm.set_duty_cycle(pwm_val)
-    rr_pwm.set_duty_cycle(pwm_val)
-    time.sleep(0.02)
+        self.th_pwm = pwm.PWM(2)
+        self.th_pwm.set_period(50)
+
+        self.st_pwm = pwm.PWM(0)
+        self.st_pwm.set_period(50)
+
+        self.imu = mpu9250.MPU9250()
+
+        if self.imu.testConnection():
+            print "Connection established: True"
+        else:
+            sys.exit("Connection established: False")
+
+        self.imu.initialize()
+
+        time.sleep(1)
+
+        while True:
+            self.led.setColor('Blue')
+
+            if float(self.rcin.read(4)) > 1490:
+                if (self.calibrated == False):
+
+                    self.calibrate_rc(self.rcin)
+                    self.calibrated = True
+
+                self.led.setColor('Green')
+		
+		rc_th = float(self.rcin.read(THROTTLE_CHANNEL))
+		rc_st = float(self.rcin.read(YAW_CHANNEL))
+		
+		if self.min_th > rc_th:
+		     self.min_th = rc_th
+		     print rc_th
+
+                yaw = (rc_st - self.yaw_center) / 500.0
+                throttle = (rc_th - self.throttle_center) / 500.0
+
+                m9a, m9g, m9m = self.imu.getMotion9()
+                drift = m9g[2]
+
+                th = min(1, max(-1, -throttle))
+                st = min(1, max(-1, -yaw - drift * self.drift_gain))
+
+                self.set_throttle(value=th, pwm_in=self.th_pwm)
+                self.set_throttle(value=st, pwm_in=self.st_pwm)
+            else:
+                self.set_throttle(0, self.th_pwm)
+                self.set_throttle(0, self.st_pwm)
+                self.calibrated = False
+
+            videoChan = float(self.rcin.read(7))
+            if videoChan > 1490 and self.videoRunning == False:
+                self.job = self.manager.StartUnit('wbctxd.service', 'fail')
+                self.videoRunning = True
+                self.led.setColor('Red')
+                time.sleep(0.2)
+            elif videoChan < 1490 and self.videoRunning == True:
+                self.job = self.manager.StopUnit('wbctxd.service', 'fail')
+                self.videoRunning = False
+
+            time.sleep(0.02)
+
+    def set_throttle(self, value, pwm_in):
+        pwm_val = 1.5 + value * 0.5
+        pwm_in.set_duty_cycle(pwm_val)
+
+    def calibrate_rc(self, rcin):
+        print("Please center your receiver sticks")
+        self.led.setColor('Cyan')
+        for x in range(0,100):
+            self.set_throttle(0, self.th_pwm)
+            self.set_throttle(0, self.st_pwm)
+            time.sleep(0.03)
+        
+        print("Calibrating RC Input...")
+        self.led.setColor('Magenta')
+        yaw = 0
+        throttle = 0
+        roll = 0
+        
+        for x in range(0, 100):
+            yaw += float(rcin.read(YAW_CHANNEL))
+            throttle += float(rcin.read(THROTTLE_CHANNEL))
+            roll += float(rcin.read(3))
+
+            self.set_throttle(0, self.th_pwm)
+            self.set_throttle(0, self.st_pwm)
+            time.sleep(0.03)
+        
+        yaw /= 100.0
+        throttle /= 100.0
+        roll /= 100.0
+
+        self.throttle_center = throttle
+        self.yaw_center = yaw
+        self.roll_center = roll
+        
+        print("Done")
+
+if __name__ == "__main__":
+    rover = Rover()
+    rover.run()
+
 
