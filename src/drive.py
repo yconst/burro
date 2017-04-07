@@ -1,36 +1,38 @@
+"""
+drive.py
+
+Starts a driving loop
+
+Usage:
+    drive.py [--pilot=<name>] [--model=<name>]
+
+Options:
+  --pilot=<name>   pilot name, one of rc, nn [default: rc]
+  --model=<name>   model name if pilot is nn [default: models/default.h5]
+"""
+
 import sys
 import time
-import dbus
 from navio import rcinput, pwm, leds, util, mpu9250
+
+from docopt import docopt
+
+import config
+from pilots import KerasCategorical
+from pilots import RC
 
 util.check_apm()
 
-THROTTLE_CHANNEL = 2
-YAW_CHANNEL = 0
-
-
-class Rover:
+class Rover(object):
 
     def __init__(self):
         self.drift_gain = 0.15
-        
-        self.throttle_center = 1500.0
-        self.yaw_center = 1500.0
-        self.roll_center = 1500.0
-        self.calibrated = False
-        self.videoRunning = False
-
-        self.sysbus = dbus.SystemBus()
-        self.systemd1 = self.sysbus.get_object('org.freedesktop.systemd1', '/org/freedesktop/systemd1')
-        self.manager = dbus.Interface(self.systemd1, 'org.freedesktop.systemd1.Manager')
-	self.min_th = 5000
-
+        arguments = docopt(__doc__)
+        self.set_pilot(arguments['--pilot'], arguments['--model'])
 
     def run(self):
         self.led = leds.Led()
         self.led.setColor('Yellow')
-
-        self.rcin = rcinput.RCInput()
 
         self.th_pwm = pwm.PWM(2)
         self.th_pwm.set_period(50)
@@ -41,57 +43,26 @@ class Rover:
         self.imu = mpu9250.MPU9250()
 
         if self.imu.testConnection():
-            print "Connection established: True"
+            print "IMU Connection established"
         else:
-            sys.exit("Connection established: False")
+            sys.exit("IMU Connection failed")
 
         self.imu.initialize()
 
         time.sleep(1)
 
         while True:
-            self.led.setColor('Blue')
+            
+            pilot_yaw, pilot_throttle = self.pilot.decide()
 
-            if float(self.rcin.read(4)) > 1490:
-                if (self.calibrated == False):
+            m9a, m9g, m9m = self.imu.getMotion9()
+            drift = m9g[2]
 
-                    self.calibrate_rc(self.rcin)
-                    self.calibrated = True
+            th = min(1, max(-1, -pilot_throttle))
+            st = min(1, max(-1, -pilot_yaw - drift * self.drift_gain))
 
-                self.led.setColor('Green')
-		
-		rc_th = float(self.rcin.read(THROTTLE_CHANNEL))
-		rc_st = float(self.rcin.read(YAW_CHANNEL))
-		
-		if self.min_th > rc_th:
-		     self.min_th = rc_th
-		     print rc_th
-
-                yaw = (rc_st - self.yaw_center) / 500.0
-                throttle = (rc_th - self.throttle_center) / 500.0
-
-                m9a, m9g, m9m = self.imu.getMotion9()
-                drift = m9g[2]
-
-                th = min(1, max(-1, -throttle))
-                st = min(1, max(-1, -yaw - drift * self.drift_gain))
-
-                self.set_throttle(value=th, pwm_in=self.th_pwm)
-                self.set_throttle(value=st, pwm_in=self.st_pwm)
-            else:
-                self.set_throttle(0, self.th_pwm)
-                self.set_throttle(0, self.st_pwm)
-                self.calibrated = False
-
-            videoChan = float(self.rcin.read(7))
-            if videoChan > 1490 and self.videoRunning == False:
-                self.job = self.manager.StartUnit('wbctxd.service', 'fail')
-                self.videoRunning = True
-                self.led.setColor('Red')
-                time.sleep(0.2)
-            elif videoChan < 1490 and self.videoRunning == True:
-                self.job = self.manager.StopUnit('wbctxd.service', 'fail')
-                self.videoRunning = False
+            self.set_throttle(value=th, pwm_in=self.th_pwm)
+            self.set_throttle(value=st, pwm_in=self.st_pwm)
 
             time.sleep(0.02)
 
@@ -99,38 +70,11 @@ class Rover:
         pwm_val = 1.5 + value * 0.5
         pwm_in.set_duty_cycle(pwm_val)
 
-    def calibrate_rc(self, rcin):
-        print("Please center your receiver sticks")
-        self.led.setColor('Cyan')
-        for x in range(0,100):
-            self.set_throttle(0, self.th_pwm)
-            self.set_throttle(0, self.st_pwm)
-            time.sleep(0.03)
-        
-        print("Calibrating RC Input...")
-        self.led.setColor('Magenta')
-        yaw = 0
-        throttle = 0
-        roll = 0
-        
-        for x in range(0, 100):
-            yaw += float(rcin.read(YAW_CHANNEL))
-            throttle += float(rcin.read(THROTTLE_CHANNEL))
-            roll += float(rcin.read(3))
-
-            self.set_throttle(0, self.th_pwm)
-            self.set_throttle(0, self.st_pwm)
-            time.sleep(0.03)
-        
-        yaw /= 100.0
-        throttle /= 100.0
-        roll /= 100.0
-
-        self.throttle_center = throttle
-        self.yaw_center = yaw
-        self.roll_center = roll
-        
-        print("Done")
+    def set_pilot(self, pilot, model_path):
+        if pilot == 'rc':
+            self.pilot = RC()
+        else:
+            self.pilot = KerasCategorical(model_path)
 
 if __name__ == "__main__":
     rover = Rover()
