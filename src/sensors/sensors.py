@@ -2,15 +2,14 @@
 import io
 import os
 import time
+import base64
+import cStringIO
 from threading import Thread
 from itertools import cycle
 
 import numpy as np
 
 from PIL import Image
-
-from donkey import utils
-
  
 class BaseCamera:
 
@@ -38,13 +37,14 @@ class BaseCamera:
 
     def capture_img(self):
         arr = self.capture_arr()
-        print(type(arr))
         img = Image.fromarray(arr, 'RGB')
         return img
-        
-    def capture_binary(self):
+
+    def capture_base64(self):
+        buffer = cStringIO.StringIO()
         img = self.capture_img()
-        return utils.img_to_binary(img)
+        img.save(buffer, format="JPEG")
+        return base64.b64encode(buffer.getvalue())
 
 
 class PiVideoStream(BaseCamera):
@@ -56,9 +56,8 @@ class PiVideoStream(BaseCamera):
         self.camera = PiCamera()
         self.camera.resolution = resolution
         self.camera.framerate = framerate
+        self.camera.rotation = 90 # TODO: move to settings
         self.rawCapture = PiRGBArray(self.camera, size=resolution)
-        self.stream = self.camera.capture_continuous(self.rawCapture,
-            format="rgb", use_video_port=True)
  
         # initialize the frame and the variable used to indicate
         # if the thread should be stopped
@@ -72,7 +71,7 @@ class PiVideoStream(BaseCamera):
 
     def update(self):
         # keep looping infinitely until the thread is stopped
-        for f in self.stream:
+        for f in self.camera.capture_continuous(self.rawCapture, format="rgb", use_video_port=True):
             # grab the frame from the stream and clear the stream in
             # preparation for the next frame
             self.frame = f.array
