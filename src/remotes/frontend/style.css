@@ -1,0 +1,44 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+#imageContainer {
+	margin: 32px auto;
+	width: 320px;
+	height: 240px;
+	background: #efeff1;
+}
+
+img.viewport {
+	width: 100%;
+	height: auto;
+	vertical-align: center;
+}
+
+#sliderContainer {
+	margin: 32px auto;
+	width: 320px;
+	height: 40px;
+	background: #efeff1;
+}
+
+.sliderBox {
+	width: 100%;
+	height: 40px;
+}
+
+.sliderKnob {
+	position: relative;
+	width: 2px;
+	height: 40px;
+	background: #33f;
+}
+
+#pilotsContainer {
+	margin: 32px auto;
+	width: 320px;
+	height: 40px;
+	background: #efeff1;
+}
