@@ -34,7 +34,7 @@ class RC(BasePilot):
 
         super(RC, self).__init__(**kwargs)
 
-    def decide(self):
+    def decide(self, img_arr):
 
         if float(self.rcin.read(4)) > 1490:
             if not self.calibrated:
@@ -85,3 +85,7 @@ class RC(BasePilot):
         self.calibrated = True
         
         print("Done")
+
+    def pname(self):
+        return "RC"
+        
