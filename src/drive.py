@@ -4,12 +4,15 @@ drive.py
 Starts a driving loop
 
 Usage:
-    drive.py [--pilot=<name>] [--model=<name>]
+    drive.py [--model=<name>] [--vision=<name>] [--average=<factor>]
 
 Options:
-  --pilot=<name>   pilot name, one of rc, nn [default: rc]
-  --model=<name>   model name if pilot is nn [default: models/default.h5]
+  --model=<name>      model name for nn pilot [default: models/default.h5]
+  --vision=<name>     vision sensor type [default: camera]
+  --average=<factor>  averaging factor for steering values [default: 0]
 """
+
+from __future__ import division
 
 import sys
 import time
@@ -18,8 +21,14 @@ from navio import rcinput, pwm, leds, util, mpu9250
 from docopt import docopt
 
 import config
+
+from sensors import PiVideoStream
+
 from pilots import KerasCategorical
 from pilots import RC
+from pilots import Mixed
+
+from remotes import WebRemote
 
 util.check_apm()
 
@@ -28,7 +37,13 @@ class Rover(object):
     def __init__(self):
         self.drift_gain = 0.15
         arguments = docopt(__doc__)
-        self.set_pilot(arguments['--pilot'], arguments['--model'])
+        self.setup_pilots(arguments['--model'])
+        self.set_sensors(arguments['--vision'])
+        self.set_remote()
+
+        self.avg_factor = float(arguments['--average'])
+        self.pilot_yaw = 0
+        self.pilot_throttle = 0
 
     def run(self):
         self.led = leds.Led()
@@ -49,11 +64,27 @@ class Rover(object):
 
         self.imu.initialize()
 
-        time.sleep(1)
+        time.sleep(0.5)
+        self.led.setColor('White')
+
+        self.vision_sensor.start()
+
+        time.sleep(0.5)
+
+        self.led.setColor('Black')
+
+        self.remote.start()
+
+        time.sleep(0.5)
 
         while True:
             
-            pilot_yaw, pilot_throttle = self.pilot.decide()
+            pilot_yaw, pilot_throttle = self.pilot.decide(self.vision_sensor.frame)
+            
+            pilot_yaw = self.avg_factor * self.pilot_yaw + (1.0 - self.avg_factor) * pilot_yaw
+
+            self.pilot_yaw = pilot_yaw
+            self.pilot_throttle = pilot_throttle
 
             m9a, m9g, m9m = self.imu.getMotion9()
             drift = m9g[2]
@@ -64,17 +95,38 @@ class Rover(object):
             self.set_throttle(value=th, pwm_in=self.th_pwm)
             self.set_throttle(value=st, pwm_in=self.st_pwm)
 
-            time.sleep(0.02)
+            time.sleep(0.05)
 
     def set_throttle(self, value, pwm_in):
         pwm_val = 1.5 + value * 0.5
         pwm_in.set_duty_cycle(pwm_val)
 
-    def set_pilot(self, pilot, model_path):
-        if pilot == 'rc':
-            self.pilot = RC()
-        else:
-            self.pilot = KerasCategorical(model_path)
+    def setup_pilots(self, model_path):
+        #TODO: This should scan for pilot modules and add them
+        keras = KerasCategorical(model_path)
+        keras.load()
+        self.pilots = [
+            Mixed(model_path),
+            RC(),
+            keras
+        ]
+        self.pilot = self.pilots[0]
+
+    def selected_pilot_index(self):
+        return self.pilots.index(self.pilot)
+
+    def set_pilot(self, pilot):
+        self.pilot = self.pilots[pilot]
+
+    def list_pilot_names(self):
+        return [p.pname() for p in self.pilots]
+
+    def set_sensors(self, vision_sensor):
+        if vision_sensor == 'camera':
+            self.vision_sensor = PiVideoStream()
+
+    def set_remote(self):
+        self.remote = WebRemote(self)
 
 if __name__ == "__main__":
     rover = Rover()
