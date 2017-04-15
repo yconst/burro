@@ -30,6 +30,8 @@ from pilots import Mixed
 
 from remotes import WebRemote
 
+from recorders import FileRecorder
+
 util.check_apm()
 
 class Rover(object):
@@ -38,12 +40,11 @@ class Rover(object):
         self.drift_gain = 0.15
         arguments = docopt(__doc__)
         self.setup_pilots(arguments['--model'])
+        self.setup_recorders()
         self.set_sensors(arguments['--vision'])
         self.set_remote()
 
         self.avg_factor = float(arguments['--average'])
-        self.pilot_yaw = 0
-        self.pilot_throttle = 0
 
     def run(self):
         self.led = leds.Led()
@@ -81,6 +82,8 @@ class Rover(object):
             
             pilot_yaw, pilot_throttle = self.pilot.decide(self.vision_sensor.frame)
             
+            self.recorder.record_frame(self.vision_sensor.frame, pilot_yaw, pilot_throttle)
+
             pilot_yaw = self.avg_factor * self.pilot_yaw + (1.0 - self.avg_factor) * pilot_yaw
 
             self.pilot_yaw = pilot_yaw
@@ -111,6 +114,11 @@ class Rover(object):
             keras
         ]
         self.pilot = self.pilots[0]
+        self.pilot_yaw = 0
+        self.pilot_throttle = 0
+
+    def setup_recorders(self):
+        self.recorder = FileRecorder()
 
     def selected_pilot_index(self):
         return self.pilots.index(self.pilot)
