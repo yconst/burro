@@ -82,7 +82,8 @@ class Rover(object):
             
             pilot_yaw, pilot_throttle = self.pilot.decide(self.vision_sensor.frame)
             
-            self.recorder.record_frame(self.vision_sensor.frame, pilot_yaw, pilot_throttle)
+            if self.record:
+                self.recorder.record_frame(self.vision_sensor.frame, pilot_yaw, pilot_throttle)
 
             pilot_yaw = self.avg_factor * self.pilot_yaw + (1.0 - self.avg_factor) * pilot_yaw
 
@@ -119,6 +120,7 @@ class Rover(object):
 
     def setup_recorders(self):
         self.recorder = FileRecorder()
+        self.record = False
 
     def selected_pilot_index(self):
         return self.pilots.index(self.pilot)
