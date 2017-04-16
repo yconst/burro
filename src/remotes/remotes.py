@@ -36,6 +36,12 @@ class PilotHandler(tornado.web.RequestHandler):
         self.application.vehicle.set_pilot(data["index"])
         self.write(json.dumps({ 'req' : 'ok' }))
 
+class OptionsHandler(tornado.web.RequestHandler):
+    def post(self):
+        data = json.loads(self.request.body.decode('utf-8'))
+        self.application.vehicle.record = data["record"]
+        self.write(json.dumps({ 'req' : 'ok' }))
+
 class WebRemote(tornado.web.Application):
     def __init__(self, vehicle):
         self.vehicle = vehicle
@@ -49,6 +55,7 @@ class WebRemote(tornado.web.Application):
             tornado.web.url(r'/', MainHandler, name="main"),
             tornado.web.url(r'/api/v1/status', StatusHandler, name="status"),
             tornado.web.url(r'/api/v1/setpilotindex', PilotHandler, name="setpilot"),
+            tornado.web.url(r'/api/v1/setoptions', OptionsHandler, name="setoptions"),
             tornado.web.url(r'/static/(.*)', tornado.web.StaticFileHandler, {'path': web_dir}),
         ], **settings)
 

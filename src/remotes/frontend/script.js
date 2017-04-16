@@ -18,7 +18,6 @@ var PilotData = {
 	data: {"pilots":["None"], "pilot_index":0},
 	updateData: function(data) {
 		this.data = data
-		pilotList.update(this.data.pilots)
 	},
 	updateIndex: function(data) {
 		m.request({
@@ -29,6 +28,22 @@ var PilotData = {
 		.then(function(result) {
 		    var dataCopy = Object.assign({}, this.data)
 			dataCopy["pilot_index"] = data["index"]
+			this.data = dataCopy
+		})
+	}
+}
+
+var OptionsData = {
+	data: {"record": false},
+	updateData: function(data) {
+		m.request({
+		    method: "POST",
+		    url: "/api/v1/setoptions",
+		    data: data
+		})
+		.then(function(result) {
+		    var dataCopy = Object.assign({}, this.data)
+			dataCopy["record"] = data["record"]
 			this.data = dataCopy
 		})
 	}
@@ -61,6 +76,13 @@ var Dispatcher = {
 			if (action.action == 'update-index')
 			{
 				PilotData.updateIndex(action.value)
+			}
+		}
+		else if (action.target == 'options')
+		{
+			if (action.action == 'update-data')
+			{
+				OptionsData.updateData(action.value)
 			}
 		}
 		m.redraw()
@@ -142,7 +164,19 @@ var PilotsView = function() {
 	}
 }
 
+var RecordBox = function() {
+	return {
+		view: function(ctrl) {
+			return m('input', {type: "checkbox", onchange: m.withAttr('value', function(value) {
+				var action = Action("options", "update-data", {"record" : value})
+		    	Dispatcher.applyAction(action)
+			}) }, "Record")
+		}
+	}
+}
+
 m.mount(document.getElementById("imageContainer"), ImageView)
 m.mount(document.getElementById("sliderContainer"), CommandView)
 m.mount(document.getElementById("pilotsContainer"), PilotsView)
+m.mount(document.getElementById("recordBoxContainer"), RecordBox)
 AjaxAPI.start()

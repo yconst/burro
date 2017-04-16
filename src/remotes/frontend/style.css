@@ -42,3 +42,10 @@ img.viewport {
 	height: 40px;
 	background: #efeff1;
 }
+
+#recordBoxContainer {
+	margin: 32px auto;
+	width: 320px;
+	height: 40px;
+	background: #efeff1;
+}
