@@ -21,7 +21,7 @@ import keras
 
 from navio import leds
 
-import methods
+import config, methods
 
 class BasePilot(object):
     '''
@@ -49,6 +49,8 @@ class KerasCategorical(BasePilot):
     def __init__(self, model_path, **kwargs):
         self.model_path = model_path
         self.model = None #load() loads the model
+        self.avg_factor = config.KERAS_AVERAGE_FACTOR
+        self.angle = 0
         super(KerasCategorical, self).__init__(**kwargs)
 
     def decide(self, img_arr):
@@ -57,7 +59,12 @@ class KerasCategorical(BasePilot):
         angle_binned, throttle = self.model.predict(img_arr)
         angle_certainty = max(angle_binned[0])
         angle_unbinned = methods.unbin_Y(angle_binned)
-        return angle_unbinned[0], throttle[0][0] * 0.0
+
+        angle = angle_unbinned[0]
+        angle = self.avg_factor * self.angle + (1.0 - self.avg_factor) * angle
+        self.angle = angle
+        throttle = throttle[0][0]
+        return angle, throttle * 0.15
 
     def load(self):
         self.model = keras.models.load_model(self.model_path)

@@ -167,8 +167,8 @@ var PilotsView = function() {
 var RecordBox = function() {
 	return {
 		view: function(ctrl) {
-			return m('input', {type: "checkbox", onchange: m.withAttr('value', function(value) {
-				var action = Action("options", "update-data", {"record" : value})
+			return m('input', {type: "checkbox", onchange: m.withAttr('checked', function(checked) {
+				var action = Action("options", "update-data", {"record" : checked})
 		    	Dispatcher.applyAction(action)
 			}) }, "Record")
 		}

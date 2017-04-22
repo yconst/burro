@@ -4,12 +4,11 @@ drive.py
 Starts a driving loop
 
 Usage:
-    drive.py [--model=<name>] [--vision=<name>] [--average=<factor>]
+    drive.py [--model=<name>] [--vision=<name>]
 
 Options:
   --model=<name>      model name for nn pilot [default: models/default.h5]
   --vision=<name>     vision sensor type [default: camera]
-  --average=<factor>  averaging factor for steering values [default: 0]
 """
 
 from __future__ import division
@@ -43,8 +42,6 @@ class Rover(object):
         self.setup_recorders()
         self.set_sensors(arguments['--vision'])
         self.set_remote()
-
-        self.avg_factor = float(arguments['--average'])
 
     def run(self):
         self.led = leds.Led()
@@ -84,8 +81,6 @@ class Rover(object):
             
             if self.record:
                 self.recorder.record_frame(self.vision_sensor.frame, pilot_yaw, pilot_throttle)
-
-            pilot_yaw = self.avg_factor * self.pilot_yaw + (1.0 - self.avg_factor) * pilot_yaw
 
             self.pilot_yaw = pilot_yaw
             self.pilot_throttle = pilot_throttle

@@ -17,8 +17,7 @@ class BaseRecorder(object):
 class FileRecorder(BaseRecorder):
 
     def __init__(self):
-        sessions_path = os.path.dirname(config.SESSION_DIR)
-        self.instance_path = self.make_instance_dir(sessions_path)
+        self.instance_path = self.make_instance_dir(config.SESSION_DIR)
         self.frame_count = 0
 
     def make_instance_dir(self, sessions_path):
@@ -39,10 +38,14 @@ class FileRecorder(BaseRecorder):
         Record a single frame, with frame index, yaw and throttle values
         as its filename
         '''
-        if throttle < config.THROTTLE_RECORD_LIMIT:
+        # throttle is inversed, i.e. forward is negative, backwards positive
+        # we are only interested in forward values of throttle
+        # yaw ir counter-clockwise, i.e. left is positive
+        # TODO: make a proper value mapping here, and then transform
+        if throttle * -1.0 < config.THROTTLE_RECORD_LIMIT:
             return
         file_yaw = int((yaw + 1) * 500)
-        file_throttle = int((throttle + 1) * 500)
+        file_throttle = int(throttle * 1000)
         filepath = self.create_img_filepath(self.instance_path, self.frame_count, file_yaw, file_throttle)
         im = Image.fromarray(image_array)
         im.save(filepath)
@@ -54,22 +57,3 @@ class FileRecorder(BaseRecorder):
         '''
         filepath = str("%s/" % directory + "frame_" + str(frame_count).zfill(5) + "_ttl_" + str(throttle) + "_agl_" + str(yaw) + "_mil_" + str(current_milli_time()) + '.jpg')
         return filepath
-
-
-# if __name__ == "__main__":
-#     import numpy
-
-#     im = Image.open('/Users/yanconst/Temp/bg.jpg')
-
-#     imarray = numpy.array(im)
-
-#     fr = FileRecorder()
-
-#     fr.record_frame(imarray, 0.15, 0.44)
-#     fr.record_frame(imarray, 0.13, 0.54)
-#     fr.record_frame(imarray, 0.16, 0.34)
-#     fr.record_frame(imarray, 0.12, 0.74)
-#     fr.record_frame(imarray, 0.13, 0.64)
-#     fr.record_frame(imarray, 0.19, 0.54)
-
-
