@@ -1,5 +1,6 @@
 body {
 	background: #f4f4f4;
+	font-family: Helvetica, Arial, sans-serif;
 }
 
 * {
@@ -55,8 +56,13 @@ select {
 	-webkit-appearance: none;
 	-moz-appearance: none;
 	appearance: none;
+	color: #777;
 	/* remove default arrow */
-	background-image: url(...);
+	background-image: url(/static/down-arrow.png);
+	background-repeat: no-repeat;
+	background-position: right center;
+    background-attachment: fixed;
+    background-size: 20px 20px;
 	/* add custom arrow */
 	width: 100%;
 	padding: 18px;
@@ -69,6 +75,17 @@ select {
 	height: 60px;
 	background: #fff;
 	overflow: auto;
+}
+
+div#recordBox {
+	float: right;
+}
+
+label#recordLabel {
+	display: block;
+	float: left;
+	margin: 21px;
+	color: #777;
 }
 
 /* Checkbox */

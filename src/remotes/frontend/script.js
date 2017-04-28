@@ -166,11 +166,7 @@ var RecordBox = function() {
 m.mount(document.getElementById("imageContainer"), ImageView)
 m.mount(document.getElementById("sliderContainer"), CommandView)
 m.mount(document.getElementById("pilotsContainer"), PilotsView)
-m.mount(document.getElementById("recordBoxContainer"), RecordBox)
-
-// Checkbox
-var elem = document.querySelector('.js-switch');
-var init = new Switchery(elem);
+m.mount(document.getElementById("recordBox"), RecordBox)
 
 // ---
 // Document References
