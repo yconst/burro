@@ -35,6 +35,8 @@ var RecordData = {
 	}
 }
 
+var waiting = false
+
 //--- Dispatcher, Singleton
 
 var Dispatcher = {
@@ -73,8 +75,11 @@ var Dispatcher = {
 		}
 		if (update_backend) {
 			ws.send(JSON.stringify(action))
+			waiting = true
 		}
-		m.redraw()
+		if (waiting == false) {
+			m.redraw()
+		}
 	}
 }
 
@@ -96,14 +101,20 @@ ws.onopen = function (event) {
 }
 ws.onmessage = function (event) {
 	obj = JSON.parse(event.data)
-	var action1 = Action("image", "update-data", obj.image)
-    Dispatcher.applyAction(action1, false)
-    var action2 = Action("command", "update-data", obj.controls)
-    Dispatcher.applyAction(action2, false)
-    var action3 = Action("pilot", "update-data", obj.pilot)
-    Dispatcher.applyAction(action3, false)
-    var action3 = Action("record", "update-data", {"record" : obj.record})
-    Dispatcher.applyAction(action3, false)
+	if (obj.ack == "ok") {
+		waiting = false
+		m.redraw()
+	}
+	else if (obj.image) {
+		var action1 = Action("image", "update-data", obj.image)
+	    Dispatcher.applyAction(action1, false)
+	    var action2 = Action("command", "update-data", obj.controls)
+	    Dispatcher.applyAction(action2, false)
+	    var action3 = Action("pilot", "update-data", obj.pilot)
+	    Dispatcher.applyAction(action3, false)
+	    var action3 = Action("record", "update-data", {"record" : obj.record})
+	    Dispatcher.applyAction(action3, false)
+	}
 }
 ws.onclose = function (event) {
 	console.log("Websocket close")
@@ -162,11 +173,22 @@ var RecordBox = function() {
 	}
 }
 
+var Veil = function() {
+	return {
+		view: function(ctrl) {
+			var vis = waiting == true?"visible":"hidden"
+			var style = "visibility:" + vis + ";"
+			return m('div', {class:"veil", style:style},"")
+		}
+	}
+}
+
 // Mount elements
 m.mount(document.getElementById("imageContainer"), ImageView)
 m.mount(document.getElementById("sliderContainer"), CommandView)
 m.mount(document.getElementById("pilotsContainer"), PilotsView)
 m.mount(document.getElementById("recordBox"), RecordBox)
+m.mount(document.getElementById("veilContainer"), Veil)
 
 // ---
 // Document References

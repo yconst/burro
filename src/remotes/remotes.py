@@ -38,10 +38,10 @@ class SocketHandler(websocket.WebSocketHandler):
         parsed = escape.json_decode(message)
         if parsed['action'] == "update-index" and parsed['target'] == "pilot":
             self.application.vehicle.set_pilot(parsed["value"]["index"])
-            #self.write_message(json.dumps({ 'req' : 'ok' }))
+            self.write_message(json.dumps({ 'ack' : 'ok' }))
         elif parsed['action'] == "update-data" and parsed['target'] == "record":
             self.application.vehicle.record = parsed["value"]["record"]
-            #self.write_message(json.dumps({ 'req' : 'ok' }))
+            self.write_message(json.dumps({ 'ack' : 'ok' }))
             
     def on_close(self):
         if self in cl:
@@ -64,10 +64,11 @@ class SocketHandler(websocket.WebSocketHandler):
             v = self.application.vehicle
             img64 = v.vision_sensor.capture_base64()
             status = {
-                "image" : img64,
-                "controls" : { "yaw" : str(v.pilot_yaw), "throttle" : str(v.pilot_throttle)},
+                "image": img64,
+                "controls": { "yaw" : str(v.pilot_yaw), "throttle" : str(v.pilot_throttle)},
                 "pilot": { "pilots" : v.list_pilot_names(), "index" : v.selected_pilot_index()},
-                "record" : self.application.vehicle.record
+                "record": self.application.vehicle.record,
+                "is_recording": self.application.vehicle.recorder.is_recording
             }
             self.write_message(json.dumps(status))
             sleep(0.5)
