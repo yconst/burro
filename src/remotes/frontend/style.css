@@ -1,51 +1,113 @@
+body {
+	background: #f4f4f4;
+}
+
 * {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
 }
 
+#container {
+	margin: 0 auto;
+	width: 100%;
+	max-width: 640px;
+}
+
 #imageContainer {
-	margin: 32px auto;
-	width: 320px;
-	height: 240px;
-	background: #efeff1;
+	background: #fff;
+	border-bottom: 1px solid #efeff1;
+	margin-bottom: 16px;
 }
 
 img.viewport {
+	display: block;
 	width: 100%;
 	height: auto;
 	vertical-align: center;
 }
 
 #sliderContainer {
-	margin: 32px auto;
-	width: 320px;
-	height: 40px;
-	background: #efeff1;
+	height: 60px;
+	background: #46f;
 }
 
 .sliderBox {
 	width: 100%;
-	height: 40px;
+	height: 60px;
 }
 
 .sliderKnob {
 	position: relative;
 	width: 2px;
-	height: 40px;
-	background: #33f;
+	height: 44px;
+	top: 8px;
+	background: #fff;
 }
 
 #pilotsContainer {
-	margin: 32px auto;
-	width: 320px;
-	height: 40px;
-	background: #efeff1;
+	background: #fff;
+	overflow: auto;
+	border-bottom: 1px solid #ddd;
+}
+
+select {
+	-webkit-appearance: none;
+	-moz-appearance: none;
+	appearance: none;
+	/* remove default arrow */
+	background-image: url(...);
+	/* add custom arrow */
+	width: 100%;
+	padding: 18px;
+	background: none;
+	border: none;
+	font-size: 16px;
 }
 
 #recordBoxContainer {
-	margin: 32px auto;
-	width: 320px;
-	height: 40px;
-	background: #efeff1;
+	height: 60px;
+	background: #fff;
+	overflow: auto;
+}
+
+/* Checkbox */
+
+input[type=checkbox] {
+  	transform: scale(1.0);
+}
+
+input[type=checkbox] {
+	position: relative;
+	top: 20px;
+	float: right;
+	width: 15px;
+	height: 15px;
+	margin-right: 30px;
+	cursor: pointer;
+	font-size: 17px;
+    visibility: hidden;
+}
+
+input[type=checkbox]:after {
+    content: " ";
+    background-color: #fff;
+    display: inline-block;
+    padding-bottom:5px;
+    color:#aaa;
+    width:15px;
+    height:15px;
+    visibility: visible;
+    border:1px solid #aaa;
+    padding-left:3px;
+    border-radius:3px;
+}
+
+input[type=checkbox]:checked:after {
+    content: "\2714";
+    padding:-5px;
+    font-weight:bold;
+    background-color: #46f;
+    border: 1px solid #46f;
+    color:#fff;
 }
