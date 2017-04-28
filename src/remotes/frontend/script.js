@@ -15,44 +15,30 @@ var CommandData = {
 }
 
 var PilotData = {
-	data: {"pilots":["None"], "pilot_index":0},
+	data: {"pilots":["None"], "index":0},
 	updateData: function(data) {
 		this.data = data
 	},
 	updateIndex: function(data) {
-		m.request({
-		    method: "POST",
-		    url: "/api/v1/setpilotindex",
-		    data: data
-		})
-		.then(function(result) {
-		    var dataCopy = Object.assign({}, this.data)
-			dataCopy["pilot_index"] = data["index"]
-			this.data = dataCopy
-		})
+		var dataCopy = Object.assign({}, this.data)
+		dataCopy["index"] = data["index"]
+		this.data = dataCopy
 	}
 }
 
-var OptionsData = {
+var RecordData = {
 	data: {"record": false},
 	updateData: function(data) {
-		m.request({
-		    method: "POST",
-		    url: "/api/v1/setoptions",
-		    data: data
-		})
-		.then(function(result) {
-		    var dataCopy = Object.assign({}, this.data)
-			dataCopy["record"] = data["record"]
-			this.data = dataCopy
-		})
+		var dataCopy = Object.assign({}, this.data)
+		dataCopy["record"] = data["record"]
+		this.data = dataCopy
 	}
 }
 
 //--- Dispatcher, Singleton
 
 var Dispatcher = {
-	applyAction: function(action) {
+	applyAction: function(action, update_backend) {
 		if (action.target == 'image')
 		{
 			if (action.action == 'update-data')
@@ -78,12 +64,15 @@ var Dispatcher = {
 				PilotData.updateIndex(action.value)
 			}
 		}
-		else if (action.target == 'options')
+		else if (action.target == 'record')
 		{
 			if (action.action == 'update-data')
 			{
-				OptionsData.updateData(action.value)
+				RecordData.updateData(action.value)
 			}
+		}
+		if (update_backend) {
+			ws.send(JSON.stringify(action))
 		}
 		m.redraw()
 	}
@@ -101,31 +90,23 @@ var Action = function(target, action, data) {
 
 //--- API, Singleton
 
-var AjaxAPI = {
-	address: '',
-	start: function() {
-		var that = this
-		this.intervalID = setInterval(function(){
-			that.update()
-		}, 200)
-	},
-	stop: function() {
-		clearInterval(this.intervalID)
-	},
-	update: function() {
-		m.request({
-		    method: "GET",
-		    url: "/api/v1/status"
-		})
-		.then(function(result) {
-		    var action1 = Action("image", "update-data", result.image)
-		    Dispatcher.applyAction(action1)
-		    var action2 = Action("command", "update-data", {"yaw" : result.yaw, "throttle" : result.throttle})
-		    Dispatcher.applyAction(action2)
-		    var action3 = Action("pilot", "update-data", {"pilots" : result.pilots, "selected_pilot" : result.selected_pilot})
-		    Dispatcher.applyAction(action3)
-		})
-	}
+var ws = new WebSocket("ws://rover.local:80/api/v1/ws")
+ws.onopen = function (event) {
+	console.log("Websocket open")
+}
+ws.onmessage = function (event) {
+	obj = JSON.parse(event.data)
+	var action1 = Action("image", "update-data", obj.image)
+    Dispatcher.applyAction(action1, false)
+    var action2 = Action("command", "update-data", obj.controls)
+    Dispatcher.applyAction(action2, false)
+    var action3 = Action("pilot", "update-data", obj.pilot)
+    Dispatcher.applyAction(action3, false)
+    var action3 = Action("record", "update-data", {"record" : obj.record})
+    Dispatcher.applyAction(action3, false)
+}
+ws.onclose = function (event) {
+	console.log("Websocket close")
 }
 
 //--- View, Factory
@@ -152,12 +133,14 @@ var CommandView = function() {
 var PilotsView = function() {
 	return {
 		view: function (ctrl) {
-		    return m('select', { onchange: m.withAttr('value', function(value) {
-		    	var action = Action("pilot", "update-index", {"index" : PilotData.data.pilots.indexOf(value)})
-		    	Dispatcher.applyAction(action)
-		    }) }, [
-		      	PilotData.data.pilots.map(function(name) {
-		        	return m('option', name)
+		    return m('select', { 
+		    	onchange: m.withAttr('value', function(value) {
+			    	var action = Action("pilot", "update-index", {"index" : PilotData.data.pilots.indexOf(value)})
+			    	Dispatcher.applyAction(action, true)
+		    	}
+		    ) }, [
+		      	PilotData.data.pilots.map(function(name, index) {
+		        	return m('option' + (PilotData.data.index === index  ? '[selected=true]' : ''), name)
 		      	})
 		    ])
 		}
@@ -167,16 +150,29 @@ var PilotsView = function() {
 var RecordBox = function() {
 	return {
 		view: function(ctrl) {
-			return m('input', {type: "checkbox", onchange: m.withAttr('checked', function(checked) {
-				var action = Action("options", "update-data", {"record" : checked})
-		    	Dispatcher.applyAction(action)
-			}) }, "Record")
+			return m('input', {
+				type: "checkbox", 
+				class: "js-switch",
+				checked: RecordData.data.record,
+				onchange: m.withAttr('checked', function(checked) {
+					var action = Action("record", "update-data", {"record" : checked})
+			    	Dispatcher.applyAction(action, true)
+				}) }, "Record")
 		}
 	}
 }
 
+// Mount elements
 m.mount(document.getElementById("imageContainer"), ImageView)
 m.mount(document.getElementById("sliderContainer"), CommandView)
 m.mount(document.getElementById("pilotsContainer"), PilotsView)
 m.mount(document.getElementById("recordBoxContainer"), RecordBox)
-AjaxAPI.start()
+
+// Checkbox
+var elem = document.querySelector('.js-switch');
+var init = new Switchery(elem);
+
+// ---
+// Document References
+// ---
+// https://jsbin.com/xatavo/edit?html,js,output
