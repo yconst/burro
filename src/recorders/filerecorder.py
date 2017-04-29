@@ -9,6 +9,10 @@ import config
 current_milli_time = lambda: int(round(time.time() * 1000))
 
 class BaseRecorder(object):
+
+    def __init__(self):
+        self.frame_count = 0
+        self.is_recording = False
     
     def record_frame(self, image_array, yaw, throttle):
         pass
@@ -18,7 +22,7 @@ class FileRecorder(BaseRecorder):
 
     def __init__(self):
         self.instance_path = self.make_instance_dir(config.SESSION_DIR)
-        self.frame_count = 0
+        super(FileRecorder, self).__init__()
 
     def make_instance_dir(self, sessions_path):
         '''
@@ -43,7 +47,9 @@ class FileRecorder(BaseRecorder):
         # yaw ir counter-clockwise, i.e. left is positive
         # TODO: make a proper value mapping here, and then transform
         if throttle * -1.0 < config.THROTTLE_RECORD_LIMIT:
+            self.is_recording = False
             return
+        self.is_recording = True
         file_yaw = int((yaw + 1) * 500)
         file_throttle = int(throttle * 1000)
         filepath = self.create_img_filepath(self.instance_path, self.frame_count, file_yaw, file_throttle)
