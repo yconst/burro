@@ -26,6 +26,7 @@ from sensors import PiVideoStream
 from pilots import KerasCategorical
 from pilots import RC
 from pilots import Mixed
+from pilots import F710
 
 from remotes import WebRemote
 
@@ -107,6 +108,7 @@ class Rover(object):
         self.pilots = [
             Mixed(model_path),
             RC(),
+            F710(),
             keras
         ]
         self.pilot = self.pilots[0]
