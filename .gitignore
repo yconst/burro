@@ -1,4 +1,6 @@
 *.pyc
+car_sessions
 draiving
+env
 references
 .DS_Store
