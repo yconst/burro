@@ -71,7 +71,7 @@ class SocketHandler(websocket.WebSocketHandler):
                 "is_recording": self.application.vehicle.recorder.is_recording
             }
             self.write_message(json.dumps(status))
-            sleep(0.5)
+            sleep(0.2)
         self.thread = None
         self._stop = False
 
