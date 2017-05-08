@@ -33,9 +33,9 @@ class SocketHandler(websocket.WebSocketHandler):
     def on_message(self, message):
         logging.info("WS Message")
         parsed = escape.json_decode(message)
-        if parsed['action'] == "get" and parsed['data'] == "status":
+        if parsed['action'] == "get" and parsed['value'] == "status":
             self.send_status()
-        if parsed['action'] == "get" and parsed['data'] == "settings":
+        if parsed['action'] == "get" and parsed['value'] == "settings":
             self.send_settings()
         elif parsed['action'] == "update-index" and parsed['target'] == "pilot":
             self.application.vehicle.set_pilot(parsed["value"]["index"])

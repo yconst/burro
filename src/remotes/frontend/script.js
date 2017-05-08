@@ -122,7 +122,7 @@ ws.onmessage = function (event) {
 
 	    // Re-send data request
 	    setTimeout(function() {
-	    	ws.send(Action("", "get", "status"))
+	    	ws.send(JSON.stringify(Action("", "get", "status")))
 	    }, 100)
 	    
 	}
