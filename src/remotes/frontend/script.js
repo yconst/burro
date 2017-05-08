@@ -102,10 +102,15 @@ ws.onopen = function (event) {
 ws.onmessage = function (event) {
 	obj = JSON.parse(event.data)
 	if (obj.ack == "ok") {
+		// Ack
 		waiting = false
 		m.redraw()
 	}
+	else if (obj.test) {
+		// Settings
+	}
 	else if (obj.image) {
+		// Status
 		var action1 = Action("image", "update-data", obj.image)
 	    Dispatcher.applyAction(action1, false)
 	    var action2 = Action("command", "update-data", obj.controls)
@@ -114,6 +119,12 @@ ws.onmessage = function (event) {
 	    Dispatcher.applyAction(action3, false)
 	    var action3 = Action("record", "update-data", {"record" : obj.record})
 	    Dispatcher.applyAction(action3, false)
+
+	    // Re-send data request
+	    setTimeout(function() {
+	    	ws.send(Action("", "get", "status"))
+	    }, 100)
+	    
 	}
 }
 ws.onclose = function (event) {
