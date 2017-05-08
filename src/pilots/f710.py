@@ -21,6 +21,10 @@ from navio import leds
 
 import config
 
+# Note: The code below could be very easily adapted to a
+# F310 gamepad. See:
+# https://github.com/sdickreuter/python-gamepad/blob/master/pygamepad/gamepad.py
+
 class F710(BasePilot):
     def __init__(self, **kwargs):
         self.led = leds.Led()
