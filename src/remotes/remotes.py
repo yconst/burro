@@ -56,8 +56,10 @@ class SocketHandler(websocket.WebSocketHandler):
         img64 = v.vision_sensor.capture_base64()
         status = {
             "image": img64,
-            "controls": { "yaw" : str(methods.angle_to_yaw(v.pilot_angle)), "throttle" : str(v.pilot_throttle)},
-            "pilot": { "pilots" : v.list_pilot_names(), "index" : v.selected_pilot_index()},
+            "controls": {"angle": v.pilot_angle, 
+                         "yaw": str(methods.angle_to_yaw(v.pilot_angle)), 
+                         "throttle": str(v.pilot_throttle)},
+            "pilot": {"pilots" : v.list_pilot_names(), "index" : v.selected_pilot_index()},
             "record": self.application.vehicle.record,
             "is_recording": self.application.vehicle.recorder.is_recording
         }
