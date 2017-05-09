@@ -19,6 +19,7 @@ from navio import rcinput, pwm, leds, util, mpu9250
 
 from docopt import docopt
 
+import methods
 import config
 
 from sensors import PiVideoStream

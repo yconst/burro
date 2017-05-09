@@ -44,10 +44,10 @@ def angle_to_yaw(angle, limit=config.CAR_MAX_STEERING_ANGLE):
     '''
     Convert from angle to yaw
     '''
-    return yaw / float(limit)
+    return angle / float(limit)
 
 def yaw_to_angle(yaw, limit=config.CAR_MAX_STEERING_ANGLE):
     '''
     Convert from yaw to angle
     '''
-    return angle * float(limit)
+    return yaw * float(limit)
