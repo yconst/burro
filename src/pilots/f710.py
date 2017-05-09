@@ -19,6 +19,7 @@ from pilots import BasePilot
 
 from navio import leds
 
+import methods
 import config
 
 # Note: The code below could be very easily adapted to a
@@ -48,7 +49,7 @@ class F710(BasePilot):
             self.throttle = 0
         self.yaw = (float(st[10]) - 128.0)/128.0
 
-        return self.yaw, self.throttle
+        return methods.yaw_to_angle(self.yaw), self.throttle
 
     def setup_pad(self):
         self.gamepad = Gamepad()

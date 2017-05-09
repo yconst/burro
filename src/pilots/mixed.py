@@ -29,7 +29,7 @@ class Mixed(BasePilot):
     def decide(self, img_arr):
         rc_yaw, rc_throttle = self.RCPilot.decide(img_arr)
         keras_yaw, keras_throttle = self.KerasCategoricalPilot.decide(img_arr)
-        return keras_yaw, rc_throttle
+        return methods.yaw_to_angle(keras_yaw), rc_throttle
 
     def pname(self):
         return "Mixed"

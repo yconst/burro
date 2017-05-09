@@ -10,6 +10,8 @@ import os.path
 from tornado import httpserver, ioloop, web, websocket, options, escape
 from tornado.options import define, options
 
+import methods
+
 cl = []
 
 define("port", default=80, help="run on the given port", type=int)
@@ -54,7 +56,7 @@ class SocketHandler(websocket.WebSocketHandler):
         img64 = v.vision_sensor.capture_base64()
         status = {
             "image": img64,
-            "controls": { "yaw" : str(v.pilot_yaw), "throttle" : str(v.pilot_throttle)},
+            "controls": { "yaw" : str(methods.angle_to_yaw(v.pilot_angle)), "throttle" : str(v.pilot_throttle)},
             "pilot": { "pilots" : v.list_pilot_names(), "index" : v.selected_pilot_index()},
             "record": self.application.vehicle.record,
             "is_recording": self.application.vehicle.recorder.is_recording
@@ -75,7 +77,7 @@ class WebRemote(web.Application):
         web_dir = os.path.join(base_dir, "./frontend")
         settings = {
             'template_path' : web_dir,
-            'debug' : True # TODO: Change this before production!!!
+            'debug' : True # TODO: Change this!!!
         }
         web.Application.__init__(self, [
             web.url(r'/', MainHandler, name="main"),

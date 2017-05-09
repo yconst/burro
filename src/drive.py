@@ -78,19 +78,21 @@ class Rover(object):
 
         while True:
             
-            pilot_yaw, pilot_throttle = self.pilot.decide(self.vision_sensor.frame)
+            pilot_angle, pilot_throttle = self.pilot.decide(self.vision_sensor.frame)
             
             if self.record:
-                self.recorder.record_frame(self.vision_sensor.frame, pilot_yaw, pilot_throttle)
+                self.recorder.record_frame(self.vision_sensor.frame, pilot_angle, pilot_throttle)
 
-            self.pilot_yaw = pilot_yaw
+            self.pilot_angle = pilot_angle
             self.pilot_throttle = pilot_throttle
 
             m9a, m9g, m9m = self.imu.getMotion9()
             drift = m9g[2]
 
+            yaw = methods.angle_to_yaw(pilot_angle)
+
             th = min(1, max(-1, -pilot_throttle))
-            st = min(1, max(-1, -pilot_yaw - drift * self.drift_gain))
+            st = min(1, max(-1, -yaw - drift * self.drift_gain))
 
             self.set_throttle(value=th, pwm_in=self.th_pwm)
             self.set_throttle(value=st, pwm_in=self.st_pwm)
@@ -134,6 +136,7 @@ class Rover(object):
 
     def set_remote(self):
         self.remote = WebRemote(self)
+
 
 if __name__ == "__main__":
     rover = Rover()

@@ -53,7 +53,7 @@ class RC(BasePilot):
             yaw = 0
             self.calibrated = False
 
-        return yaw, throttle
+        return methods.yaw_to_angle(yaw), throttle
 
     def calibrate_rc(self, rcin):
 

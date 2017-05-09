@@ -1,3 +1,7 @@
+
+
+# RC Control
+
 THROTTLE_CHANNEL = 2
 YAW_CHANNEL = 0
 
@@ -13,9 +17,19 @@ RC_ROLL_MIN = 0
 RC_ROLL_MAX = 0
 RC_ROLL_CENTER = 0
 
+
+# Recording
+
 THROTTLE_RECORD_LIMIT = 0.010
 SESSION_DIR = "/home/pi/Omnibot/car_sessions"
 
+
+# Vehicle
+
 CAR_MAX_STEERING_ANGLE = 30
+CAMERA_HORIZONTAL_FOV = 45
+
+
+# Models
 
 KERAS_AVERAGE_FACTOR = 0.8
