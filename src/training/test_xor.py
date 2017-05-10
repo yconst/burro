@@ -1,11 +1,10 @@
 import os
-import glob
 import math
 
 import numpy as np
 
 from keras.models import Model, Sequential
-from keras.layers import Input, Activation, Dense, Convolution2D, Dropout, Flatten
+from keras.layers import Input, Activation, Dense
 from keras.optimizers import SGD
 
 def testtrain():
