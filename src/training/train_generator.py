@@ -58,8 +58,8 @@ def parse_img_filepath(filepath):
 
     return angle, throttle, milliseconds
 
-def train():
-    igen = image_generator('../../car_sessions/combined/', indefinite=True)
+def train(train_folder):
+    igen = image_generator(train_folder, indefinite=True)
     bgen = batch_image_generator(igen)
 
     model = Sequential()
@@ -80,4 +80,4 @@ def train():
     model.fit_generator(bgen, epochs=10, steps_per_epoch=100)
 
 if __name__ == "__main__":
-    train()
+    train('../../car_sessions/combined/')
