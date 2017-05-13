@@ -42,9 +42,9 @@ class F710(BasePilot):
 
         st = self.gamepad._state
         if int(st[2]) == 1:
-            self.throttle = 0.2
+            self.throttle = -0.13
         elif int(st[2]) == 2:
-            self.throttle = -0.2
+            self.throttle = 0.13
         else:
             self.throttle = 0
         self.yaw = (float(st[10]) - 128.0)/128.0
