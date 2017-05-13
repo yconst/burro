@@ -95,7 +95,7 @@ var Action = function(target, action, data) {
 
 //--- API, Singleton
 
-var ws = new WebSocket("ws://rover.local:80/api/v1/ws")
+var ws = new WebSocket("ws://"+window.location.hostname+":80/api/v1/ws")
 ws.onopen = function (event) {
 	console.log("Websocket open")
 }
