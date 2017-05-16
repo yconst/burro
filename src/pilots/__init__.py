@@ -7,3 +7,5 @@ from pilots import BasePilot, KerasCategorical
 from rc import RC
 from mixed import Mixed
 from f710 import F710
+
+print "Loaded pilots"
