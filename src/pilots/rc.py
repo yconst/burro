@@ -1,3 +1,5 @@
+#-*- coding:utf-8 -*-
+
 '''
 
 rc.py
@@ -6,15 +8,10 @@ A pilot using RC control
 
 '''
 
-import os
-import math
-import random
 import time
-from operator import itemgetter
-from datetime import datetime
 from pilots import BasePilot
 
-from navio import rcinput, pwm, leds, util, mpu9250
+from navio import rcinput, leds, util
 
 import methods
 import config
@@ -22,8 +19,10 @@ import config
 util.check_apm()
 
 class RC(BasePilot):
+    '''
+    A pilot class using the RC input of the NAVIO2 controller
+    '''
     def __init__(self, **kwargs):
-        
         self.rcin = rcinput.RCInput()
 
         self.led = leds.Led()
@@ -36,7 +35,6 @@ class RC(BasePilot):
         super(RC, self).__init__(**kwargs)
 
     def decide(self, img_arr):
-
         if float(self.rcin.read(4)) > 1490:
             if not self.calibrated:
                 self.calibrate_rc(self.rcin)
@@ -57,24 +55,27 @@ class RC(BasePilot):
         return methods.yaw_to_angle(yaw), throttle
 
     def calibrate_rc(self, rcin):
-
-        print("Please center your receiver sticks")
+        '''
+        Accepts a RC controller reference and calibrates
+        the RC channels
+        '''
+        print "Please center your receiver sticks"
         self.led.setColor('Cyan')
         time.sleep(2.00)
-        
-        print("Calibrating RC Input...")
+
+        print "Calibrating RC Input..."
         self.led.setColor('Magenta')
         yaw = 0
         throttle = 0
         roll = 0
-        
-        for x in range(0, 100):
+
+        for iterator in range(0, 100):
             yaw += float(rcin.read(config.YAW_CHANNEL))
             throttle += float(rcin.read(config.THROTTLE_CHANNEL))
             roll += float(rcin.read(3))
 
             time.sleep(0.02)
-        
+
         yaw /= 100.0
         throttle /= 100.0
         roll /= 100.0
@@ -84,8 +85,8 @@ class RC(BasePilot):
         self.roll_center = roll
 
         self.calibrated = True
-        
-        print("Done")
+
+        print "Done"
 
     def pname(self):
         return "RC"

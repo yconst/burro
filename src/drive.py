@@ -1,3 +1,5 @@
+#-*- coding:utf-8 -*-
+
 """
 drive.py
 
@@ -106,13 +108,11 @@ class Rover(object):
 
     def setup_pilots(self, model_path):
         #TODO: This should scan for pilot modules and add them
-        keras = KerasCategorical(model_path)
-        keras.load()
         self.pilots = [
             Mixed(model_path),
             RC(),
             F710(),
-            keras
+            KerasCategorical(model_path)
         ]
         self.pilot = self.pilots[0]
         self.pilot_yaw = 0

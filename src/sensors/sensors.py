@@ -10,6 +10,8 @@ from itertools import cycle
 import numpy as np
 
 from PIL import Image
+
+import config
  
 class BaseCamera:
 
@@ -26,8 +28,7 @@ class BaseCamera:
         return self
 
     def update(self):
-        while True:
-            pass
+        pass
 
     def read(self):
         return self.frame
@@ -56,7 +57,7 @@ class PiVideoStream(BaseCamera):
         self.camera = PiCamera()
         self.camera.resolution = resolution
         self.camera.framerate = framerate
-        self.camera.rotation = 90 # TODO: move to settings
+        self.camera.rotation = config.CAMERA_ROTATION
         self.rawCapture = PiRGBArray(self.camera, size=resolution)
  
         # initialize the frame and the variable used to indicate
@@ -88,54 +89,4 @@ class PiVideoStream(BaseCamera):
     def stop(self):
         # indicate that the thread should be stopped
         self.stopped = True
-
-
-class ImgArrayCamera(BaseCamera):
-
-    def __init__(self, X):
-        self.X = X
-        self.frame = X[0]
-        self.start()
-
-    def generator(self):
-        while True:
-            for i in self.X:
-                yield i
-
-    def update(self):
-        # keep looping infinitely until the thread is stopped
-        for x in self.generator():
-            # grab the frame from the stream and clear the stream in
-            # preparation for the next frame
-            self.frame = x
-            time.sleep(.2) 
-
-
-class FakeCamera(BaseCamera):
-    ''' 
-    Class that acts like a PiCamera but reads files from a dir.
-    Used for testing on non-Pi devices.
-    '''
-    def __init__(self, img_paths, **kwargs):
-        print('loading FakeCamera')
-        
-        self.file_list = img_paths
-        self.file_list.sort()
-        self.file_cycle = cycle(self.file_list) #create infinite iterator
-        self.counter = 0
-
-        # if the thread should be stopped
-        self.frame = None
-        self.start()
-
-    def update(self):
-        # keep looping infinitely until the thread is stopped
-        for f in self.file_cycle:
-            # grab the frame from the stream and clear the stream in
-            # preparation for the next frame
-            self.frame = np.array(Image.open(f))
-            self.counter += 1
-            time.sleep(.2) 
-
-
 

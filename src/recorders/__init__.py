@@ -1,1 +1,6 @@
-from filerecorder import FileRecorder
+#-*- coding:utf-8 -*-
+"""
+This is the recorders module
+"""
+
+from recorders import FileRecorder

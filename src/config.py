@@ -1,4 +1,4 @@
-
+#-*- coding:utf-8 -*-
 
 # RC Control
 
@@ -28,6 +28,7 @@ SESSION_DIR = "/home/pi/Omnibot/car_sessions"
 
 CAR_MAX_STEERING_ANGLE = 30
 CAMERA_HORIZONTAL_FOV = 45
+CAMERA_ROTATION = 90
 
 
 # Models
