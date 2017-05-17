@@ -16,6 +16,7 @@ import random
 from operator import itemgetter
 from datetime import datetime
 
+import methods
 from rc import RC
 from pilots import BasePilot, KerasCategorical
 
@@ -28,8 +29,8 @@ class Mixed(BasePilot):
 
     def decide(self, img_arr):
         rc_yaw, rc_throttle = self.RCPilot.decide(img_arr)
-        keras_yaw, keras_throttle = self.KerasCategoricalPilot.decide(img_arr)
-        return keras_yaw, rc_throttle
+        keras_angle, keras_throttle = self.KerasCategoricalPilot.decide(img_arr)
+        return keras_angle, rc_throttle
 
     def pname(self):
         return "Mixed"

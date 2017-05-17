@@ -50,21 +50,21 @@ class KerasCategorical(BasePilot):
         self.model_path = model_path
         self.model = None #load() loads the model
         self.avg_factor = config.KERAS_AVERAGE_FACTOR
-        self.angle = 0
+        self.yaw = 0
         super(KerasCategorical, self).__init__(**kwargs)
 
     def decide(self, img_arr):
         self.led.setColor('Green')
         img_arr = img_arr.reshape((1,) + img_arr.shape)
-        angle_binned, throttle = self.model.predict(img_arr)
-        angle_certainty = max(angle_binned[0])
-        angle_unbinned = methods.unbin_Y(angle_binned)
+        yaw_binned, throttle = self.model.predict(img_arr)
+        yaw_certainty = max(yaw_binned[0])
+        yaw_unbinned = methods.unbin_Y(yaw_binned)
 
-        angle = angle_unbinned[0]
-        angle = self.avg_factor * self.angle + (1.0 - self.avg_factor) * angle
-        self.angle = angle
+        yaw = yaw_unbinned[0]
+        yaw = self.avg_factor * self.yaw + (1.0 - self.avg_factor) * yaw
+        self.yaw = yaw
         throttle = throttle[0][0]
-        return angle, throttle * 0.15
+        return methods.yaw_to_angle(yaw), throttle * 0.15
 
     def load(self):
         self.model = keras.models.load_model(self.model_path)

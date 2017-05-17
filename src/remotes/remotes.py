@@ -10,6 +10,8 @@ import os.path
 from tornado import httpserver, ioloop, web, websocket, options, escape
 from tornado.options import define, options
 
+import methods
+
 cl = []
 
 define("port", default=80, help="run on the given port", type=int)
@@ -20,23 +22,24 @@ class MainHandler(web.RequestHandler):
 
 
 class SocketHandler(websocket.WebSocketHandler): 
-    def initialize(self):
-        self.thread = None
-        self._stop = False
-
     def check_origin(self, origin):
         return True
 
     def open(self):
         if self not in cl:
             cl.append(self)
-            self.conditional_start_loop()
+            self.send_settings()
+            self.send_status()
             logging.info("WS Open")
 
     def on_message(self, message):
         logging.info("WS Message")
         parsed = escape.json_decode(message)
-        if parsed['action'] == "update-index" and parsed['target'] == "pilot":
+        if parsed['action'] == "get" and parsed['value'] == "status":
+            self.send_status()
+        if parsed['action'] == "get" and parsed['value'] == "settings":
+            self.send_settings()
+        elif parsed['action'] == "update-index" and parsed['target'] == "pilot":
             self.application.vehicle.set_pilot(parsed["value"]["index"])
             self.write_message(json.dumps({ 'ack' : 'ok' }))
         elif parsed['action'] == "update-data" and parsed['target'] == "record":
@@ -46,34 +49,27 @@ class SocketHandler(websocket.WebSocketHandler):
     def on_close(self):
         if self in cl:
             cl.remove(self)
-            self.stop_loop()
             logging.info("WS Close")
 
-    def conditional_start_loop(self):
-        if self.thread is None:
-            self.thread = threading.Thread(target = self.loop)
-            self._stop = False
-            self.thread.start()
+    def send_status(self):
+        v = self.application.vehicle
+        img64 = v.vision_sensor.capture_base64()
+        status = {
+            "image": img64,
+            "controls": {"angle": v.pilot_angle, 
+                         "yaw": str(methods.angle_to_yaw(v.pilot_angle)), 
+                         "throttle": str(v.pilot_throttle)},
+            "pilot": {"pilots" : v.list_pilot_names(), "index" : v.selected_pilot_index()},
+            "record": self.application.vehicle.record,
+            "is_recording": self.application.vehicle.recorder.is_recording
+        }
+        self.write_message(json.dumps(status))
 
-    def stop_loop(self):
-        if self._stop == False and self.thread is not None:
-            self._stop = True
-
-    def loop(self):
-        while self._stop == False:
-            v = self.application.vehicle
-            img64 = v.vision_sensor.capture_base64()
-            status = {
-                "image": img64,
-                "controls": { "yaw" : str(v.pilot_yaw), "throttle" : str(v.pilot_throttle)},
-                "pilot": { "pilots" : v.list_pilot_names(), "index" : v.selected_pilot_index()},
-                "record": self.application.vehicle.record,
-                "is_recording": self.application.vehicle.recorder.is_recording
-            }
-            self.write_message(json.dumps(status))
-            sleep(0.5)
-        self.thread = None
-        self._stop = False
+    def send_settings(self):
+        settings = {
+            "test": "foo"
+        }
+        self.write_message(json.dumps(settings))
 
 
 class WebRemote(web.Application):
@@ -83,7 +79,7 @@ class WebRemote(web.Application):
         web_dir = os.path.join(base_dir, "./frontend")
         settings = {
             'template_path' : web_dir,
-            'debug' : True # TODO: Change this before production!!!
+            'debug' : True # TODO: Change this!!!
         }
         web.Application.__init__(self, [
             web.url(r'/', MainHandler, name="main"),

@@ -2,9 +2,11 @@ from __future__ import division
 
 import numpy as np
 
+import config
+
 '''
 BINNING
-functions to help converte between floating point numbers and categories.
+functions to help convert between floating point numbers and categories.
 '''
 
 def linear_bin(a):
@@ -32,3 +34,20 @@ def unbin_Y(Y):
         v = linear_unbin(v)
         d.append(v)
     return np.array(d)
+
+'''
+ANGLE CONVERSIONS
+functions to help converting between angles and yaw input values.
+'''
+
+def angle_to_yaw(angle, limit=config.CAR_MAX_STEERING_ANGLE):
+    '''
+    Convert from angle to yaw
+    '''
+    return angle / float(limit)
+
+def yaw_to_angle(yaw, limit=config.CAR_MAX_STEERING_ANGLE):
+    '''
+    Convert from yaw to angle
+    '''
+    return yaw * float(limit)
