@@ -5,3 +5,4 @@ env
 references
 .DS_Store
 .ipynb_checkpoints
+logs
