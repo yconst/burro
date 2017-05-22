@@ -7,17 +7,19 @@ from PIL import Image
 import methods
 import config
 
-current_milli_time = lambda: int(round(time.time() * 1000))
+
+def current_milli_time(): return int(round(time.time() * 1000))
+
 
 class BaseRecorder(object):
 
     def __init__(self):
         self.frame_count = 0
         self.is_recording = False
-    
+
     def record_frame(self, image_array, angle, throttle):
         pass
-        
+
 
 class FileRecorder(BaseRecorder):
 
@@ -27,7 +29,7 @@ class FileRecorder(BaseRecorder):
 
     def make_instance_dir(self, sessions_path):
         '''
-        Create a directory for the current session based on time, 
+        Create a directory for the current session based on time,
         and a global sessions directory if it does not exist.
         '''
         if not os.path.isdir(sessions_path):
@@ -51,9 +53,13 @@ class FileRecorder(BaseRecorder):
             self.is_recording = False
             return
         self.is_recording = True
-        file_angle = int(angle*10)
+        file_angle = int(angle * 10)
         file_throttle = int(throttle * 1000)
-        filepath = self.create_img_filepath(self.instance_path, self.frame_count, file_angle, file_throttle)
+        filepath = self.create_img_filepath(
+            self.instance_path,
+            self.frame_count,
+            file_angle,
+            file_throttle)
         im = Image.fromarray(image_array)
         im.save(filepath)
         self.frame_count += 1
@@ -62,5 +68,15 @@ class FileRecorder(BaseRecorder):
         '''
         Generate the complete filepath for saving an image
         '''
-        filepath = str("%s/" % directory + "frame_" + str(frame_count).zfill(5) + "_ttl_" + str(throttle) + "_agl_" + str(angle) + "_mil_" + str(current_milli_time()) + '.jpg')
+        filepath = str("%s/" %
+                       directory +
+                       "frame_" +
+                       str(frame_count).zfill(5) +
+                       "_ttl_" +
+                       str(throttle) +
+                       "_agl_" +
+                       str(angle) +
+                       "_mil_" +
+                       str(current_milli_time()) +
+                       '.jpg')
         return filepath

@@ -35,6 +35,7 @@ from recorders import FileRecorder
 
 util.check_apm()
 
+
 class Rover(object):
 
     def __init__(self):
@@ -78,11 +79,13 @@ class Rover(object):
         time.sleep(0.5)
 
         while True:
-            
-            pilot_angle, pilot_throttle = self.pilot.decide(self.vision_sensor.frame)
-            
+
+            pilot_angle, pilot_throttle = self.pilot.decide(
+                self.vision_sensor.frame)
+
             if self.record:
-                self.recorder.record_frame(self.vision_sensor.frame, pilot_angle, pilot_throttle)
+                self.recorder.record_frame(
+                    self.vision_sensor.frame, pilot_angle, pilot_throttle)
 
             self.pilot_angle = pilot_angle
             self.pilot_throttle = pilot_throttle
@@ -105,7 +108,7 @@ class Rover(object):
         pwm_in.set_duty_cycle(pwm_val)
 
     def setup_pilots(self, model_path):
-        #TODO: This should scan for pilot modules and add them
+        # TODO: This should scan for pilot modules and add them
         keras = KerasCategorical(model_path)
         keras.load()
         self.pilots = [
@@ -142,5 +145,3 @@ class Rover(object):
 if __name__ == "__main__":
     rover = Rover()
     rover.run()
-
-
