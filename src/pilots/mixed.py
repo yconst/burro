@@ -2,10 +2,10 @@
 
 mixed.py
 
-Methods to create, use, save and load pilots. Pilots 
+Methods to create, use, save and load pilots. Pilots
 contain the highlevel logic used to determine the angle
-and throttle of a vehicle. Pilots can include one or more 
-models to help direct the vehicles motion. 
+and throttle of a vehicle. Pilots can include one or more
+models to help direct the vehicles motion.
 
 '''
 from __future__ import division
@@ -20,6 +20,7 @@ import methods
 from rc import RC
 from pilots import BasePilot, KerasCategorical
 
+
 class Mixed(BasePilot):
     def __init__(self, model_path, **kwargs):
         self.RCPilot = RC()
@@ -29,9 +30,9 @@ class Mixed(BasePilot):
 
     def decide(self, img_arr):
         rc_yaw, rc_throttle = self.RCPilot.decide(img_arr)
-        keras_angle, keras_throttle = self.KerasCategoricalPilot.decide(img_arr)
+        keras_angle, keras_throttle = self.KerasCategoricalPilot.decide(
+            img_arr)
         return keras_angle, rc_throttle
 
     def pname(self):
         return "Mixed"
-

@@ -21,9 +21,10 @@ import config
 
 util.check_apm()
 
+
 class RC(BasePilot):
     def __init__(self, **kwargs):
-        
+
         self.rcin = rcinput.RCInput()
 
         self.led = leds.Led()
@@ -61,20 +62,20 @@ class RC(BasePilot):
         print("Please center your receiver sticks")
         self.led.setColor('Cyan')
         time.sleep(2.00)
-        
+
         print("Calibrating RC Input...")
         self.led.setColor('Magenta')
         yaw = 0
         throttle = 0
         roll = 0
-        
+
         for x in range(0, 100):
             yaw += float(rcin.read(config.YAW_CHANNEL))
             throttle += float(rcin.read(config.THROTTLE_CHANNEL))
             roll += float(rcin.read(3))
 
             time.sleep(0.02)
-        
+
         yaw /= 100.0
         throttle /= 100.0
         roll /= 100.0
@@ -84,9 +85,8 @@ class RC(BasePilot):
         self.roll_center = roll
 
         self.calibrated = True
-        
+
         print("Done")
 
     def pname(self):
         return "RC"
-        

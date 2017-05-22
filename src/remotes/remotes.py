@@ -15,13 +15,14 @@ import methods
 cl = []
 
 define("port", default=80, help="run on the given port", type=int)
-    
+
+
 class MainHandler(web.RequestHandler):
     def get(self):
         self.render('index.html')
 
 
-class SocketHandler(websocket.WebSocketHandler): 
+class SocketHandler(websocket.WebSocketHandler):
     def check_origin(self, origin):
         return True
 
@@ -41,11 +42,11 @@ class SocketHandler(websocket.WebSocketHandler):
             self.send_settings()
         elif parsed['action'] == "update-index" and parsed['target'] == "pilot":
             self.application.vehicle.set_pilot(parsed["value"]["index"])
-            self.write_message(json.dumps({ 'ack' : 'ok' }))
+            self.write_message(json.dumps({'ack': 'ok'}))
         elif parsed['action'] == "update-data" and parsed['target'] == "record":
             self.application.vehicle.record = parsed["value"]["record"]
-            self.write_message(json.dumps({ 'ack' : 'ok' }))
-            
+            self.write_message(json.dumps({'ack': 'ok'}))
+
     def on_close(self):
         if self in cl:
             cl.remove(self)
@@ -56,13 +57,18 @@ class SocketHandler(websocket.WebSocketHandler):
         img64 = v.vision_sensor.capture_base64()
         status = {
             "image": img64,
-            "controls": {"angle": v.pilot_angle, 
-                         "yaw": str(methods.angle_to_yaw(v.pilot_angle)), 
-                         "throttle": str(v.pilot_throttle)},
-            "pilot": {"pilots" : v.list_pilot_names(), "index" : v.selected_pilot_index()},
+            "controls": {
+                "angle": v.pilot_angle,
+                "yaw": str(
+                    methods.angle_to_yaw(
+                        v.pilot_angle)),
+                "throttle": str(
+                    v.pilot_throttle)},
+            "pilot": {
+                "pilots": v.list_pilot_names(),
+                "index": v.selected_pilot_index()},
             "record": self.application.vehicle.record,
-            "is_recording": self.application.vehicle.recorder.is_recording
-        }
+            "is_recording": self.application.vehicle.recorder.is_recording}
         self.write_message(json.dumps(status))
 
     def send_settings(self):
@@ -78,8 +84,8 @@ class WebRemote(web.Application):
         base_dir = os.path.dirname(__file__)
         web_dir = os.path.join(base_dir, "./frontend")
         settings = {
-            'template_path' : web_dir,
-            'debug' : True # TODO: Change this!!!
+            'template_path': web_dir,
+            'debug': True  # TODO: Change this!!!
         }
         web.Application.__init__(self, [
             web.url(r'/', MainHandler, name="main"),
@@ -93,7 +99,7 @@ class WebRemote(web.Application):
         self.thread = threading.Thread(target=self.loop.start)
         self.thread.daemon = True
         self.thread.start()
-        
+
 
 if __name__ == "__main__":
     main()
