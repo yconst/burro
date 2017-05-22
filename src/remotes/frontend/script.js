@@ -56,6 +56,7 @@ ws.onmessage = function (event) {
 	obj = JSON.parse(event.data)
 	if (obj.ack == "ok") {
 		// Ack
+		console.log("Received Ack")
 		waiting = false
 		m.redraw()
 	}
