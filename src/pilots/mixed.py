@@ -23,10 +23,10 @@ from pilots import BasePilot, KerasCategorical
 
 
 class MixedRC(BasePilot):
-    def __init__(self, keras_pilot, **kwargs):
-        self.RCPilot = RC()
+    def __init__(self, keras_pilot, rcpilot, **kwargs):
+        self.RCPilot = rcpilot
         self.KerasCategoricalPilot = keras_pilot
-        super(Mixed, self).__init__(**kwargs)
+        super(MixedRC, self).__init__(**kwargs)
 
     def decide(self, img_arr):
         rc_yaw, rc_throttle = self.RCPilot.decide(img_arr)
@@ -39,10 +39,10 @@ class MixedRC(BasePilot):
 
 
 class MixedF710(BasePilot):
-    def __init__(self, keras_pilot, **kwargs):
-        self.F710Pilot = F710()
+    def __init__(self, keras_pilot, f710pilot, **kwargs):
+        self.F710Pilot = f710pilot
         self.KerasCategoricalPilot = keras_pilot
-        super(Mixed, self).__init__(**kwargs)
+        super(MixedF710, self).__init__(**kwargs)
 
     def decide(self, img_arr):
         f_yaw, f_throttle = self.F710.decide(img_arr)
