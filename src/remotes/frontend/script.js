@@ -1,36 +1,17 @@
 //--- Model, Singleton
 
-var ImageData = {
-	data: "",
-	updateData: function(data) {
-		this.data = data
-	}
-}
-
-var CommandData = {
-	data: {"yaw":0, "throttle":0},
-	updateData: function(data) {
-		this.data = data
-	}
-}
-
-var PilotData = {
-	data: {"pilots":["None"], "index":0},
-	updateData: function(data) {
-		this.data = data
+var Store = {
+	data: {
+		"image":"",
+		"yaw":0, 
+		"throttle":0,
+		"pilots":["None"], 
+		"index":0,
+		"record": false
 	},
-	updateIndex: function(data) {
-		var dataCopy = Object.assign({}, this.data)
-		dataCopy["index"] = data["index"]
-		this.data = dataCopy
-	}
-}
-
-var RecordData = {
-	data: {"record": false},
 	updateData: function(data) {
 		var dataCopy = Object.assign({}, this.data)
-		dataCopy["record"] = data["record"]
+		for (var attrname in data) { dataCopy[attrname] = data[attrname]; }
 		this.data = dataCopy
 	}
 }
@@ -41,37 +22,9 @@ var waiting = false
 
 var Dispatcher = {
 	applyAction: function(action, update_backend) {
-		if (action.target == 'image')
+		if (action.action == 'update-data')
 		{
-			if (action.action == 'update-data')
-			{
-				ImageData.updateData(action.value)
-			}
-		}
-		else if (action.target == 'command')
-		{
-			if (action.action == 'update-data')
-			{
-				CommandData.updateData(action.value)
-			}
-		}
-		else if (action.target == 'pilot')
-		{
-			if (action.action == 'update-data')
-			{
-				PilotData.updateData(action.value)
-			}
-			if (action.action == 'update-index')
-			{
-				PilotData.updateIndex(action.value)
-			}
-		}
-		else if (action.target == 'record')
-		{
-			if (action.action == 'update-data')
-			{
-				RecordData.updateData(action.value)
-			}
+			Store.updateData(action.value)
 		}
 		if (update_backend) {
 			ws.send(JSON.stringify(action))
@@ -103,6 +56,7 @@ ws.onmessage = function (event) {
 	obj = JSON.parse(event.data)
 	if (obj.ack == "ok") {
 		// Ack
+		console.log("Received Ack")
 		waiting = false
 		m.redraw()
 	}
@@ -111,7 +65,7 @@ ws.onmessage = function (event) {
 	}
 	else if (obj.image) {
 		// Status
-		var action1 = Action("image", "update-data", obj.image)
+		var action1 = Action("image", "update-data", {"image" : obj.image})
 	    Dispatcher.applyAction(action1, false)
 	    var action2 = Action("command", "update-data", obj.controls)
 	    Dispatcher.applyAction(action2, false)
@@ -136,7 +90,7 @@ ws.onclose = function (event) {
 var ImageView = function() {
 	return {
 		view: function() {
-			return m("img", {class:"viewport", src:"data:image/jpeg;base64," + ImageData.data})
+			return m("img", {class:"viewport", src:"data:image/jpeg;base64," + Store.data.image})
 		}
 	}
 }
@@ -144,7 +98,7 @@ var ImageView = function() {
 var CommandView = function() {
 	return {
 		view: function() {
-			var left = Math.min(Math.max(CommandData.data.yaw, -1), 1)*50+50
+			var left = Math.min(Math.max(Store.data.yaw, -1), 1)*50+50
 			return m( "div", {class:"sliderBox"}, 
 				m("div", {class:"sliderKnob", style:"left:" + left + "%;"}) 
 			)
@@ -157,12 +111,12 @@ var PilotsView = function() {
 		view: function (ctrl) {
 		    return m('select', { 
 		    	onchange: m.withAttr('value', function(value) {
-			    	var action = Action("pilot", "update-index", {"index" : PilotData.data.pilots.indexOf(value)})
+			    	var action = Action("pilot", "update-data", {"index" : Store.data.pilots.indexOf(value)})
 			    	Dispatcher.applyAction(action, true)
 		    	}
 		    ) }, [
-		      	PilotData.data.pilots.map(function(name, index) {
-		        	return m('option' + (PilotData.data.index === index  ? '[selected=true]' : ''), name)
+		      	Store.data.pilots.map(function(name, index) {
+		        	return m('option' + (Store.data.index === index  ? '[selected=true]' : ''), name)
 		      	})
 		    ])
 		}
@@ -175,7 +129,7 @@ var RecordBox = function() {
 			return m('input', {
 				type: "checkbox", 
 				class: "js-switch",
-				checked: RecordData.data.record,
+				checked: Store.data.record,
 				onchange: m.withAttr('checked', function(checked) {
 					var action = Action("record", "update-data", {"record" : checked})
 			    	Dispatcher.applyAction(action, true)

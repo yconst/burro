@@ -2,10 +2,10 @@
 
 pilots.py
 
-Methods to create, use, save and load pilots. Pilots 
+Methods to create, use, save and load pilots. Pilots
 contain the highlevel logic used to determine the angle
-and throttle of a vehicle. Pilots can include one or more 
-models to help direct the vehicles motion. 
+and throttle of a vehicle. Pilots can include one or more
+models to help direct the vehicles motion.
 
 '''
 from __future__ import division
@@ -21,13 +21,16 @@ import keras
 
 from navio import leds
 
-import config, methods
+import config
+import methods
+
 
 class BasePilot(object):
     '''
     Base class to define common functions.
     When creating a class, only override the funtions you'd like to replace.
     '''
+
     def __init__(self, name=None, last_modified=None):
         self.led = leds.Led()
         self.name = name
@@ -48,7 +51,7 @@ class BasePilot(object):
 class KerasCategorical(BasePilot):
     def __init__(self, model_path, **kwargs):
         self.model_path = model_path
-        self.model = None #load() loads the model
+        self.model = None  # load() loads the model
         self.avg_factor = config.KERAS_AVERAGE_FACTOR
         self.yaw = 0
         super(KerasCategorical, self).__init__(**kwargs)
@@ -71,4 +74,3 @@ class KerasCategorical(BasePilot):
 
     def pname(self):
         return "Keras Categorical"
-

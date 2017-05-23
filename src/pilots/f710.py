@@ -26,6 +26,7 @@ import config
 # F310 gamepad. See:
 # https://github.com/sdickreuter/python-gamepad/blob/master/pygamepad/gamepad.py
 
+
 class F710(BasePilot):
     def __init__(self, **kwargs):
         self.led = leds.Led()
@@ -47,7 +48,7 @@ class F710(BasePilot):
             self.throttle = 0.13
         else:
             self.throttle = 0
-        self.yaw = (float(st[10]) - 128.0)/128.0
+        self.yaw = (float(st[10]) - 128.0) / 128.0
 
         return methods.yaw_to_angle(self.yaw), self.throttle
 
@@ -59,18 +60,21 @@ class F710(BasePilot):
     def pname(self):
         return "F310/F710 Gamepad"
 
+
 import usb
 import struct
 
 USB_VENDOR = 0x046d
 USB_PRODUCT = 0xc21f
-default_state = (0, 20, 0, 0, 0, 0, 123, 251, 128, 0, 128, 0, 128, 0, 0, 0, 0, 0, 0, 0)
+default_state = (0, 20, 0, 0, 0, 0, 123, 251, 128,
+                 0, 128, 0, 128, 0, 0, 0, 0, 0, 0, 0)
+
 
 class Gamepad(object):
 
     def __init__(self):
         self.is_initialized = False
-        d=None
+        d = None
         busses = usb.busses()
         for bus in busses:
             devs = bus.devices
@@ -79,7 +83,7 @@ class Gamepad(object):
                     d = dev
         #conf = d.configurations[0]
         #intf = conf.interfaces[0][0]
-        if not d is None:
+        if d is not None:
             self._dev = d.open()
             print(self._dev)
             try:
@@ -92,10 +96,12 @@ class Gamepad(object):
             self._dev.setConfiguration(1)
             self._dev.claimInterface(0)
 
-            #This value has to be send to the gamepad, or it won't start working
+            # This value has to be send to the gamepad, or it won't start working
             # value was determined by sniffing the usb traffic with wireshark
             # getting other gamepads to work might be a simple as changing this
-            self._dev.interruptWrite(0x02,struct.pack('<BBB', 0x01,0x03,0x04))
+            self._dev.interruptWrite(
+                0x02, struct.pack(
+                    '<BBB', 0x01, 0x03, 0x04))
             self.changed = False
             self._state = default_state
             self._old_state = default_state
@@ -105,18 +111,18 @@ class Gamepad(object):
             RuntimeError("Could not initialize Gamepad")
 
     def _getState(self):
-       try:
-            data = self._dev.interruptRead(0x81,0x20,2000)
-            data = struct.unpack('<'+'B'*20, data)
+        try:
+            data = self._dev.interruptRead(0x81, 0x20, 2000)
+            data = struct.unpack('<' + 'B' * 20, data)
             return data
-       except usb.core.USBError as e:
-            #print(e)
+        except usb.core.USBError as e:
+            # print(e)
             return None
 
     def _read_gamepad(self):
         self.changed = False
         state = self._getState()
-        if not state is None:
+        if state is not None:
             self._old_state = self._state
             self._state = state
             self.changed = True
@@ -175,22 +181,22 @@ class Gamepad(object):
         return self._state[8]
 
     def get_dir_up(self):
-        return self._state[2] in (1,5,9)
+        return self._state[2] in (1, 5, 9)
 
     def get_dir_down(self):
-        return self._state[2] in (2,6,10)
+        return self._state[2] in (2, 6, 10)
 
     def get_dir_left(self):
-        return self._state[2] in (4,5,6)
+        return self._state[2] in (4, 5, 6)
 
     def get_dir_up(self):
-        return self._state[2] in (8,9,10)
+        return self._state[2] in (8, 9, 10)
 
     def changed(self):
         return self.changed
 
     def __del__(self):
-        #if not self._dev is None:
+        # if not self._dev is None:
         if self.is_initialized:
             self._dev.releaseInterface()
 
