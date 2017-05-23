@@ -58,7 +58,7 @@ class F710(BasePilot):
             self.gamepad._read_gamepad()
 
     def pname(self):
-        return "F310/F710 Gamepad"
+        return "F710 Gamepad"
 
 
 import usb

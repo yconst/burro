@@ -18,14 +18,14 @@ from datetime import datetime
 
 import methods
 from rc import RC
+from f710 import F710
 from pilots import BasePilot, KerasCategorical
 
 
-class Mixed(BasePilot):
-    def __init__(self, model_path, **kwargs):
+class MixedRC(BasePilot):
+    def __init__(self, keras_pilot, **kwargs):
         self.RCPilot = RC()
-        self.KerasCategoricalPilot = KerasCategorical(model_path)
-        self.KerasCategoricalPilot.load()
+        self.KerasCategoricalPilot = keras_pilot
         super(Mixed, self).__init__(**kwargs)
 
     def decide(self, img_arr):
@@ -35,4 +35,20 @@ class Mixed(BasePilot):
         return keras_angle, rc_throttle
 
     def pname(self):
-        return "Mixed"
+        return "Mixed (Keras+RC)"
+
+
+class MixedF710(BasePilot):
+    def __init__(self, keras_pilot, **kwargs):
+        self.F710Pilot = F710()
+        self.KerasCategoricalPilot = keras_pilot
+        super(Mixed, self).__init__(**kwargs)
+
+    def decide(self, img_arr):
+        f_yaw, f_throttle = self.F710.decide(img_arr)
+        keras_angle, keras_throttle = self.KerasCategoricalPilot.decide(
+            img_arr)
+        return keras_angle, f_throttle
+
+    def pname(self):
+        return "Mixed (Keras+F710 Gamepad)"

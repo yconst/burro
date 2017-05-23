@@ -112,10 +112,10 @@ class Rover(object):
         keras = KerasCategorical(model_path)
         keras.load()
         self.pilots = [
-            Mixed(model_path),
+            MixedRC(keras),
+            MixedF710(keras),
             RC(),
-            F710(),
-            keras
+            F710()
         ]
         self.pilot = self.pilots[0]
         self.pilot_yaw = 0
