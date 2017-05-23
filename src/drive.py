@@ -25,9 +25,7 @@ import config
 from sensors import PiVideoStream
 
 from pilots import KerasCategorical
-from pilots import RC
-from pilots import Mixed
-from pilots import F710
+from pilots import RC, F710, MixedRC, MixedF710
 
 from remotes import WebRemote
 
@@ -109,14 +107,27 @@ class Rover(object):
 
     def setup_pilots(self, model_path):
         # TODO: This should scan for pilot modules and add them
+        # TODO: add logging
         keras = KerasCategorical(model_path)
         keras.load()
-        self.pilots = [
-            Mixed(model_path),
-            RC(),
-            F710(),
-            keras
-        ]
+        self.pilots = []
+        try:
+            f710 = F710()
+            mixedf710 = MixedF710(keras, f710)
+            self.pilots.append(f710)
+            self.pilots.append(mixedf710)
+        except Exception as e:
+            print "Unable to load F710 Gamepad"
+            print e
+        try:
+            rc = RC()
+            mixedrc = MixedRC(keras, rc)
+            self.pilots.append(rc)
+            self.pilots.append(mixedrc)
+        except Exception as e:
+            print "Unable to load RC"
+            print e
+
         self.pilot = self.pilots[0]
         self.pilot_yaw = 0
         self.pilot_throttle = 0

@@ -30,7 +30,8 @@ import config
 class F710(BasePilot):
     def __init__(self, **kwargs):
         self.led = leds.Led()
-        self.thread = Thread(target=self.setup_pad)
+        self.setup_pad()
+        self.thread = Thread(target=self.loop_values)
         self.thread.daemon = True
         self.thread.start()
         super(F710, self).__init__(**kwargs)
@@ -54,11 +55,14 @@ class F710(BasePilot):
 
     def setup_pad(self):
         self.gamepad = Gamepad()
+        self.gamepad._read_gamepad()
+
+    def loop_values(self):
         while True:
             self.gamepad._read_gamepad()
 
     def pname(self):
-        return "F310/F710 Gamepad"
+        return "F710 Gamepad"
 
 
 import usb
