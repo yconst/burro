@@ -49,9 +49,11 @@ class Rover(object):
         self.led.setColor('Yellow')
 
         self.th_pwm = pwm.PWM(2)
+        self.th_pwm.initialize()
         self.th_pwm.set_period(50)
 
         self.st_pwm = pwm.PWM(0)
+        self.st_pwm.initialize()
         self.st_pwm.set_period(50)
 
         self.imu = mpu9250.MPU9250()
