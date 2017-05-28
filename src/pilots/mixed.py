@@ -45,7 +45,7 @@ class MixedF710(BasePilot):
         super(MixedF710, self).__init__(**kwargs)
 
     def decide(self, img_arr):
-        f_yaw, f_throttle = self.F710.decide(img_arr)
+        f_yaw, f_throttle = self.F710Pilot.decide(img_arr)
         keras_angle, keras_throttle = self.KerasCategoricalPilot.decide(
             img_arr)
         return keras_angle, f_throttle
