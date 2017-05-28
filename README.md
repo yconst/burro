@@ -7,7 +7,7 @@ Burro is software for small-scale self-driving cars. It borrows ideas and code f
 
 - 1/10 or 1/16 RC car with PWM connections for throttle and steering
 - Raspberry Pi 2 or 3
-- NAVIO2 HAT
+- [NAVIO2](https://emlid.com/navio/) HAT
 - Either a Logitech F710 Gamepad or a PPM or SBUS-compatible RC receiver
 
 #### Software
