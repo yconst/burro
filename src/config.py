@@ -21,7 +21,7 @@ RC_ROLL_CENTER = 0
 # Recording
 
 THROTTLE_RECORD_LIMIT = 0.010
-SESSION_DIR = "/home/pi/Omnibot/car_sessions"
+SESSION_DIR = "/home/pi/burro_sessions"
 
 
 # Vehicle
@@ -32,5 +32,5 @@ CAMERA_HORIZONTAL_FOV = 120.
 
 # Models
 
-MODEL_OUTPUT_SIZE = 7
+MODEL_OUTPUT_SIZE = 15
 KERAS_AVERAGE_FACTOR = 0.8
