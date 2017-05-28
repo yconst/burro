@@ -1,3 +1,4 @@
 #!/bin/sh -
 
-sudo /home/pi/Omnibot/draiving/draiving/bin/python /home/pi/Omnibot/draiving/src/drive.py --model=/home/pi/Omnibot/draiving/src/models/default.h5
+DIR="$( cd "$( dirname "$0" )" && pwd )"
+sudo $DIR/../bin/python $DIR/src/drive.py --model=$DIR/src/models/default.h5
