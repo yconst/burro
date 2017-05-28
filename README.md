@@ -12,14 +12,14 @@ Burro is software for small-scale self-driving cars. It borrows ideas and code f
 
 #### Software
 
-- Latest EMLID image installed and running on an SD card. Here are the instructions.
+- Latest EMLID image installed and running on an SD card. [Here are the instructions](https://docs.emlid.com/navio2/common/ardupilot/configuring-raspberry-pi/).
 
 
 ### Installation
 
-Burro includes an installation script that handles installing necessary libraries, setting up the Python virtualenv and configuring submodules. To download and run it:
+Burro includes an installation script that handles installing necessary libraries, setting up the Python virtualenv and configuring submodules. To download and run:
 
-    wget ...
+    wget https://raw.githubusercontent.com/yconst/burro/master/install-burro.sh
     chmod +x install-burro.sh
     ./install-burro.sh
 
