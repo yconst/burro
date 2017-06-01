@@ -5,7 +5,7 @@ sudo apt-get update
 sudo apt-get install --assume-yes libtiff5-dev libjpeg-dev zlib1g-dev \
   libfreetype6-dev liblcms2-dev \
   libwebp-dev tcl8.5-dev tk8.5-dev python-tk
-sudo apt-get install python-numpy python-scipy python-pillow \
+sudo apt-get install --assume-yes python-numpy python-scipy python-pillow \
   libhdf5-dev python-h5py
 
 echo "\nBurro Installer: Creating environment\n"
