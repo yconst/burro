@@ -58,14 +58,19 @@ class KerasCategorical(BasePilot):
     def decide(self, img_arr):
         self.led.setColor('Green')
         img_arr = img_arr.reshape((1,) + img_arr.shape)
-        yaw_binned, throttle = self.model.predict(img_arr)
+        prediction = self.model.predict(img_arr)
+        if len(prediction) == 2:
+            yaw_binned = prediction[0] 
+            throttle = prediction[1][0][0]
+        else:
+            yaw_binned = prediction
+            throttle = 0
         yaw_certainty = max(yaw_binned[0])
         yaw_unbinned = methods.unbin_Y(yaw_binned)
 
         yaw = yaw_unbinned[0]
         yaw = self.avg_factor * self.yaw + (1.0 - self.avg_factor) * yaw
         self.yaw = yaw
-        throttle = throttle[0][0]
         return methods.yaw_to_angle(yaw), throttle * 0.15
 
     def load(self):
