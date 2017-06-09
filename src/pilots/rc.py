@@ -38,7 +38,7 @@ class RC(BasePilot):
 
     def decide(self, img_arr):
 
-        if float(self.rcin.read(4)) > 1490:
+        if float(self.rcin.read(config.ARM_CHANNEL)) > 1490:
             if not self.calibrated:
                 self.calibrate_rc(self.rcin)
 

@@ -43,7 +43,7 @@ By default Burro outputs throttle on channel 2 of the NAVIO2 rail, and steering 
 
 Depending on your vehicle servo and motor, you may wish/need to calibrate the PWM output ranges, as well as the steering angle and camera horizontal FOV. The last two are currently not important but may become in the future.
 
-RC Input channels are as follows: 0 - Yaw (i.e. steering), 2 - Throttle, 4 - Arm. Yaw and throttle are configurable via `config.py`, but Arm is hardwired to ch. 4 (TODO: make it configurable). Each time the RC controller is armed, a neutral point calibration is performed. Thus, you only need to make sure that your sticks are center before arming the car.
+RC Input channels are as follows: 0 - Yaw (i.e. steering), 2 - Throttle, 4 - Arm. Yaw, throttle and arm channel are configurable via `config.py`. Each time the RC controller is armed, a neutral point calibration is performed. Thus, you only need to make sure that your sticks are center before arming the car.
 
 You may also wish to configure the throttle threshold value above which images are recorded.
 
