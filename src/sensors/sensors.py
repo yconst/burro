@@ -12,7 +12,7 @@ import numpy as np
 from PIL import Image
 
 
-class BaseCamera:
+class BaseCamera(object):
 
     def __init__(self, resolution=(160, 120)):
         self.resolution = resolution
@@ -21,6 +21,8 @@ class BaseCamera:
                 self.resolution[1],
                 self.resolution[0],
                 3))
+        self.frame_time = 0
+        self.base64_time = 0
 
     def start(self):
         # start the thread to read frames from the video stream
@@ -46,16 +48,25 @@ class BaseCamera:
         return img
 
     def capture_base64(self):
-        buffer = cStringIO.StringIO()
-        img = self.capture_img()
-        img.save(buffer, format="JPEG")
-        return base64.b64encode(buffer.getvalue())
+        if self.frame_time > self.base64_time:
+            buffer = cStringIO.StringIO()
+            img = self.capture_img()
+            img.save(buffer, format="JPEG")
+            base64_buffer = base64.b64encode(buffer.getvalue())
+            self.base64_buffer = base64_buffer
+            self.base64_time = time.time()
+        else:
+            base64_buffer = self.base64_buffer    
+        return base64_buffer
+
 
 
 class PiVideoStream(BaseCamera):
-    def __init__(self, resolution=(160, 120), framerate=20):
+    def __init__(self, resolution=(160, 120), framerate=20, **kwargs):
         from picamera.array import PiRGBArray
         from picamera import PiCamera
+
+        super(PiVideoStream, self).__init__(resolution, **kwargs)
 
         # initialize the camera and stream
         self.camera = PiCamera()
@@ -82,6 +93,7 @@ class PiVideoStream(BaseCamera):
             # preparation for the next frame
             self.frame = f.array
             self.rawCapture.truncate(0)
+            self.frame_time = time.time()
 
             # if the thread indicator variable is set, stop the thread
             # and resource camera resources
