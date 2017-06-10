@@ -29,6 +29,7 @@ SESSION_DIR = "/home/pi/burro_sessions"
 
 CAR_MAX_STEERING_ANGLE = 30.
 CAMERA_HORIZONTAL_FOV = 120.
+DRIFT_GAIN = 0.15
 
 
 # Models
