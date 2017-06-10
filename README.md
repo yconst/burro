@@ -38,7 +38,7 @@ Visit `http://navio.local` to bring up the web interface. Choose your driving me
 
 ### Configuring
 
-All configuration options reside in `burro/src/config.py`.
+All configuration options reside in `burro/burro/config.py`.
 
 By default Burro outputs throttle on channel 2 of the NAVIO2 rail, and steering on channel 0. These are channel 3 and one correspondingly, as marked on the NAVIO2 board.  You may wish to change this depending on your config.
 
