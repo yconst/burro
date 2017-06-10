@@ -37,7 +37,7 @@ util.check_apm()
 class Rover(object):
 
     def __init__(self):
-        self.drift_gain = 0.15
+        self.f_time = 0
         arguments = docopt(__doc__)
         self.setup_pilots(arguments['--model'])
         self.setup_recorders()
@@ -79,29 +79,33 @@ class Rover(object):
         time.sleep(0.5)
 
         while True:
+            start_time = time.time()
+            self.step()
+            stop_time = time.time()
+            self.f_time = stop_time - start_time
+            time.sleep(0.05)
 
-            pilot_angle, pilot_throttle = self.pilot.decide(
+    def step(self):
+        pilot_angle, pilot_throttle = self.pilot.decide(
                 self.vision_sensor.frame)
 
-            if self.record:
-                self.recorder.record_frame(
-                    self.vision_sensor.frame, pilot_angle, pilot_throttle)
+        if self.record:
+            self.recorder.record_frame(
+                self.vision_sensor.frame, pilot_angle, pilot_throttle)
 
-            self.pilot_angle = pilot_angle
-            self.pilot_throttle = pilot_throttle
+        self.pilot_angle = pilot_angle
+        self.pilot_throttle = pilot_throttle
 
-            m9a, m9g, m9m = self.imu.getMotion9()
-            drift = m9g[2]
+        m9a, m9g, m9m = self.imu.getMotion9()
+        drift = m9g[2]
 
-            yaw = methods.angle_to_yaw(pilot_angle)
+        yaw = methods.angle_to_yaw(pilot_angle)
 
-            th = min(1, max(-1, -pilot_throttle))
-            st = min(1, max(-1, -yaw - drift * self.drift_gain))
+        th = min(1, max(-1, -pilot_throttle))
+        st = min(1, max(-1, -yaw - drift * config.DRIFT_GAIN))
 
-            self.set_throttle(value=th, pwm_in=self.th_pwm)
-            self.set_throttle(value=st, pwm_in=self.st_pwm)
-
-            time.sleep(0.05)
+        self.set_throttle(value=th, pwm_in=self.th_pwm)
+        self.set_throttle(value=st, pwm_in=self.st_pwm)
 
     def set_throttle(self, value, pwm_in):
         pwm_val = 1.5 + value * 0.5
