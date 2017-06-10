@@ -10,21 +10,21 @@ functions to help convert between floating point numbers and categories.
 '''
 
 
-def linear_bin(a):
+def linear_bin(a, o=config.MODEL_OUTPUT_SIZE):
     a = a + 1
-    b = round(a / (2 / 14))
+    b = round(a / (2 / (float(o) - 1.)))
     return int(b)
 
 
-def linear_unbin(b):
-    a = b * (2 / 14) - 1
+def linear_unbin(b, o=config.MODEL_OUTPUT_SIZE):
+    a = b * (2 / (float(o) - 1.)) - 1
     return a
 
 
-def bin_Y(Y):
+def bin_Y(Y, o=config.MODEL_OUTPUT_SIZE):
     d = []
     for y in Y:
-        arr = np.zeros(15)
+        arr = np.zeros(o)
         arr[linear_bin(y)] = 1
         d.append(arr)
     return np.array(d)
