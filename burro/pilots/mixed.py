@@ -16,7 +16,7 @@ import random
 from operator import itemgetter
 from datetime import datetime
 
-import methods
+from burro import methods
 from rc import RC
 from f710 import F710
 from pilots import BasePilot, KerasCategorical

@@ -25,6 +25,6 @@ git submodule update --init --recursive
 
 echo "\nBurro Installer: Creating symlinks\n"
 DIR="$( cd "$( dirname "$0" )" && pwd )"
-ln -s $DIR/Navio2/Python/navio2 $DIR/src/navio
+ln -s $DIR/Navio2/Python/navio2 $DIR/burro/navio
 
 echo "\nBurro Installer: Done. Run sudo start.sh to start Burro\n"

@@ -4,12 +4,9 @@ import os
 
 from PIL import Image
 
-import methods
-import config
-
+from burro import methods, config
 
 def current_milli_time(): return int(round(time.time() * 1000))
-
 
 class BaseRecorder(object):
 

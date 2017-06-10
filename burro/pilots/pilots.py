@@ -21,8 +21,7 @@ import keras
 
 from navio import leds
 
-import config
-import methods
+from burro import config, methods
 
 
 class BasePilot(object):

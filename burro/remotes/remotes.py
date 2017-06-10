@@ -10,7 +10,7 @@ import os.path
 from tornado import httpserver, ioloop, web, websocket, options, escape
 from tornado.options import define, options
 
-import methods
+from burro import methods
 
 cl = []
 
@@ -34,7 +34,6 @@ class SocketHandler(websocket.WebSocketHandler):
             logging.info("WS Open")
 
     def on_message(self, message):
-        logging.info("WS Message")
         parsed = escape.json_decode(message)
         if parsed['action'] == "get" and parsed['value'] == "status":
             self.send_status()
