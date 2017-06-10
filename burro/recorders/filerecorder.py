@@ -4,7 +4,7 @@ import os
 
 from PIL import Image
 
-from burro import methods, config
+import methods, config
 
 def current_milli_time(): return int(round(time.time() * 1000))
 

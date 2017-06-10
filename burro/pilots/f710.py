@@ -19,7 +19,7 @@ from pilots import BasePilot
 
 from navio import leds
 
-from burro import methods, config
+import methods, config
 
 # Note: The code below could be very easily adapted to a
 # F310 gamepad. See:

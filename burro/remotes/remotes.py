@@ -10,7 +10,7 @@ import os.path
 from tornado import httpserver, ioloop, web, websocket, options, escape
 from tornado.options import define, options
 
-from burro import methods
+import methods
 
 cl = []
 

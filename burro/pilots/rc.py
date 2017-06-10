@@ -16,7 +16,7 @@ from pilots import BasePilot
 
 from navio import rcinput, pwm, leds, util, mpu9250
 
-from burro import methods, config
+import methods, config
 
 util.check_apm()
 
