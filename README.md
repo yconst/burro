@@ -36,17 +36,9 @@ Connect up a Logitech F710 gamepad to the RPi USB port or a RC receiver to the N
 Visit `http://navio.local` to bring up the web interface. Choose your driving method (by default it is either gamepad or RC). Choose if you want to save images while moving (for training models).
 
 
-### Configuring
+### Next Steps
 
-All configuration options reside in `burro/burro/config.py`.
-
-By default Burro outputs throttle on channel 2 of the NAVIO2 rail, and steering on channel 0. These are channel 3 and one correspondingly, as marked on the NAVIO2 board.  You may wish to change this depending on your config.
-
-Depending on your vehicle servo and motor, you may wish/need to calibrate the PWM output ranges, as well as the steering angle and camera horizontal FOV. The last two are currently not important but may become in the future.
-
-RC Input channels are as follows: 0 - Yaw (i.e. steering), 2 - Throttle, 4 - Arm. Yaw, throttle and arm channel are configurable via `config.py`. Each time the RC controller is armed, a neutral point calibration is performed. Thus, you only need to make sure that your sticks are center before arming the car.
-
-You may also wish to configure the throttle threshold value above which images are recorded.
+Please take a look at the [Burro Wiki](https://github.com/yconst/burro/wiki) for more information, including [help on configuring](https://github.com/yconst/burro/wiki/Configuring).
 
 
 ### License
