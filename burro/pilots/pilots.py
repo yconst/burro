@@ -56,7 +56,7 @@ class KerasCategorical(BasePilot):
 
     def decide(self, img_arr):
         self.led.setColor('Green')
-        img_arr = img_arr.reshape((1,) + img_arr.shape)
+        img_arr = np.expand_dims(img_arr, axis=0)
         prediction = self.model.predict(img_arr)
         if len(prediction) == 2:
             yaw_binned = prediction[0] 
