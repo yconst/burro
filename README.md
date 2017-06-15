@@ -24,6 +24,7 @@ Burro includes an installation script that handles installing necessary librarie
     chmod +x install-burro.sh
     ./install-burro.sh
 
+If you would like you can take a look [here](https://github.com/yconst/burro/wiki/Installed-Packages-and-Libraries) to find out more about the libraries and packages that the script is installing.
 
 ### Running
 
