@@ -55,7 +55,8 @@ class KerasCategorical(BasePilot):
 
     def decide(self, img_arr):
         self.led.setColor('Green')
-        img_arr = np.interp(img_arr,[0,1],config.MODEL_INPUT_RANGE)
+        img_arr = np.interp(img_arr,config.CAMERA_OUTPUT_RANGE,
+            config.MODEL_INPUT_RANGE)
         img_arr = np.expand_dims(img_arr, axis=0)
         prediction = self.model.predict(img_arr)
         if len(prediction) == 2:
