@@ -11,10 +11,12 @@ import numpy as np
 
 from PIL import Image
 
+import config
+
 
 class BaseCamera(object):
 
-    def __init__(self, resolution=(160, 120)):
+    def __init__(self, resolution=config.CAMERA_RESOLUTION):
         self.resolution = resolution
         self.frame = np.zeros(
             shape=(
@@ -62,7 +64,8 @@ class BaseCamera(object):
 
 
 class PiVideoStream(BaseCamera):
-    def __init__(self, resolution=(160, 120), framerate=20, **kwargs):
+    def __init__(self, resolution=config.CAMERA_RESOLUTION, 
+                framerate=config.CAMERA_FRAMERATE, **kwargs):
         from picamera.array import PiRGBArray
         from picamera import PiCamera
 
