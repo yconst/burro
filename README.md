@@ -42,6 +42,11 @@ Visit `http://navio.local` to bring up the web interface. Choose your driving me
 Please take a look at the [Burro Wiki](https://github.com/yconst/burro/wiki) for more information, including [help on configuring](https://github.com/yconst/burro/wiki/Configuring).
 
 
+### Contributing
+
+Contributions via merge requests or opening issues are always very welcome. Please also take a look at the [Code of Conduct](https://github.com/yconst/burro/blob/master/CODE_OF_CONDUCT.md)
+
+
 ### License
 
 MIT, like [Donkey](http://donkeycar.com).
