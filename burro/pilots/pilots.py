@@ -50,12 +50,12 @@ class KerasCategorical(BasePilot):
     def __init__(self, model_path, **kwargs):
         self.model_path = model_path
         self.model = None  # load() loads the model
-        self.avg_factor = config.KERAS_AVERAGE_FACTOR
         self.yaw = 0
         super(KerasCategorical, self).__init__(**kwargs)
 
     def decide(self, img_arr):
         self.led.setColor('Green')
+        img_arr = np.interp(img_arr,[0,1],config.MODEL_INPUT_RANGE)
         img_arr = np.expand_dims(img_arr, axis=0)
         prediction = self.model.predict(img_arr)
         if len(prediction) == 2:
@@ -68,7 +68,8 @@ class KerasCategorical(BasePilot):
         yaw_unbinned = methods.unbin_Y(yaw_binned)
 
         yaw = yaw_unbinned[0]
-        yaw = self.avg_factor * self.yaw + (1.0 - self.avg_factor) * yaw
+        avf = config.KERAS_AVERAGE_FACTOR
+        yaw = avf * self.yaw + (1.0 - avf) * yaw
         self.yaw = yaw
         return methods.yaw_to_angle(yaw), throttle * 0.15
 
