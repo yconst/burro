@@ -87,7 +87,7 @@ class Rover(object):
 
     def step(self):
         pilot_angle, pilot_throttle = self.pilot.decide(
-                self.vision_sensor.frame)
+            self.vision_sensor.frame)
 
         if self.record:
             self.recorder.record_frame(
