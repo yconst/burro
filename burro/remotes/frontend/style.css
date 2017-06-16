@@ -29,21 +29,33 @@ div.veil {
 }
 
 #container {
-	margin: 0 auto;
-	width: 100%;
-	max-width: 640px;
+	margin: 0 0 0 300px;
+	height: 100%;
 }
 
-#imageContainer {
+#primaryContainer {
+	max-width: 800px;
+	cursor:move;
+	position:relative; /* important for dragging */
+	left: 20px;
+	top: 20px;
 	background: #fff;
-	padding: 10px;
-	margin-bottom: 16px;
 	box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.13);
     -moz-box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.13);
     -webkit-box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.13);
 }
 
+#imageContainer {
+	padding: 10px;
+}
+
 #secondaryContainer {
+	position: fixed;
+	left: 0px;
+	top: 0px;
+	height: 100%;
+	width: 300px;
+	background: #fff;
 	box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.13);
     -moz-box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.13);
     -webkit-box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.13);
@@ -138,21 +150,48 @@ input[type=checkbox]:after {
     content: " ";
     background-color: #fff;
     display: inline-block;
-    padding-bottom:5px;
-    color:#aaa;
-    width:15px;
-    height:15px;
+    padding-bottom: 5px;
+    color: #aaa;
+    width: 15px;
+    height: 15px;
     visibility: visible;
     border:1px solid #aaa;
-    padding-left:3px;
-    border-radius:3px;
+    padding-left: 3px;
+    border-radius: 3px;
 }
 
 input[type=checkbox]:checked:after {
     content: "\2714";
-    padding:-5px;
-    font-weight:bold;
+    padding: -5px;
+    font-weight: bold;
     background-color: #46f;
     border: 1px solid #46f;
-    color:#fff;
+    color: #fff;
+}
+
+/* Media Queries */
+
+@media (max-width: 1080px) {
+}
+
+@media (max-width: 920px) {
+
+	#container {
+		margin: 0 auto;
+		width: 100%;
+		max-width: 640px;
+	}
+
+	#primaryContainer {
+		cursor: auto;
+		position: static;
+	}
+
+  	#secondaryContainer {
+	    position: static;
+		left: auto;
+		top: auto;
+		height: auto;
+		width: auto;
+  	}
 }

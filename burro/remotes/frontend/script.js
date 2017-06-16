@@ -155,6 +155,20 @@ m.mount(document.getElementById("pilotsContainer"), PilotsView)
 m.mount(document.getElementById("recordBox"), RecordBox)
 m.mount(document.getElementById("veilContainer"), Veil)
 
+// Make primary container draggable
+var draggie = new Draggabilly('#primaryContainer', {
+	containment: '#container'
+})
+
+// Bind to window resize
+window.onresize = function(event) {
+    if (document.documentElement.clientWidth <= 920) {
+    	draggie.disable()
+    } else {
+    	draggie.enable()
+    }
+};
+
 // ---
 // Document References
 // ---
