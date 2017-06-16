@@ -3,15 +3,21 @@
 var Store = {
 	data: {
 		"image":"",
-		"yaw":0, 
-		"throttle":0,
-		"pilots":["None"], 
-		"index":0,
-		"record": false
+		"controls": {
+			"angle":0,
+			"yaw":0, 
+			"throttle":0
+		},
+		"pilot": {
+			"pilots":["None"], 
+			"index":0
+		},
+		"record": false,
+		"is_recording": false
 	},
 	updateData: function(data) {
 		var dataCopy = Object.assign({}, this.data)
-		for (var attrname in data) { dataCopy[attrname] = data[attrname]; }
+		for (var attrname in data) { dataCopy[attrname] = data[attrname] }
 		this.data = dataCopy
 	}
 }
@@ -65,14 +71,8 @@ ws.onmessage = function (event) {
 	}
 	else if (obj.image) {
 		// Status
-		var action1 = Action("image", "update-data", {"image" : obj.image})
-	    Dispatcher.applyAction(action1, false)
-	    var action2 = Action("command", "update-data", obj.controls)
-	    Dispatcher.applyAction(action2, false)
-	    var action3 = Action("pilot", "update-data", obj.pilot)
-	    Dispatcher.applyAction(action3, false)
-	    var action3 = Action("record", "update-data", {"record" : obj.record})
-	    Dispatcher.applyAction(action3, false)
+		var action = Action("data", "update-data", obj)
+		Dispatcher.applyAction(action, false)
 
 	    // Re-send data request
 	    setTimeout(function() {
@@ -82,7 +82,7 @@ ws.onmessage = function (event) {
 	}
 }
 ws.onclose = function (event) {
-	console.log("Websocket close")
+	console.warn("Websocket close")
 }
 
 //--- View, Factory
@@ -98,7 +98,7 @@ var ImageView = function() {
 var CommandView = function() {
 	return {
 		view: function() {
-			var left = Math.min(Math.max(Store.data.yaw, -1), 1)*50+50
+			var left = Math.min(Math.max(Store.data.controls.yaw, -1), 1)*50+50
 			return m( "div", {class:"sliderBox"}, 
 				m("div", {class:"sliderKnob", style:"left:" + left + "%;"}) 
 			)
@@ -111,12 +111,12 @@ var PilotsView = function() {
 		view: function (ctrl) {
 		    return m('select', { 
 		    	onchange: m.withAttr('value', function(value) {
-			    	var action = Action("pilot", "update-data", {"index" : Store.data.pilots.indexOf(value)})
+			    	var action = Action("pilot", "update-data", {"index" : Store.data.pilot.pilots.indexOf(value)})
 			    	Dispatcher.applyAction(action, true)
 		    	}
 		    ) }, [
-		      	Store.data.pilots.map(function(name, index) {
-		        	return m('option' + (Store.data.index === index  ? '[selected=true]' : ''), name)
+		      	Store.data.pilot.pilots.map(function(name, index) {
+		        	return m('option' + (Store.data.pilot.index === index  ? '[selected=true]' : ''), name)
 		      	})
 		    ])
 		}
@@ -167,9 +167,4 @@ window.onresize = function(event) {
     } else {
     	draggie.enable()
     }
-};
-
-// ---
-// Document References
-// ---
-// https://jsbin.com/xatavo/edit?html,js,output
+}
