@@ -28,9 +28,8 @@ class RC(BasePilot):
 
         self.led = leds.Led()
 
-        self.throttle_center = config.RC_THROTTLE_CENTER
-        self.yaw_center = config.RC_YAW_CENTER
-        self.roll_center = config.RC_ROLL_CENTER
+        self.throttle_center = 1500
+        self.yaw_center = 1500
         self.calibrated = False
 
         super(RC, self).__init__(**kwargs)
@@ -66,22 +65,18 @@ class RC(BasePilot):
         self.led.setColor('Magenta')
         yaw = 0
         throttle = 0
-        roll = 0
 
         for x in range(0, 100):
             yaw += float(rcin.read(config.YAW_CHANNEL))
             throttle += float(rcin.read(config.THROTTLE_CHANNEL))
-            roll += float(rcin.read(3))
 
             time.sleep(0.02)
 
         yaw /= 100.0
         throttle /= 100.0
-        roll /= 100.0
 
         self.throttle_center = throttle
         self.yaw_center = yaw
-        self.roll_center = roll
 
         self.calibrated = True
 
