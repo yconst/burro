@@ -108,7 +108,10 @@ class Rover(object):
         self.set_throttle(value=st, pwm_in=self.st_pwm)
 
     def set_throttle(self, value, pwm_in):
-        pwm_val = 1.5 + value * 0.5
+	if config.REVERSE_STEERING:
+            pwm_val = 1.5 - value * 0.5
+        else:
+            pwm_val = 1.5 + value * 0.5
         pwm_in.set_duty_cycle(pwm_val)
 
     def setup_pilots(self, model_path):
