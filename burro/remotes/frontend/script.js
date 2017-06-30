@@ -1,6 +1,6 @@
 //--- Model, Singleton
 
-var Store = {
+const Store = {
 	data: {
 		"image":"",
 		"controls": {
@@ -16,8 +16,8 @@ var Store = {
 		"is_recording": false
 	},
 	updateData: function(data) {
-		var dataCopy = Object.assign({}, this.data)
-		for (var attrname in data) { dataCopy[attrname] = data[attrname] }
+		const dataCopy = Object.assign({}, this.data)
+		for (let attrname in data) { dataCopy[attrname] = data[attrname] }
 		this.data = dataCopy
 	}
 }
@@ -26,7 +26,7 @@ var waiting = false
 
 //--- Dispatcher, Singleton
 
-var Dispatcher = {
+const Dispatcher = {
 	set: function(payload, update_backend) {
 		Store.updateData(payload.value)
 		if (update_backend) {
@@ -42,7 +42,7 @@ var Dispatcher = {
 
 //--- API, Singleton
 
-var ws = new WebSocket("ws://"+window.location.hostname+":80/api/v1/ws")
+const ws = new WebSocket("ws://"+window.location.hostname+":80/api/v1/ws")
 ws.onopen = function (event) {
 	console.log("Websocket open")
 }
@@ -53,14 +53,14 @@ ws.onmessage = function (event) {
 		waiting = false
 		m.redraw()
 	}
-	else if (obj.test) { // TODO }
+	else if (obj.test) { /* TODO */ }
 	else if (obj.image) {
-		var payload = {"target": "data", "value": obj}
+		const payload = {"target": "data", "value": obj}
 		Dispatcher.set(payload, false)
 
 	    // Re-send data request
 	    setTimeout(function() {
-	    	var payload = {"target": "status", "action": "get"}
+	    	const payload = {"target": "status", "action": "get"}
 	    	ws.send(JSON.stringify(payload))
 	    }, 100)
 	    
@@ -72,7 +72,7 @@ ws.onclose = function (event) {
 
 //--- Views, Factory
 
-var ImageView = function() {
+const ImageView = function() {
 	return {
 		view: function() {
 			return m("img", {class:"viewport", src:"data:image/jpeg;base64," + Store.data.image})
@@ -80,7 +80,7 @@ var ImageView = function() {
 	}
 }
 
-var CommandView = function() {
+const CommandView = function() {
 	return {
 		view: function() {
 			const classes = classNames({
@@ -96,12 +96,12 @@ var CommandView = function() {
 	}
 }
 
-var PilotsView = function() {
+const PilotsView = function() {
 	return {
 		view: function (ctrl) {
 		    return m('select', { 
 		    	onchange: m.withAttr('value', function(value) {
-		    		var payload = {"target": "pilot", "value": {"index" : Store.data.pilot.pilots.indexOf(value)}}
+		    		const payload = {"target": "pilot", "value": {"index" : Store.data.pilot.pilots.indexOf(value)}}
 			    	Dispatcher.set(payload, true)
 		    	}
 		    ) }, [
@@ -113,7 +113,7 @@ var PilotsView = function() {
 	}
 }
 
-var RecordBox = function() {
+const RecordBox = function() {
 	return {
 		view: function(ctrl) {
 			return m('input', {
@@ -121,18 +121,18 @@ var RecordBox = function() {
 				class: "js-switch",
 				checked: Store.data.record,
 				onchange: m.withAttr('checked', function(checked) {
-					var payload = {"target": "record", "value": {"record" : checked}}
+					const payload = {"target": "record", "value": {"record" : checked}}
 			    	Dispatcher.set(payload, true)
 				}) }, "Record")
 		}
 	}
 }
 
-var Veil = function() {
+const Veil = function() {
 	return {
 		view: function(ctrl) {
-			var vis = waiting == true?"visible":"hidden"
-			var style = "visibility:" + vis + ";"
+			const vis = waiting == true?"visible":"hidden"
+			const style = "visibility:" + vis + ";"
 			return m('div', {class:"veil", style:style},"")
 		}
 	}
@@ -146,7 +146,7 @@ m.mount(document.getElementById("recordBox"), RecordBox)
 m.mount(document.getElementById("veilContainer"), Veil)
 
 // Make primary container draggable
-var draggie = new Draggabilly('#primaryContainer', { containment: '#container' })
+const draggie = new Draggabilly('#primaryContainer', { containment: '#container' })
 
 // Bind to window resize
 window.onresize = function(event) {
