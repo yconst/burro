@@ -27,28 +27,16 @@ var waiting = false
 //--- Dispatcher, Singleton
 
 var Dispatcher = {
-	applyAction: function(action, update_backend) {
-		if (action.action == 'update-data')
-		{
-			Store.updateData(action.value)
-		}
+	set: function(payload, update_backend) {
+		Store.updateData(payload.value)
 		if (update_backend) {
-			ws.send(JSON.stringify(action))
+			payload.action = "set"
+			ws.send(JSON.stringify(payload))
 			waiting = true
 		}
 		if (waiting == false) {
 			m.redraw()
 		}
-	}
-}
-
-//--- Actions, Constructor
-
-var Action = function(target, action, data) {
-	return {
-		target: target,
-		action: action,
-		value: data
 	}
 }
 
@@ -71,12 +59,13 @@ ws.onmessage = function (event) {
 	}
 	else if (obj.image) {
 		// Status
-		var action = Action("data", "update-data", obj)
-		Dispatcher.applyAction(action, false)
+		var payload = {"target": "data", "value": obj}
+		Dispatcher.set(payload, false)
 
 	    // Re-send data request
 	    setTimeout(function() {
-	    	ws.send(JSON.stringify(Action("", "get", "status")))
+	    	var payload = {"target": "status", "action": "get"}
+	    	ws.send(JSON.stringify(payload))
 	    }, 100)
 	    
 	}
@@ -111,8 +100,8 @@ var PilotsView = function() {
 		view: function (ctrl) {
 		    return m('select', { 
 		    	onchange: m.withAttr('value', function(value) {
-			    	var action = Action("pilot", "update-data", {"index" : Store.data.pilot.pilots.indexOf(value)})
-			    	Dispatcher.applyAction(action, true)
+		    		var payload = {"target": "pilot", "value": {"index" : Store.data.pilot.pilots.indexOf(value)}}
+			    	Dispatcher.set(payload, true)
 		    	}
 		    ) }, [
 		      	Store.data.pilot.pilots.map(function(name, index) {
@@ -131,8 +120,8 @@ var RecordBox = function() {
 				class: "js-switch",
 				checked: Store.data.record,
 				onchange: m.withAttr('checked', function(checked) {
-					var action = Action("record", "update-data", {"record" : checked})
-			    	Dispatcher.applyAction(action, true)
+					var payload = {"target": "record", "value": {"record" : checked}}
+			    	Dispatcher.set(payload, true)
 				}) }, "Record")
 		}
 	}

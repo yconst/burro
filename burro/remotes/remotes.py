@@ -35,9 +35,9 @@ class SocketHandler(websocket.WebSocketHandler):
 
     def on_message(self, message):
         parsed = escape.json_decode(message)
-        if parsed['action'] == "get" and parsed['value'] == "status":
+        if parsed['action'] == "get" and parsed['target'] == "status":
             self.send_status()
-        if parsed['action'] == "get" and parsed['value'] == "settings":
+        if parsed['action'] == "get" and parsed['target'] == "settings":
             self.send_settings()
         elif parsed['action'] == "update-data" and parsed['target'] == "pilot":
             self.application.vehicle.set_pilot(parsed["value"]["index"])
