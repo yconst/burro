@@ -39,10 +39,10 @@ class SocketHandler(websocket.WebSocketHandler):
             self.send_status()
         if parsed['action'] == "get" and parsed['target'] == "settings":
             self.send_settings()
-        elif parsed['action'] == "update-data" and parsed['target'] == "pilot":
+        elif parsed['action'] == "set" and parsed['target'] == "pilot":
             self.application.vehicle.set_pilot(parsed["value"]["index"])
             self.write_message(json.dumps({'ack': 'ok'}))
-        elif parsed['action'] == "update-data" and parsed['target'] == "record":
+        elif parsed['action'] == "set" and parsed['target'] == "record":
             self.application.vehicle.record = parsed["value"]["record"]
             self.write_message(json.dumps({'ack': 'ok'}))
 
