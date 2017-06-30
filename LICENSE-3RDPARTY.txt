@@ -1,0 +1,7 @@
+The MIT License (MIT)
+
+applies to:
+- Donkey, Copyright (c) 2017 Will Roscoe and contributors
+- Mithril, Copyright (c) 2017 Leo Horie
+- classnames, Copyright (c) 2017 Jed Watson
+- Draggabilly, Copyright © 2017 David DeSandro
