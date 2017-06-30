@@ -34,7 +34,7 @@ Connect up a Logitech F710 gamepad to the RPi USB port or a RC receiver to the N
     cd burro/burro
     ./start.sh
 
-Visit `http://navio.local` to bring up the web interface. Choose your driving method (by default it is either gamepad or RC). Choose if you want to save images while moving (for training models).
+Visit `http://navio.local` to bring up the web interface. Choose your driving method (by default it is either gamepad or RC). Choose if you want to save images while moving (for training models); the background color of the steering indicator will change to green to indicate standby, red once recording.
 
 
 ### Next Steps
