@@ -49,16 +49,12 @@ ws.onopen = function (event) {
 ws.onmessage = function (event) {
 	obj = JSON.parse(event.data)
 	if (obj.ack == "ok") {
-		// Ack
 		console.log("Received Ack")
 		waiting = false
 		m.redraw()
 	}
-	else if (obj.test) {
-		// Settings
-	}
+	else if (obj.test) { // TODO }
 	else if (obj.image) {
-		// Status
 		var payload = {"target": "data", "value": obj}
 		Dispatcher.set(payload, false)
 
