@@ -74,7 +74,7 @@ ws.onclose = function (event) {
 	console.warn("Websocket close")
 }
 
-//--- View, Factory
+//--- Views, Factory
 
 var ImageView = function() {
 	return {
@@ -87,8 +87,13 @@ var ImageView = function() {
 var CommandView = function() {
 	return {
 		view: function() {
-			var left = Math.min(Math.max(Store.data.controls.yaw, -1), 1)*50+50
-			return m( "div", {class:"sliderBox"}, 
+			const classes = classNames({
+			    sliderBox: true, 
+			    record_enable: Store.data.record,
+			    recording: Store.data.is_recording
+			})
+			const left = Math.min(Math.max(Store.data.controls.yaw, -1), 1)*50+50
+			return m( "div", {class: classes}, 
 				m("div", {class:"sliderKnob", style:"left:" + left + "%;"}) 
 			)
 		}
@@ -145,9 +150,7 @@ m.mount(document.getElementById("recordBox"), RecordBox)
 m.mount(document.getElementById("veilContainer"), Veil)
 
 // Make primary container draggable
-var draggie = new Draggabilly('#primaryContainer', {
-	containment: '#container'
-})
+var draggie = new Draggabilly('#primaryContainer', { containment: '#container' })
 
 // Bind to window resize
 window.onresize = function(event) {
