@@ -15,7 +15,7 @@ from __future__ import division
 
 import sys
 import time
-from navio import rcinput, pwm, leds, util, mpu9250
+from navio import rcinput, pwm, util, mpu9250
 
 from docopt import docopt
 
@@ -26,6 +26,8 @@ from sensors import PiVideoStream
 
 from pilots import KerasCategorical
 from pilots import RC, F710, MixedRC, MixedF710
+
+from indicators import NAVIO2LED
 
 from remotes import WebRemote
 
@@ -45,8 +47,8 @@ class Rover(object):
         self.set_remote()
 
     def run(self):
-        self.led = leds.Led()
-        self.led.setColor('Yellow')
+        self.indicator = NAVIO2LED()
+        self.indicator.set_state('warmup')
 
         self.th_pwm = pwm.PWM(2)
         self.th_pwm.initialize()
@@ -64,18 +66,11 @@ class Rover(object):
             sys.exit("IMU Connection failed")
 
         self.imu.initialize()
-
         time.sleep(0.5)
-        self.led.setColor('White')
-
         self.vision_sensor.start()
-
         time.sleep(0.5)
-
-        self.led.setColor('Black')
-
         self.remote.start()
-
+        self.indicator.set_state('ready')
         time.sleep(0.5)
 
         while True:
@@ -90,8 +85,13 @@ class Rover(object):
             self.vision_sensor.frame)
 
         if self.record:
+            self.indicator.set_state('recording')
             self.recorder.record_frame(
                 self.vision_sensor.frame, pilot_angle, pilot_throttle)
+        elif self.recording:
+            self.indicator.set_state('standby')
+        else:
+            self.indicator.set_state('ready')
 
         self.pilot_angle = pilot_angle
         self.pilot_throttle = pilot_throttle
