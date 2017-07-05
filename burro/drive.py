@@ -85,10 +85,12 @@ class Rover(object):
             self.vision_sensor.frame)
 
         if self.record:
-            self.indicator.set_state('recording')
             self.recorder.record_frame(
                 self.vision_sensor.frame, pilot_angle, pilot_throttle)
-        elif self.recording:
+
+        if self.recorder.is_recording:
+            self.indicator.set_state('recording')
+        elif self.record:
             self.indicator.set_state('standby')
         else:
             self.indicator.set_state('ready')
