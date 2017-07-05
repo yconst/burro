@@ -32,7 +32,7 @@ class AckermannSteeringMixer(BaseMixer):
         throttle = min(1, max(-1, -throttle))
         yaw = min(1, max(-1, methods.angle_to_yaw(angle)))
 
-        if config.REVERSE_STEERING:
+        if not config.REVERSE_STEERING:
             yaw = -yaw
 
         self.throttle_driver.update(throttle)
