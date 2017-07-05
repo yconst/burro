@@ -15,7 +15,6 @@ from __future__ import division
 
 import sys
 import time
-from navio import rcinput, pwm, util, mpu9250
 
 from docopt import docopt
 
@@ -24,17 +23,18 @@ import config
 
 from sensors import PiVideoStream
 
-from pilots import KerasCategorical
-from pilots import RC, F710, MixedRC, MixedF710
+from pilots import (KerasCategorical, 
+    RC, F710, MixedRC, MixedF710)
+
+from mixers import AckermannSteeringMixer
+
+from drivers import NAVIO2PWM
 
 from indicators import NAVIO2LED
 
 from remotes import WebRemote
 
 from recorders import FileRecorder
-
-util.check_apm()
-
 
 class Rover(object):
 
@@ -43,6 +43,7 @@ class Rover(object):
         arguments = docopt(__doc__)
         self.setup_pilots(arguments['--model'])
         self.setup_recorders()
+        self.setup_mixers()
         self.set_sensors(arguments['--vision'])
         self.set_remote()
 
@@ -50,22 +51,6 @@ class Rover(object):
         self.indicator = NAVIO2LED()
         self.indicator.set_state('warmup')
 
-        self.th_pwm = pwm.PWM(2)
-        self.th_pwm.initialize()
-        self.th_pwm.set_period(50)
-
-        self.st_pwm = pwm.PWM(0)
-        self.st_pwm.initialize()
-        self.st_pwm.set_period(50)
-
-        self.imu = mpu9250.MPU9250()
-
-        if self.imu.testConnection():
-            print "IMU Connection established"
-        else:
-            sys.exit("IMU Connection failed")
-
-        self.imu.initialize()
         time.sleep(0.5)
         self.vision_sensor.start()
         time.sleep(0.5)
@@ -98,23 +83,7 @@ class Rover(object):
         self.pilot_angle = pilot_angle
         self.pilot_throttle = pilot_throttle
 
-        m9a, m9g, m9m = self.imu.getMotion9()
-        drift = m9g[2]
-
-        yaw = methods.angle_to_yaw(pilot_angle)
-
-        th = min(1, max(-1, -pilot_throttle))
-        st = min(1, max(-1, -yaw - drift * config.DRIFT_GAIN))
-
-        self.set_throttle(value=th, pwm_in=self.th_pwm)
-        self.set_throttle(value=st, pwm_in=self.st_pwm)
-
-    def set_throttle(self, value, pwm_in):
-	if config.REVERSE_STEERING:
-            pwm_val = 1.5 - value * 0.5
-        else:
-            pwm_val = 1.5 + value * 0.5
-        pwm_in.set_duty_cycle(pwm_val)
+        self.mixer.update(pilot_throttle, pilot_angle)
 
     def setup_pilots(self, model_path):
         # TODO: This should scan for pilot modules and add them
@@ -146,6 +115,13 @@ class Rover(object):
     def setup_recorders(self):
         self.recorder = FileRecorder()
         self.record = False
+
+    def setup_mixers(self):
+        self.th_pwm = NAVIO2PWM(2)
+        self.st_pwm = NAVIO2PWM(0)
+        self.mixer = AckermannSteeringMixer(
+            steering_driver=self.st_pwm, 
+            throttle_driver=self.th_pwm)
 
     def selected_pilot_index(self):
         return self.pilots.index(self.pilot)
