@@ -19,8 +19,6 @@ from datetime import datetime
 import numpy as np
 import keras
 
-from navio import leds
-
 import config, methods
 
 
@@ -30,7 +28,6 @@ class BasePilot(object):
     When creating a class, only override the funtions you'd like to replace.
     '''
     def __init__(self, name=None, last_modified=None):
-        self.led = leds.Led()
         self.name = name
         self.last_modified = last_modified
 
@@ -54,7 +51,6 @@ class KerasCategorical(BasePilot):
         super(KerasCategorical, self).__init__(**kwargs)
 
     def decide(self, img_arr):
-        self.led.setColor('Green')
         img_arr = np.interp(img_arr,config.CAMERA_OUTPUT_RANGE,
             config.MODEL_INPUT_RANGE)
         img_arr = np.expand_dims(img_arr, axis=0)
