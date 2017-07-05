@@ -49,4 +49,4 @@ Contributions via merge requests or opening issues are always very welcome. Plea
 
 ### License
 
-MIT, like [Donkey](http://donkeycar.com).
+MIT
