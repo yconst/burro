@@ -17,8 +17,6 @@ from operator import itemgetter
 from datetime import datetime
 from pilots import BasePilot
 
-from navio import leds
-
 import methods, config
 
 # Note: The code below could be very easily adapted to a
@@ -28,7 +26,6 @@ import methods, config
 
 class F710(BasePilot):
     def __init__(self, **kwargs):
-        self.led = leds.Led()
         self.setup_pad()
         self.thread = Thread(target=self.loop_values)
         self.thread.daemon = True
@@ -38,9 +35,6 @@ class F710(BasePilot):
         self.yaw = 0.0
 
     def decide(self, img_arr):
-
-        self.led.setColor('Green')
-
         st = self.gamepad._state
         if int(st[2]) == 1:
             self.throttle = -0.13
