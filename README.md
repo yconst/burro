@@ -1,4 +1,4 @@
-Burro is software for small-scale self-driving cars. It borrows ideas and code from [Donkey](http://donkeycar.com).
+Burro is a platform for small-scale self-driving cars. It borrows ideas and code from [Donkey](http://donkeycar.com).
 
 
 ### Requirements
