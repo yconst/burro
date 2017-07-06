@@ -37,9 +37,9 @@ class F710(BasePilot):
     def decide(self, img_arr):
         st = self.gamepad._state
         if int(st[2]) == 1:
-            self.throttle = -0.13
+                self.throttle = -0.095 - st[4]/255.
         elif int(st[2]) == 2:
-            self.throttle = 0.13
+                self.throttle = 0.095 + st[4]/255.
         else:
             self.throttle = 0
         self.yaw = (float(st[10]) - 128.0) / 128.0
