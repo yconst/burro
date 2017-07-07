@@ -14,7 +14,7 @@ const Store = {
 		},
 		"record": false,
 		"is_recording": false,
-		"f_time": "NA"
+		"f_time": 0
 	},
 	updateData: function(data) {
 		const dataCopy = Object.assign({}, this.data)
@@ -47,7 +47,6 @@ const ws = new WebSocket("ws://"+window.location.hostname+":80/api/v1/ws")
 ws.onmessage = function (event) {
 	obj = JSON.parse(event.data)
 	if (obj.ack == "ok") {
-		console.log("Received Ack")
 		waiting = false
 		m.redraw()
 	}
@@ -124,7 +123,7 @@ const RecordBox = function() {
 const ThrottleValue = function() {
 	return {
 		view: function() {
-			return m("span", Store.data.controls.throttle)
+			return m("span", Math.round((Store.data.controls.throttle * -1 + 0.00001) * 100) / 100)
 		}
 	}
 }
@@ -132,7 +131,7 @@ const ThrottleValue = function() {
 const FTimeValue = function() {
 	return {
 		view: function() {
-			return m("span", Store.data.controls.f_time)
+			return m("span", Math.round((Store.data.f_time + 0.00001) * 1000) + " ms")
 		}
 	}
 }
