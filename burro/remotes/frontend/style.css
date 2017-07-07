@@ -159,7 +159,7 @@ input[type=checkbox] {
 
 input[type=checkbox] {
 	position: relative;
-	top: 5px;
+	top: 8px;
 	float: right;
 	width: 13px;
 	height: 13px;
