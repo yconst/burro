@@ -66,8 +66,9 @@ class SocketHandler(websocket.WebSocketHandler):
             "pilot": {
                 "pilots": v.list_pilot_names(),
                 "index": v.selected_pilot_index()},
-            "record": self.application.vehicle.record,
-            "is_recording": self.application.vehicle.recorder.is_recording}
+            "record": v.record,
+            "is_recording": v.recorder.is_recording},
+            "f_time": v.f_time
         self.write_message(json.dumps(status))
 
     def send_settings(self):

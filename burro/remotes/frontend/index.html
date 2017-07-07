@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="utf-8">
-    <title>Telemetry</title>
+    <title>Burro Telemetry</title>
     <link rel="stylesheet" href="/static/style.css">
   </head>
   <body>
@@ -15,8 +15,16 @@
       <div id="secondaryContainer">
         <div id="pilotsContainer" class="subcontainer"></div>
         <div id="recordBoxContainer" class="subcontainer">
-          <label id="recordLabel">Record Images</label>
-          <div id="recordBox"></div>
+          <label class="leftLabel">Record Images</label>
+          <div id="recordBox" class="rightValue"></div>
+        </div>
+        <div id="throttleContainer" class="subcontainer">
+          <label class="leftLabel">Throttle</label>
+          <div id="throttleValue" class="rightValue"></div>
+        </div>
+        <div id="ftimeContainer" class="subcontainer">
+          <label class="leftLabel">Frame Time</label>
+          <div id="ftimeValue" class="rightValue"></div>
         </div>
       </div>
     </div>

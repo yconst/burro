@@ -13,7 +13,8 @@ const Store = {
 			"index":0
 		},
 		"record": false,
-		"is_recording": false
+		"is_recording": false,
+		"f_time": "NA"
 	},
 	updateData: function(data) {
 		const dataCopy = Object.assign({}, this.data)
@@ -43,9 +44,6 @@ const Dispatcher = {
 //--- API, Singleton
 
 const ws = new WebSocket("ws://"+window.location.hostname+":80/api/v1/ws")
-ws.onopen = function (event) {
-	console.log("Websocket open")
-}
 ws.onmessage = function (event) {
 	obj = JSON.parse(event.data)
 	if (obj.ack == "ok") {
@@ -57,17 +55,12 @@ ws.onmessage = function (event) {
 	else if (obj.image) {
 		const payload = {"target": "data", "value": obj}
 		Dispatcher.set(payload, false)
-
-	    // Re-send data request
 	    setTimeout(function() {
 	    	const payload = {"target": "status", "action": "get"}
 	    	ws.send(JSON.stringify(payload))
 	    }, 100)
 	    
 	}
-}
-ws.onclose = function (event) {
-	console.warn("Websocket close")
 }
 
 //--- Views, Factory
@@ -88,7 +81,7 @@ const CommandView = function() {
 			    record_enable: Store.data.record,
 			    recording: Store.data.is_recording
 			})
-			const left = Math.min(Math.max(Store.data.controls.yaw, -1), 1)*50+50
+			const left = Math.min(Math.max(Store.data.controls.yaw, -1), 1) * 50 + 50
 			return m( "div", {class: classes}, 
 				m("div", {class:"sliderKnob", style:"left:" + left + "%;"}) 
 			)
@@ -128,6 +121,22 @@ const RecordBox = function() {
 	}
 }
 
+const ThrottleValue = function() {
+	return {
+		view: function() {
+			return m("span", Store.data.controls.throttle)
+		}
+	}
+}
+
+const FTimeValue = function() {
+	return {
+		view: function() {
+			return m("span", Store.data.controls.f_time)
+		}
+	}
+}
+
 const Veil = function() {
 	return {
 		view: function(ctrl) {
@@ -138,17 +147,16 @@ const Veil = function() {
 	}
 }
 
-// Mount elements
 m.mount(document.getElementById("imageContainer"), ImageView)
 m.mount(document.getElementById("sliderContainer"), CommandView)
 m.mount(document.getElementById("pilotsContainer"), PilotsView)
 m.mount(document.getElementById("recordBox"), RecordBox)
+m.mount(document.getElementById("throttleValue"), ThrottleValue)
+m.mount(document.getElementById("ftimeValue"), FTimeValue)
 m.mount(document.getElementById("veilContainer"), Veil)
 
-// Make primary container draggable
 const draggie = new Draggabilly('#primaryContainer', { containment: '#container' })
 
-// Bind to window resize
 window.onresize = function(event) {
     if (document.documentElement.clientWidth <= 920) {
     	draggie.disable()

@@ -125,11 +125,11 @@ select {
 	overflow: auto;
 }
 
-div#recordBox {
+.rightValue {
 	float: right;
 }
 
-label#recordLabel {
+.leftValue {
 	display: block;
 	float: left;
 	margin: 21px;
