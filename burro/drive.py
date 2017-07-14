@@ -96,6 +96,7 @@ class Rover(object):
         model_paths = list_models()
         for model_path, model_name in model_paths:
             keras = KerasCategorical(model_path, name=model_name)
+            logging.info("Loading model " + model_name)
             keras.load()
             if f710:
                 self.pilots.append(MixedF710(keras, f710))
