@@ -4,14 +4,11 @@ drive.py
 Starts a driving loop
 
 Usage:
-    drive.py [--model=<name>] [--vision=<name>]
+    drive.py [--vision=<name>]
 
 Options:
-  --model=<name>      model name for nn pilot [default: models/default.h5]
   --vision=<name>     vision sensor type [default: camera]
 """
-
-from __future__ import division
 
 import sys
 import time
@@ -22,26 +19,23 @@ import methods
 import config
 
 from sensors import PiVideoStream
-
+from models import list_models
 from pilots import (KerasCategorical, 
     RC, F710, MixedRC, MixedF710)
-
 from mixers import AckermannSteeringMixer
-
 from drivers import NAVIO2PWM
-
 from indicators import NAVIO2LED
-
 from remotes import WebRemote
-
 from recorders import FileRecorder
+
+import logging
 
 class Rover(object):
 
     def __init__(self):
-        self.f_time = 0
+        self.f_time = 0.
         arguments = docopt(__doc__)
-        self.setup_pilots(arguments['--model'])
+        self.setup_pilots()
         self.setup_recorders()
         self.setup_mixers()
         self.set_sensors(arguments['--vision'])
@@ -63,7 +57,7 @@ class Rover(object):
             self.step()
             stop_time = time.time()
             self.f_time = stop_time - start_time
-            time.sleep(0.05)
+            time.sleep(max(0.01, 0.05 - self.f_time))
 
     def step(self):
         pilot_angle, pilot_throttle = self.pilot.decide(
@@ -85,32 +79,32 @@ class Rover(object):
 
         self.mixer.update(pilot_throttle, pilot_angle)
 
-    def setup_pilots(self, model_path):
-        # TODO: This should scan for pilot modules and add them
-        # TODO: add logging
-        keras = KerasCategorical(model_path)
-        keras.load()
+    def setup_pilots(self):
         self.pilots = []
         try:
             f710 = F710()
-            mixedf710 = MixedF710(keras, f710)
             self.pilots.append(f710)
-            self.pilots.append(mixedf710)
         except Exception as e:
-            print "Unable to load F710 Gamepad"
-            print e
+            f710 = None
+            logging.info("Unable to load F710 Gamepad")
         try:
             rc = RC()
-            mixedrc = MixedRC(keras, rc)
             self.pilots.append(rc)
-            self.pilots.append(mixedrc)
         except Exception as e:
-            print "Unable to load RC"
-            print e
+            rc = None
+            logging.info("Unable to load RC")
+        model_paths = list_models()
+        for model_path, model_name in model_paths:
+            keras = KerasCategorical(model_path, name=model_name)
+            keras.load()
+            if f710:
+                self.pilots.append(MixedF710(keras, f710))
+            if rc:
+                self.pilots.append(MixedRC(keras, rc))
 
         self.pilot = self.pilots[0]
-        self.pilot_yaw = 0
-        self.pilot_throttle = 0
+        self.pilot_yaw = 0.
+        self.pilot_throttle = 0.
 
     def setup_recorders(self):
         self.recorder = FileRecorder()
