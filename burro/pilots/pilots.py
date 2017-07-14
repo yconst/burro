@@ -40,7 +40,7 @@ class BasePilot(object):
         pass
 
     def pname(self):
-        return "Default"
+        return self.name or "Default"
 
 
 class KerasCategorical(BasePilot):
