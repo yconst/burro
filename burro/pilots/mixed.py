@@ -35,7 +35,7 @@ class MixedRC(BasePilot):
         return keras_angle, rc_throttle
 
     def pname(self):
-        return "Mixed (Keras+RC)"
+        return self.KerasCategoricalPilot.pname " + RC"
 
 
 class MixedF710(BasePilot):
@@ -51,4 +51,4 @@ class MixedF710(BasePilot):
         return keras_angle, f_throttle
 
     def pname(self):
-        return "Mixed (Keras+F710 Gamepad)"
+        return self.KerasCategoricalPilot.pname " + F710 Gamepad"

@@ -74,4 +74,4 @@ class KerasCategorical(BasePilot):
         self.model = keras.models.load_model(self.model_path)
 
     def pname(self):
-        return "Keras Categorical"
+        return self.name or "Keras Categorical"
