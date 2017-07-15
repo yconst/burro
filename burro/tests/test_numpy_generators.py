@@ -2,7 +2,7 @@ import unittest
 
 import numpy as np
 
-from training import numpy_generators
+from trainers.generators import numpy_generators
 import config
 
 
