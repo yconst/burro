@@ -21,8 +21,6 @@ from generators.numpy_generators import (category_generator,
 
 
 def train(train_folder, track, optimizer='adam', patience=10):
-    dense1 = 150
-    dense2 = 50
     offset = 4
 
     gen_batch = 256
@@ -54,6 +52,9 @@ def train(train_folder, track, optimizer='adam', patience=10):
     val = brightness_shifter(val, min_shift=-0.1, max_shift=0.1)
     val = category_generator(val)
     val = batch_image_generator(val, batch_size=val_batch)
+
+    dense1 = 150
+    dense2 = 50
 
     model = Sequential()
     model.add(
