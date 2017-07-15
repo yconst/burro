@@ -1,0 +1,2 @@
+-r requirements-common.txt
+keras==2.0.4
