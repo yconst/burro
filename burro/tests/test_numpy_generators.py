@@ -20,8 +20,9 @@ class EqualizeGeneratorTest(unittest.TestCase):
         vals = np.zeros(10000)
         for i in range(vals.size-1):
             _, vals[i] = next(gen)
-        print np.histogram(vals)
-        #self.assertEqual(fun(3), 4)
+        hist = np.histogram(vals)
+        sd = np.std(hist[0])
+        self.assertLess(sd, 100)
 
 if __name__ == '__main__':
     unittest.main()
