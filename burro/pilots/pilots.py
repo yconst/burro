@@ -56,13 +56,12 @@ class KerasCategorical(BasePilot):
         img_arr = np.expand_dims(img_arr, axis=0)
         prediction = self.model.predict(img_arr)
         if len(prediction) == 2:
-            yaw_binned = prediction[0] 
+            yaw_binned = prediction[0]
             throttle = prediction[1][0][0]
         else:
             yaw_binned = prediction
             throttle = 0
-        yaw_certainty = max(yaw_binned[0])
-        yaw_unbinned = methods.unbin_Y(yaw_binned)
+        yaw_unbinned = methods.from_one_hot(yaw_binned)
 
         yaw = yaw_unbinned[0]
         avf = config.KERAS_AVERAGE_FACTOR

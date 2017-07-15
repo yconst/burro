@@ -9,34 +9,25 @@ BINNING
 functions to help convert between floating point numbers and categories.
 '''
 
+def to_index(a, low=-1.0, high=1.0, bins=config.MODEL_OUTPUT_SIZE):
+    step = (high - low) / bins
+    b = min( int((a - low)/step), bins-1)
+    return b
 
-def linear_bin(a, o=config.MODEL_OUTPUT_SIZE):
-    a = a + 1
-    b = round(a / (2 / (float(o) - 1.)))
-    return int(b)
-
-
-def linear_unbin(b, o=config.MODEL_OUTPUT_SIZE):
-    a = b * (2 / (float(o) - 1.)) - 1
+def from_index(b, low=-1.0, high=1.0, bins=config.MODEL_OUTPUT_SIZE):
+    step = (high - low) / bins
+    a = (b + 0.5) * step + low
     return a
 
+def to_one_hot(y, low=-1.0, high=1.0, bins=config.MODEL_OUTPUT_SIZE):
+    arr = np.zeros(config.MODEL_OUTPUT_SIZE)
+    arr[to_index(y, low=low, high=high, bins=bins)] = 1
+    return arr
 
-def bin_Y(Y, o=config.MODEL_OUTPUT_SIZE):
-    d = []
-    for y in Y:
-        arr = np.zeros(o)
-        arr[linear_bin(y)] = 1
-        d.append(arr)
-    return np.array(d)
-
-
-def unbin_Y(Y):
-    d = []
-    for y in Y:
-        v = np.argmax(y)
-        v = linear_unbin(v)
-        d.append(v)
-    return np.array(d)
+def from_one_hot(y):
+    v = np.argmax(y)
+    v = from_index(v, low=low, high=high)
+    return v
 
 
 '''
