@@ -1,5 +1,6 @@
-Burro is a platform for small-scale self-driving cars. It borrows ideas and code from [Donkey](http://donkeycar.com).
+Burro is a platform for driving RC cars and small robots using neural networks. Using Burro you can have an RC car drive itself. You can also set up a machine to train neural networks.
 
+## Setting up a car
 
 ### Requirements
 
@@ -37,16 +38,31 @@ Connect up a Logitech F710 gamepad to the RPi USB port or a RC receiver to the N
 Visit `http://navio.local` to bring up the web interface. Choose your driving method (by default it is either gamepad or RC). Choose if you want to save images while moving (for training models); the background color of the steering indicator will change to green to indicate standby, red once recording.
 
 
-### Next Steps
+## Setting up a machine for training
 
-Please take a look at the [Burro Wiki](https://github.com/yconst/burro/wiki) for more information, including [help on configuring](https://github.com/yconst/burro/wiki/Configuring).
+### Requirements
+
+- Linux PC
+- A CUDA-capable GPU if you want to train fast (recommended)
+
+### Installation
+
+Burro includes an installation script that handles installing a neural network training environment, except the installation of Tensorflow. You should have Tensorflow installed before proceeding with installing a training environment. This is not a requirement for setting up a car (see above) To download and run:
+
+    wget https://raw.githubusercontent.com/yconst/burro/master/install-burro.sh
+    chmod +x install-burro.sh
+    ./install-burro.sh
+
+## Next Steps
+
+Please take a look at the [Burro Wiki](https://github.com/yconst/burro/wiki) for more information, including [help on configuring your car](https://github.com/yconst/burro/wiki/Configuring).
 
 
-### Contributing
+## Contributing
 
 Contributions via merge requests or opening issues are always very welcome. Please also take a look at the [Code of Conduct](https://github.com/yconst/burro/blob/master/CODE_OF_CONDUCT.md)
 
 
-### License
+## License
 
 MIT
