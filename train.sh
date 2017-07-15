@@ -1,12 +1,12 @@
-#!/bin/sh -
+#!/bin/bash -
 
 while getopts "d:n:" opt; do
   case $opt in
     d)
-      $path = $OPTARG"
+      path=$OPTARG
       ;;
     n)
-      $name = $OPTARG"
+      name=$OPTARG
       ;;
     \?)
       echo "Invalid option: -$OPTARG" >&2
@@ -19,5 +19,11 @@ while getopts "d:n:" opt; do
   esac
 done
 
-DIR="$( cd "$( dirname "$0" )" && pwd )"
-sudo $DIR/../bin/python $DIR/burro/train.py --data-dir $path --name $name
+if [ -n $path ] && [ -n $name ];
+then
+  DIR="$( cd "$( dirname "$0" )" && pwd )"
+  $DIR/env/bin/python $DIR/burro/train.py --data-dir $DIR/$path --model-name $name
+else
+  echo "Data directory and model name arguments are required" >&2
+  exit 1
+fi
