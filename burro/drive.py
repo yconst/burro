@@ -20,7 +20,7 @@ import config
 
 from sensors import PiVideoStream
 from models import list_models
-from pilots import (KerasCategorical, 
+from pilots import (KerasCategorical,
     RC, F710, MixedRC, MixedF710)
 from mixers import AckermannSteeringMixer
 from drivers import NAVIO2PWM
@@ -115,7 +115,7 @@ class Rover(object):
         self.th_pwm = NAVIO2PWM(2)
         self.st_pwm = NAVIO2PWM(0)
         self.mixer = AckermannSteeringMixer(
-            steering_driver=self.st_pwm, 
+            steering_driver=self.st_pwm,
             throttle_driver=self.th_pwm)
 
     def selected_pilot_index(self):
