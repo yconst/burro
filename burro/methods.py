@@ -48,3 +48,23 @@ def yaw_to_angle(yaw, limit=config.CAR_MAX_STEERING_ANGLE):
     Convert from yaw to angle
     '''
     return yaw * float(limit)
+
+
+'''
+Image filepath
+'''
+
+def parse_img_filepath(filepath):
+    '''
+    Parse an image filename and derive angle
+    and throttle values
+    '''
+    f = filepath.split('/')[-1]
+    f = f[:-4] #remove ".jpg"
+    f = f.split('_')
+
+    throttle = float(f[3]) * 0.001
+    angle = float(f[5]) * 0.1
+    milliseconds = round(float(f[7]))
+
+    return angle, throttle, milliseconds
