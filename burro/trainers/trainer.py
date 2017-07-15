@@ -83,14 +83,15 @@ def train(train_folder, track, optimizer='adam', patience=10):
 
     now = time.strftime("%c")
     tb = TensorBoard(
-        log_dir='./logs/' + track + '/' +
+        os.path.join(config.MODELS_DIR,
+        track + '/' +
         optimizer +
         '-' +
         str(dense1) +
         '-' +
         str(dense2) +
         '-' +
-        now)
+        now))
     # reduce_lr = ReduceLROnPlateau(monitor='val_loss', factor=0.96,
     #          patience=2, min_lr=0.0001)
     model_cp = ModelCheckpoint('./model.h5', monitor='val_loss',
@@ -105,7 +106,8 @@ def train(train_folder, track, optimizer='adam', patience=10):
                                callbacks=[tb, model_cp, e_stop])
 
     model.save(
-        'models/model-' +
+        os.path.join(config.MODELS_DIR,
+        'model-' +
         track +
         optimizer +
         '-' +
@@ -114,6 +116,6 @@ def train(train_folder, track, optimizer='adam', patience=10):
         str(dense2) +
         '-' +
         now +
-        '.h5')
+        '.h5'))
 
     return np.min(hist.history['val_loss'])
