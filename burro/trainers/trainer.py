@@ -11,11 +11,11 @@ from keras.callbacks import TensorBoard, ReduceLROnPlateau, ModelCheckpoint, Ear
 
 import config
 
-from file_generators import filename_generator
-from pil_generators import (image_count,
+from generators.file_generators import filename_generator
+from generators.pil_generators import (image_count,
                             image_generator, image_flip, image_resize,
                             image_rotate, array_generator)
-from numpy_generators import (category_generator,
+from generators.numpy_generators import (category_generator,
                               brightness_shifter, batch_image_generator,
                               center_normalize, equalize_probs, nth_select)
 
