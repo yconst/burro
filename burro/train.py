@@ -1,3 +1,5 @@
+#!../env/bin/python
+
 """
 train.py
 
@@ -25,4 +27,8 @@ def main():
     arguments = docopt(__doc__)
     data_dir = arguments['--data-dir']
     model_name = arguments['--model-name']
+    import ipdb; ipdb.set_trace()
     train(data_dir, model_name)
+
+if __name__ == "__main__":
+    main()
