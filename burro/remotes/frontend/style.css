@@ -4,7 +4,7 @@ html, body {
 }
 
 body {
-	background-image: url(bg.jpg);
+	background-image: linear-gradient(25deg, #323896 0%, #0C8ED5 100%);
     background-size: cover;
     background-attachment: fixed;
 	font-family: Helvetica, Arial, sans-serif;
@@ -75,11 +75,11 @@ img.viewport {
 .sliderBox {
 	width: 100%;
 	height: 60px;
-	background: #46e;
+	background: #4af;
 }
 
 .sliderBox.record_enable {
-	background: #2c8;
+	background: #2c7;
 }
 
 .sliderBox.record_enable.recording {
