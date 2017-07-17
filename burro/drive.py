@@ -4,10 +4,10 @@ drive.py
 Starts a driving loop
 
 Usage:
-    drive.py [--vision=<name>]
+    drive.py [--record]
 
 Options:
-  --vision=<name>     vision sensor type [default: camera]
+  --record     record images to disk [default: False]
 """
 
 from docopt import docopt
@@ -16,6 +16,7 @@ from composers import Composer
 
 if __name__ == "__main__":
     arguments = docopt(__doc__)
-    vision_type = arguments['--vision']
-    rover = Rover()
+    composer = Composer()
+    rover = composer.new_vehicle()
+    #rover.record = arguments.record
     rover.run()

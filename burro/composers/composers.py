@@ -9,23 +9,26 @@ from pilots import (KerasCategorical,
     RC, F710, MixedRC, MixedF710)
 from mixers import AckermannSteeringMixer
 from drivers import NAVIO2PWM
-from indicators import NAVIO2LED
+from indicators import Indicator, NAVIO2LED
 from remotes import WebRemote
 from recorders import FileRecorder
 
 import logging
 
 class Composer(object):
-	
-	def compose_vehicle(self):
-		rover = new Rover()
-		self.setup_pilots(rover)
+    
+    def new_vehicle(self):
+        rover = Rover()
+        self.setup_pilots(rover)
         self.setup_recorders(rover)
+        self.setup_drivers(rover)
         self.setup_mixers(rover)
-        self.set_sensors(rover, arguments['--vision'])
-        self.set_remote(rover)
-		
-	def setup_pilots(self, rover):
+        self.setup_sensors(rover)
+        self.setup_remote(rover)
+        self.setup_indicators(rover)
+        return rover
+        
+    def setup_pilots(self, rover):
         pilots = []
         try:
             f710 = F710()
@@ -49,20 +52,28 @@ class Composer(object):
             if rc:
                 pilots.append(MixedRC(keras, rc))
         rover.pilots = pilots
+        rover.set_pilot(0)
 
-    def setup_recorders(self):
-        self.recorder = FileRecorder()
+    def setup_recorders(self, rover):
+        rover.recorder = FileRecorder()
 
-    def setup_mixers(self):
-        self.th_pwm = NAVIO2PWM(2)
-        self.st_pwm = NAVIO2PWM(0)
-        self.mixer = AckermannSteeringMixer(
-            steering_driver=self.st_pwm, 
-            throttle_driver=self.th_pwm)
+    def setup_drivers(self, rover):
+        rover.th_pwm = NAVIO2PWM(2)
+        rover.st_pwm = NAVIO2PWM(0)
 
-    def set_sensors(self, vision_sensor):
-        if vision_sensor == 'camera':
-            self.vision_sensor = PiVideoStream()
+    def setup_mixers(self, rover):
+        rover.mixer = AckermannSteeringMixer(
+            steering_driver=rover.st_pwm, 
+            throttle_driver=rover.th_pwm)
 
-    def set_remote(self):
-        self.remote = WebRemote(self)
+    def setup_sensors(self, rover):
+        rover.vision_sensor = PiVideoStream()
+
+    def setup_remote(self, rover):
+        rover.remote = WebRemote(rover)
+
+    def setup_indicators(self, rover):
+        try:
+            rover.indicator = NAVIO2LED()
+        except Exception:
+            rover.indicator = Indicator()

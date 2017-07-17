@@ -2,12 +2,12 @@ import sys
 import time
 
 class Rover(object):
-	'''
-	Rover class
-	'''
+    '''
+    Rover class
+    '''
 
     def __init__(self):
-    	self.pilots = []
+        self.pilots = []
         self.f_time = 0.
         self.pilot_yaw = 0.
         self.pilot_throttle = 0.
@@ -49,7 +49,7 @@ class Rover(object):
 
         self.mixer.update(pilot_throttle, pilot_angle)
 
-	def selected_pilot_index(self):
+    def selected_pilot_index(self):
         return self.pilots.index(self.pilot)
 
     def set_pilot(self, pilot):
