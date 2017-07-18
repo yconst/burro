@@ -7,6 +7,7 @@ Burro is a platform for small-scale self-driving cars. It borrows ideas and code
 
 - 1/10 or 1/16 RC car with PWM connections for throttle and steering
 - Raspberry Pi 2 or 3
+- An SD card with at least 16Gb capacity
 - RaspiCam, Fisheye model (something like [this](http://www.ebay.com/itm/191723967593))
 - [NAVIO2](https://emlid.com/navio/) HAT
 - Either a Logitech F710 Gamepad or a PPM or SBUS-compatible RC receiver
