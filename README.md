@@ -13,7 +13,7 @@ Burro is a platform for small-scale self-driving cars. It borrows ideas and code
 
 #### Software
 
-- Latest EMLID image installed and running on an SD card. [Here are the instructions](https://docs.emlid.com/navio2/common/ardupilot/configuring-raspberry-pi/). It is also advised that you [expand your filesystem](http://elinux.org/RPi_raspi-config#expand_rootfs_-_Expand_root_partition_to_fill_SD_card).
+- Latest EMLID image installed and running on an SD card. [Here are the instructions](https://docs.emlid.com/navio2/common/ardupilot/configuring-raspberry-pi/). You will need to [expand your filesystem](http://elinux.org/RPi_raspi-config#expand_rootfs_-_Expand_root_partition_to_fill_SD_card).
 
 
 ### Installation
