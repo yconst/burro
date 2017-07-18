@@ -21,11 +21,10 @@ class Composer(object):
         rover = Rover()
         self.setup_pilots(rover)
         self.setup_recorders(rover)
-        self.setup_drivers(rover)
         self.setup_mixers(rover)
-        self.setup_sensors(rover)
         self.setup_remote(rover)
         self.setup_indicators(rover)
+        self.setup_sensors(rover)
         return rover
         
     def setup_pilots(self, rover):
@@ -59,28 +58,27 @@ class Composer(object):
 
     def setup_mixers(self, rover):
         ready = False
-        if not ready:
-            try:
-                throttle_driver = NAVIO2PWM(2)
-                steering_driver = NAVIO2PWM(0)
-                rover.mixer = AckermannSteeringMixer(
-                    steering_driver=steering_driver, 
-                    throttle_driver=throttle_driver)
-                ready = True
-            except Exception:
-                logging.info("Unable to load NAVIO2 PWM")
-        if not ready:
-            try:
-                left_driver = Adafruit_MotorHAT(1)
-                right_driver = Adafruit_MotorHAT(1)
-                rover.mixer = DifferentialSteeringMixer(
-                    left_driver=left_driver, 
-                    right_driver=right_driver)
-                ready = True
-            except Exception:
-                logging.info("Unable to load Motor HAT")
-        if not ready:
-            logging.error("No drivers found – exiting")
+        #try:
+        #    throttle_driver = NAVIO2PWM(2)
+        #    steering_driver = NAVIO2PWM(0)
+        #    rover.mixer = AckermannSteeringMixer(
+        #        steering_driver=steering_driver, 
+        #        throttle_driver=throttle_driver)
+        #    ready = True
+        #except Exception:
+           #logging.info("Unable to load NAVIO2 PWM")
+        if ready == False:
+            #try:
+            left_driver = Adafruit_MotorHAT(1)
+            right_driver = Adafruit_MotorHAT(2)
+            rover.mixer = DifferentialSteeringMixer(
+                left_driver=left_driver, 
+                right_driver=right_driver)
+            ready = True
+            #except Exception:
+            #    logging.info("Unable to load Motor HAT")
+        if ready == False:
+            logging.error("No drivers found - exiting")
 
     def setup_sensors(self, rover):
         rover.vision_sensor = PiVideoStream()

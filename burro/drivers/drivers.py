@@ -42,7 +42,7 @@ class Adafruit_MotorHAT(Driver):
 
         self.mh = Adafruit_MotorHAT(addr=0x60)
         self.motor_index = motor_index
-        atexit.register(turnOffMotors)
+        atexit.register(self.turnOffMotors)
 
     def update(self, value):
         '''
@@ -52,15 +52,15 @@ class Adafruit_MotorHAT(Driver):
         assert(value <= 1 and -1 <= value)
         motor = self.mh.getMotor(self.motor_index)
         if value >= 0:
-            motor.run(Adafruit_MotorHAT.FORWARD)
+            motor.run(1) # Forward
         else:
-            motor.run(Adafruit_MotorHAT.BACKWARD)
-        motor.setSpeed(value * 255.)
+            motor.run(2) # Backward
+        motor.setSpeed(abs(int(value * 255.)))
 
-    def turnOffMotors():
+    def turnOffMotors(self):
         '''
         Disable all motors
         '''
-        mh.getMotor(self.motor_index).run(Adafruit_MotorHAT.RELEASE)
+        self.mh.getMotor(self.motor_index).run(Adafruit_MotorHAT.RELEASE)
      
     
