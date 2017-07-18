@@ -39,10 +39,10 @@ class AckermannSteeringMixer(BaseMixer):
         self.steering_driver.update(yaw)
         
 
-class DifferentialSteeringMixer:
-    """
+class DifferentialSteeringMixer(BaseMixer):
+    '''
     Mixer for vehicles using differential steering.
-    """
+    '''
     def __init__(self, left_driver, right_driver):
         self.left_driver = left_driver
         self.right_driver = right_driver
@@ -54,11 +54,11 @@ class DifferentialSteeringMixer:
         self.angle = angle
         
         # TODO: convert from angle/throttle to driver value
-        l_speed = ((self.left_driver.speed + throttle)/3 - angle/5)
-        r_speed = ((self.right_driver.speed + throttle)/3 + angle/5)
+        l_speed = throttle + angle / 90.
+        r_speed = throttle - angle / 90.
         l_speed = min(max(l_speed, -1), 1)
         r_speed = min(max(r_speed, -1), 1)
         
-        self.left_driver.turn(l_speed)
-        self.right_driver.turn(r_speed)
+        self.left_driver.update(l_speed)
+        self.right_driver.update(r_speed)
 

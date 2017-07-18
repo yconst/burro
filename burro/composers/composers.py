@@ -7,8 +7,8 @@ from sensors import PiVideoStream
 from models import list_models
 from pilots import (KerasCategorical, 
     RC, F710, MixedRC, MixedF710)
-from mixers import AckermannSteeringMixer
-from drivers import NAVIO2PWM
+from mixers import AckermannSteeringMixer, DifferentialSteeringMixer
+from drivers import NAVIO2PWM, Adafruit_MotorHAT
 from indicators import Indicator, NAVIO2LED
 from remotes import WebRemote
 from recorders import FileRecorder
@@ -57,14 +57,30 @@ class Composer(object):
     def setup_recorders(self, rover):
         rover.recorder = FileRecorder()
 
-    def setup_drivers(self, rover):
-        rover.th_pwm = NAVIO2PWM(2)
-        rover.st_pwm = NAVIO2PWM(0)
-
     def setup_mixers(self, rover):
-        rover.mixer = AckermannSteeringMixer(
-            steering_driver=rover.st_pwm, 
-            throttle_driver=rover.th_pwm)
+        ready = False
+        if not ready:
+            try:
+                throttle_driver = NAVIO2PWM(2)
+                steering_driver = NAVIO2PWM(0)
+                rover.mixer = AckermannSteeringMixer(
+                    steering_driver=steering_driver, 
+                    throttle_driver=throttle_driver)
+                ready = True
+            except Exception:
+                logging.info("Unable to load NAVIO2 PWM")
+        if not ready:
+            try:
+                left_driver = Adafruit_MotorHAT(1)
+                right_driver = Adafruit_MotorHAT(1)
+                rover.mixer = DifferentialSteeringMixer(
+                    left_driver=left_driver, 
+                    right_driver=right_driver)
+                ready = True
+            except Exception:
+                logging.info("Unable to load Motor HAT")
+        if not ready:
+            logging.error("No drivers found – exiting")
 
     def setup_sensors(self, rover):
         rover.vision_sensor = PiVideoStream()
