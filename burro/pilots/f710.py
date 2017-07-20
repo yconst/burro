@@ -42,6 +42,7 @@ class F710(BasePilot):
                 self.throttle = 0.095 + st[4]/255.
         else:
             self.throttle = 0
+        self.throttle -= (float(st[12]) - 128.0) / 128.0
         self.yaw = (float(st[10]) - 128.0) / 128.0
 
         return methods.yaw_to_angle(self.yaw), self.throttle
