@@ -67,8 +67,8 @@ class Composer(object):
                 throttle_driver=throttle_driver)
         elif '0x60' in self.addresses:
             logging.info("Found Adafruit Motor HAT - Setting up differential car")
-            left_driver = Adafruit_MotorHAT(1)
-            right_driver = Adafruit_MotorHAT(2)
+            left_driver = Adafruit_MotorHAT(config.LEFT_MOTOR_TERMINAL)
+            right_driver = Adafruit_MotorHAT(config.RIGHT_MOTOR_TERMINAL)
             rover.mixer = DifferentialSteeringMixer(
                 left_driver=left_driver, 
                 right_driver=right_driver)
