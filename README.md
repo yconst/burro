@@ -4,7 +4,7 @@ Burro is a platform for small-scale self-driving cars. It borrows ideas and code
 ### Requirements
 
 Using Burro you can build either a RC-style Ackermann steering car, or a Differential steering car (like a three-wheel robot).
-Depending on your hardware Burro will automatically select and setup the right kind of vehicle.
+Depending on your hardware Burro will automatically select and setup the right kind of vehicle each time you run it. Thus you may share the same SD card among different vehicles without any changes.
 
 #### Hardware
 
