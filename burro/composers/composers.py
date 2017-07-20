@@ -7,8 +7,8 @@ from sensors import PiVideoStream
 from models import list_models
 from pilots import (KerasCategorical, 
     RC, F710, MixedRC, MixedF710)
-from mixers import AckermannSteeringMixer
-from drivers import NAVIO2PWM
+from mixers import AckermannSteeringMixer, DifferentialSteeringMixer
+from drivers import NAVIO2PWM, Adafruit_MotorHAT
 from indicators import Indicator, NAVIO2LED
 from remotes import WebRemote
 from recorders import FileRecorder
@@ -19,13 +19,13 @@ class Composer(object):
     
     def new_vehicle(self):
         rover = Rover()
+        self.addresses = methods.i2c_addresses(1)
         self.setup_pilots(rover)
         self.setup_recorders(rover)
-        self.setup_drivers(rover)
         self.setup_mixers(rover)
-        self.setup_sensors(rover)
         self.setup_remote(rover)
         self.setup_indicators(rover)
+        self.setup_sensors(rover)
         return rover
         
     def setup_pilots(self, rover):
@@ -57,14 +57,24 @@ class Composer(object):
     def setup_recorders(self, rover):
         rover.recorder = FileRecorder()
 
-    def setup_drivers(self, rover):
-        rover.th_pwm = NAVIO2PWM(2)
-        rover.st_pwm = NAVIO2PWM(0)
-
     def setup_mixers(self, rover):
-        rover.mixer = AckermannSteeringMixer(
-            steering_driver=rover.st_pwm, 
-            throttle_driver=rover.th_pwm)
+        if '0x48' in self.addresses and '0x77' in self.addresses:
+            logging.info("Found NAVIO2 HAT - Setting up Ackermann car")
+            throttle_driver = NAVIO2PWM(2)
+            steering_driver = NAVIO2PWM(0)
+            rover.mixer = AckermannSteeringMixer(
+                steering_driver=steering_driver, 
+                throttle_driver=throttle_driver)
+        elif '0x60' in self.addresses:
+            logging.info("Found Adafruit Motor HAT - Setting up differential car")
+            left_driver = Adafruit_MotorHAT(config.LEFT_MOTOR_TERMINAL)
+            right_driver = Adafruit_MotorHAT(config.RIGHT_MOTOR_TERMINAL)
+            rover.mixer = DifferentialSteeringMixer(
+                left_driver=left_driver, 
+                right_driver=right_driver)
+        else:
+            logging.error("No drivers found - exiting")
+            sys.exit()
 
     def setup_sensors(self, rover):
         rover.vision_sensor = PiVideoStream()

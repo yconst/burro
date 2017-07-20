@@ -1,1 +1,1 @@
-from mixers import BaseMixer, AckermannSteeringMixer
+from mixers import BaseMixer, AckermannSteeringMixer, DifferentialSteeringMixer
