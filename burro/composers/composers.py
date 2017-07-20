@@ -58,13 +58,15 @@ class Composer(object):
         rover.recorder = FileRecorder()
 
     def setup_mixers(self, rover):
-        if '0xff' in self.addresses:
+        if '0x48' in self.addresses and '0x77' in self.addresses:
+            logging.info("Found NAVIO2 HAT - Setting up Ackermann car")
             throttle_driver = NAVIO2PWM(2)
             steering_driver = NAVIO2PWM(0)
             rover.mixer = AckermannSteeringMixer(
                 steering_driver=steering_driver, 
                 throttle_driver=throttle_driver)
-        else if '0x60' in self.addresses:
+        elif '0x60' in self.addresses:
+            logging.info("Found Adafruit Motor HAT - Setting up differential car")
             left_driver = Adafruit_MotorHAT(1)
             right_driver = Adafruit_MotorHAT(2)
             rover.mixer = DifferentialSteeringMixer(
