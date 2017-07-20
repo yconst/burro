@@ -10,6 +10,7 @@ import os
 import math
 import random
 import time
+import logging
 
 from threading import Thread
 
@@ -17,7 +18,8 @@ from operator import itemgetter
 from datetime import datetime
 from pilots import BasePilot
 
-import methods, config
+import methods
+import config
 
 # Note: The code below could be very easily adapted to a
 # F310 gamepad. See:
@@ -83,11 +85,10 @@ class Gamepad(object):
         #intf = conf.interfaces[0][0]
         if d is not None:
             self._dev = d.open()
-            print(self._dev)
             try:
                 self._dev.detachKernelDriver(0)
             except usb.core.USBError:
-                print("error detaching kernel driver (usually no problem)")
+                logging.warning("Gamepad: Error detaching kernel driver (usually no problem)")
             except AttributeError:
                 pass
             #handle.interruptWrite(0, 'W')
@@ -104,7 +105,7 @@ class Gamepad(object):
             self._state = default_state
             self._old_state = default_state
             self.is_initialized = True
-            print("Gamepad initialized")
+            logging.info("Gamepad initialized")
         else:
             RuntimeError("Could not initialize Gamepad")
 
@@ -114,7 +115,6 @@ class Gamepad(object):
             data = struct.unpack('<' + 'B' * 20, data)
             return data
         except usb.core.USBError as e:
-            # print(e)
             return None
 
     def _read_gamepad(self):
@@ -194,18 +194,6 @@ class Gamepad(object):
         return self.changed
 
     def __del__(self):
-        # if not self._dev is None:
         if self.is_initialized:
             self._dev.releaseInterface()
 
-# # Unit test code
-# if __name__ == '__main__':
-#     pad = None
-
-#     pad = Gamepad()
-#     while True:
-#         pad._read_gamepad()
-#         if pad.changed:
-#             print(pad._state)
-#             #print("analog R: {0:3}|{1:3}  analog L: {2:3}|{3:3}".format(pad.get_analogR_x(),pad.get_analogR_y(),pad.get_analogL_x(),pad.get_analogL_y()))
-#             #pass
