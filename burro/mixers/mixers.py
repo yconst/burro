@@ -42,20 +42,19 @@ class AckermannSteeringMixer(BaseMixer):
 class DifferentialSteeringMixer(BaseMixer):
     '''
     Mixer for vehicles using differential steering.
+    This mixer uses throttle-proportional steering so that the vehicle
+    behaves mor like a car rather than a robot.
     '''
     def __init__(self, left_driver, right_driver):
         self.left_driver = left_driver
         self.right_driver = right_driver
-        self.angle=0
-        self.throttle=0
     
     def update(self, throttle, angle):
-        self.throttle = throttle
-        self.angle = angle
-        
+        throttle = min(1, max(-1, throttle))
+
         # TODO: convert from angle/throttle to driver value
-        l_speed = (throttle + angle / 90.) * config.LEFT_MOTOR_MULT
-        r_speed = (throttle - angle / 90.) * config.RIGHT_MOTOR_MULT
+        l_speed = (throttle - angle * throttle / 90.) * config.LEFT_MOTOR_MULT
+        r_speed = (throttle + angle * throttle / 90.) * config.RIGHT_MOTOR_MULT
         l_speed = min(max(-l_speed, -1), 1)
         r_speed = min(max(r_speed, -1), 1)
         
