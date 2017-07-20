@@ -3,8 +3,12 @@ Burro is a platform for small-scale self-driving cars. It borrows ideas and code
 
 ### Requirements
 
+Using Burro you can build either a RC-style Ackermann steering car, or a Differential steering car (like a three-wheel robot).
+Depending on your hardware Burro will automatically select and setup the right kind of vehicle.
+
 #### Hardware
 
+##### RC-Style Ackermann Steering car
 - 1/10 or 1/16 RC car with PWM connections for throttle and steering
 - Raspberry Pi 2 or 3
 - An SD card with at least 16Gb capacity
@@ -12,9 +16,17 @@ Burro is a platform for small-scale self-driving cars. It borrows ideas and code
 - [NAVIO2](https://emlid.com/navio/) HAT
 - Either a Logitech F710 Gamepad or a PPM or SBUS-compatible RC receiver
 
+##### Differential Steering car
+- Differential steering robot kit with two motors
+- Raspberry Pi 2 or 3
+- An SD card with at least 16Gb capacity
+- RaspiCam, Fisheye model (something like [this](http://www.ebay.com/itm/191723967593))
+- [Adafruit Motor HAT](https://www.adafruit.com/product/2348)
+- A Logitech F710 Gamepad
+
 #### Software
 
-- Latest EMLID image installed and running on an SD card. [Here are the instructions](https://docs.emlid.com/navio2/common/ardupilot/configuring-raspberry-pi/). You will need to [expand your filesystem](http://elinux.org/RPi_raspi-config#expand_rootfs_-_Expand_root_partition_to_fill_SD_card).
+Burro runs on Raspbian. We recommend the latest Raspbian image from the folks at EMLID. [Here are the instructions](https://docs.emlid.com/navio2/common/ardupilot/configuring-raspberry-pi/) to get it installed and running on an SD card. You will need to [expand your filesystem](http://elinux.org/RPi_raspi-config#expand_rootfs_-_Expand_root_partition_to_fill_SD_card).
 
 
 ### Installation
@@ -35,7 +47,9 @@ Connect up a Logitech F710 gamepad to the RPi USB port or a RC receiver to the N
     cd burro/burro
     ./start.sh
 
-Visit `http://navio.local` to bring up the web interface. Choose your driving method (by default it is either gamepad or RC). Choose if you want to save images while moving (for training models); the background color of the steering indicator will change to green to indicate standby, red once recording.
+Visit your Raspberry local network address to bring up the web interface. If you've chosen the EMLID image, it will be `http://navio.local`. Otherwise it will be `http://raspberry.local`.
+
+Choose your driving method (by default it is either gamepad or RC, based on availability). Choose if you want to save images while moving (for training models); the background color of the steering indicator will change to green to indicate standby, red once recording.
 
 
 ### Next Steps
