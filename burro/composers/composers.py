@@ -19,6 +19,7 @@ class Composer(object):
     
     def new_vehicle(self):
         rover = Rover()
+        self.addresses = methods.i2c_addresses(1)
         self.setup_pilots(rover)
         self.setup_recorders(rover)
         self.setup_mixers(rover)
@@ -57,28 +58,21 @@ class Composer(object):
         rover.recorder = FileRecorder()
 
     def setup_mixers(self, rover):
-        ready = False
-        #try:
-        #    throttle_driver = NAVIO2PWM(2)
-        #    steering_driver = NAVIO2PWM(0)
-        #    rover.mixer = AckermannSteeringMixer(
-        #        steering_driver=steering_driver, 
-        #        throttle_driver=throttle_driver)
-        #    ready = True
-        #except Exception:
-           #logging.info("Unable to load NAVIO2 PWM")
-        if ready == False:
-            #try:
+        if '0xff' in self.addresses:
+            throttle_driver = NAVIO2PWM(2)
+            steering_driver = NAVIO2PWM(0)
+            rover.mixer = AckermannSteeringMixer(
+                steering_driver=steering_driver, 
+                throttle_driver=throttle_driver)
+        else if '0x60' in self.addresses:
             left_driver = Adafruit_MotorHAT(1)
             right_driver = Adafruit_MotorHAT(2)
             rover.mixer = DifferentialSteeringMixer(
                 left_driver=left_driver, 
                 right_driver=right_driver)
-            ready = True
-            #except Exception:
-            #    logging.info("Unable to load Motor HAT")
-        if ready == False:
+        else:
             logging.error("No drivers found - exiting")
+            sys.exit()
 
     def setup_sensors(self, rover):
         rover.vision_sensor = PiVideoStream()

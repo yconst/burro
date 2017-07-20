@@ -57,3 +57,25 @@ def yaw_to_angle(yaw, limit=config.CAR_MAX_STEERING_ANGLE):
     Convert from yaw to angle
     '''
     return yaw * float(limit)
+
+
+'''
+I2C TOOLS
+functions to help with discovering i2c devices
+'''
+
+def i2c_addresses(bus_index):
+    import smbus
+
+    bus = smbus.SMBus(bus_index)
+    addresses = []
+
+    for device in range(128):
+          try:
+             bus.read_byte(device)
+             addresses.append(hex(device))
+          except: # exception if read_byte fails
+             pass
+    return addresses
+
+
