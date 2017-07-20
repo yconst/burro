@@ -21,11 +21,16 @@ CAMERA_HORIZONTAL_FOV = 120.
 CAMERA_OUTPUT_RANGE = (0, 255)
 
 
-# Vehicle
+# Vehicle - General
 
 REVERSE_STEERING = False
 CAR_MAX_STEERING_ANGLE = 30.
 DRIFT_GAIN = 0.15
+
+# Vehicle - Differential
+
+LEFT_MOTOR_MULT = 1.0
+RIGHT_MOTOR_MULT = 1.0
 
 
 # Models

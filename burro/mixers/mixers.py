@@ -54,8 +54,8 @@ class DifferentialSteeringMixer(BaseMixer):
         self.angle = angle
         
         # TODO: convert from angle/throttle to driver value
-        l_speed = throttle + angle / 90.
-        r_speed = throttle - angle / 90.
+        l_speed = (throttle + angle / 90.) * config.LEFT_MOTOR_MULT
+        r_speed = (throttle - angle / 90.) * config.RIGHT_MOTOR_MULT
         l_speed = min(max(-l_speed, -1), 1)
         r_speed = min(max(r_speed, -1), 1)
         
