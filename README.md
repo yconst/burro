@@ -28,7 +28,7 @@ Depending on your hardware Burro will automatically select and setup the right k
 
 Burro runs on Raspbian. We recommend the latest Raspbian image from the folks at EMLID. [Here are the instructions](https://docs.emlid.com/navio2/common/ardupilot/configuring-raspberry-pi/) to get it installed and running on an SD card. You will need to [expand your filesystem](http://elinux.org/RPi_raspi-config#expand_rootfs_-_Expand_root_partition_to_fill_SD_card).
 
-You can also use a [vanilla Raspbian image](https://www.raspberrypi.org/downloads/raspbian/). If you do so, you'll need to [enable Camera and I2C](https://github.com/yconst/burro/wiki/Enable-Camera-and-I2C-in-Raspberry-Pi).
+If you don;t use NAVIO2 you can also use a [vanilla Raspbian image](https://www.raspberrypi.org/downloads/raspbian/). If you do so, you'll need to [enable Camera and I2C](https://github.com/yconst/burro/wiki/Enable-Camera-and-I2C-in-Raspberry-Pi).
 
 
 ### Installation
