@@ -78,4 +78,9 @@ def i2c_addresses(bus_index):
              pass
     return addresses
 
-
+def board_type():
+    addresses = i2c_addresses(1)
+    if '0x48' in addresses and '0x77' in addresses:
+        return 'navio'
+    elif '0x60' in addresses:
+        return 'adafruit'

@@ -19,7 +19,7 @@ class Composer(object):
     
     def new_vehicle(self):
         rover = Rover()
-        self.addresses = methods.i2c_addresses(1)
+        self.board_type = methods.board_type()
         self.setup_pilots(rover)
         self.setup_recorders(rover)
         self.setup_mixers(rover)
@@ -33,15 +33,15 @@ class Composer(object):
         try:
             f710 = F710()
             pilots.append(f710)
+            logging.info("Loaded F710 Gamepad module")
         except Exception as e:
             f710 = None
-            logging.info("Unable to load F710 Gamepad")
-        try:
+        if self.board_type is 'navio':
             rc = RC()
             pilots.append(rc)
-        except Exception as e:
+            logging.info("Loaded RC module")
+        else:
             rc = None
-            logging.info("Unable to load RC")
         model_paths = list_models()
         for model_path, model_name in model_paths:
             keras = KerasCategorical(model_path, name=model_name)
@@ -58,14 +58,14 @@ class Composer(object):
         rover.recorder = FileRecorder()
 
     def setup_mixers(self, rover):
-        if '0x48' in self.addresses and '0x77' in self.addresses:
+        if self.board_type is 'navio':
             logging.info("Found NAVIO2 HAT - Setting up Ackermann car")
             throttle_driver = NAVIO2PWM(2)
             steering_driver = NAVIO2PWM(0)
             rover.mixer = AckermannSteeringMixer(
                 steering_driver=steering_driver, 
                 throttle_driver=throttle_driver)
-        elif '0x60' in self.addresses:
+        elif self.board_type is 'adafruit':
             logging.info("Found Adafruit Motor HAT - Setting up differential car")
             left_driver = Adafruit_MotorHAT(config.LEFT_MOTOR_TERMINAL)
             right_driver = Adafruit_MotorHAT(config.RIGHT_MOTOR_TERMINAL)
@@ -83,7 +83,7 @@ class Composer(object):
         rover.remote = WebRemote(rover)
 
     def setup_indicators(self, rover):
-        try:
+        if self.board_type is 'navio':
             rover.indicator = NAVIO2LED()
-        except Exception:
+        else:
             rover.indicator = Indicator()
