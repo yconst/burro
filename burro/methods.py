@@ -1,5 +1,7 @@
 from __future__ import division
 
+import os
+import os.path
 import numpy as np
 
 import config
@@ -51,7 +53,7 @@ def yaw_to_angle(yaw, limit=config.CAR_MAX_STEERING_ANGLE):
 
 
 '''
-Image filepath
+Filepaths
 '''
 
 def parse_img_filepath(filepath):
@@ -70,21 +72,23 @@ def parse_img_filepath(filepath):
     return angle, throttle, milliseconds
 
 
-'''
-I2C TOOLS
-functions to help with discovering i2c devices
-'''
+def create_file(path):
+    '''
+    Create a file at path if not exist
+    '''
+    def mkdir_p(path):
+        try:
+            os.makedirs(path)
+        except OSError as exc: # Python >2.5
+            if exc.errno == errno.EEXIST and os.path.isdir(path):
+                pass
+            else: raise
 
-def i2c_addresses(bus_index):
-    import smbus
+    def touch(fname):
+        try:
+            os.utime(fname, None)
+        except OSError:
+            open(fname, 'a').close()
 
-    bus = smbus.SMBus(bus_index)
-    addresses = []
-
-    for device in range(128):
-          try:
-             bus.read_byte(device)
-             addresses.append(hex(device))
-          except: # exception if read_byte fails
-             pass
-    return addresses
+    mkdir_p(os.path.dirname(path))
+    touch(path)
