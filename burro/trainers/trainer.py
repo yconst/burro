@@ -10,6 +10,7 @@ from keras.preprocessing.image import ImageDataGenerator
 from keras.callbacks import TensorBoard, ReduceLROnPlateau, ModelCheckpoint, EarlyStopping
 
 import config
+import methods
 
 from generators.file_generators import filename_generator
 from generators.pil_generators import (image_count,
@@ -20,15 +21,33 @@ from generators.numpy_generators import (category_generator,
                               center_normalize, equalize_probs, nth_select)
 
 
-def train(train_folder, track, optimizer='adam', patience=10):
+def train(data_dir, track, optimizer='adam', patience=10):
     offset = 4
 
     gen_batch = 256
     val_batch = 32
     val_stride = 20
 
-    im_count = image_count(train_folder)
-    gen = filename_generator(train_folder, indefinite=True)
+    dense1 = 150
+    dense2 = 50
+
+    now = time.strftime("%c")
+
+    model_dir = os.path.abspath(os.path.expanduser(config.MODELS_DIR))
+    model_path = os.path.join(model_dir,
+        'model-' + track + '-' + optimizer +
+        '-' + str(dense1) + '-' + str(dense2) +
+        '-' + now + '.h5')
+    log_dir = os.path.abspath(os.path.expanduser(config.LOGS_DIR))
+    log_path = os.path.join(log_dir,
+    track + '/' + optimizer + '-' +
+    str(dense1) + '-' + str(dense2) +
+    '-' + now)
+
+    methods.create_file(model_path)
+
+    im_count = image_count(data_dir)
+    gen = filename_generator(data_dir, indefinite=True)
     gen = nth_select(gen, mode='reject_nth', nth=10, offset=offset)
     gen = equalize_probs(gen)
     gen = image_generator(gen)
@@ -41,7 +60,7 @@ def train(train_folder, track, optimizer='adam', patience=10):
     gen = category_generator(gen)
     gen = batch_image_generator(gen, batch_size=gen_batch)
 
-    val = filename_generator(train_folder, indefinite=True)
+    val = filename_generator(data_dir, indefinite=True)
     val = nth_select(val, mode='accept_nth', nth=10, offset=offset)
     val = equalize_probs(val)
     val = image_generator(val)
@@ -52,9 +71,6 @@ def train(train_folder, track, optimizer='adam', patience=10):
     val = brightness_shifter(val, min_shift=-0.1, max_shift=0.1)
     val = category_generator(val)
     val = batch_image_generator(val, batch_size=val_batch)
-
-    dense1 = 150
-    dense2 = 50
 
     model = Sequential()
     model.add(
@@ -80,22 +96,13 @@ def train(train_folder, track, optimizer='adam', patience=10):
     model.compile(
         optimizer=optimizer, loss={
             'angle_out': 'categorical_crossentropy'})
+
     print model.summary()
 
-    now = time.strftime("%c")
-    tb = TensorBoard(
-        os.path.join(config.MODELS_DIR,
-        track + '/' +
-        optimizer +
-        '-' +
-        str(dense1) +
-        '-' +
-        str(dense2) +
-        '-' +
-        now))
+    tb = TensorBoard(log_path)
     # reduce_lr = ReduceLROnPlateau(monitor='val_loss', factor=0.96,
     #          patience=2, min_lr=0.0001)
-    model_cp = ModelCheckpoint('./model.h5', monitor='val_loss',
+    model_cp = ModelCheckpoint(model_path, monitor='val_loss',
                                save_best_only=True, mode='auto', period=1)
     e_stop = EarlyStopping(monitor='val_loss', patience=patience)
 
@@ -105,18 +112,5 @@ def train(train_folder, track, optimizer='adam', patience=10):
                                validation_data=val,
                                validation_steps=im_count / (val_batch * val_stride),
                                callbacks=[tb, model_cp, e_stop])
-
-    model.save(
-        os.path.join(config.MODELS_DIR,
-        'model-' +
-        track +
-        optimizer +
-        '-' +
-        str(dense1) +
-        '-' +
-        str(dense2) +
-        '-' +
-        now +
-        '.h5'))
 
     return np.min(hist.history['val_loss'])
