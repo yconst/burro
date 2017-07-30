@@ -38,7 +38,7 @@ class Adafruit_MotorHAT(Driver):
     '''
 
     def __init__(self, motor_index):
-        from adafruit_hat import Adafruit_MotorHAT, Adafruit_DCMotor
+        from adafruit_motorhat import Adafruit_MotorHAT, Adafruit_DCMotor
 
         self.mh = Adafruit_MotorHAT(addr=0x60)
         self.motor_index = motor_index

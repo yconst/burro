@@ -64,85 +64,71 @@ ws.onmessage = function (event) {
 
 //--- Views, Factory
 
-const ImageView = function() {
-	return {
-		view: function() {
-			return m("img", {class:"viewport", src:"data:image/jpeg;base64," + Store.data.image})
-		}
+const ImageView =  {
+	view: function() {
+		return m("img", {class:"viewport", src:"data:image/jpeg;base64," + Store.data.image})
 	}
 }
 
-const CommandView = function() {
-	return {
-		view: function() {
-			const classes = classNames({
-			    sliderBox: true, 
-			    record_enable: Store.data.record,
-			    recording: Store.data.is_recording
-			})
-			const left = Math.min(Math.max(Store.data.controls.yaw, -1), 1) * 50 + 50
-			return m( "div", {class: classes}, 
-				m("div", {class:"sliderKnob", style:"left:" + left + "%;"}) 
-			)
-		}
+const CommandView = {
+	view: function() {
+		const classes = classNames({
+		    sliderBox: true, 
+		    record_enable: Store.data.record,
+		    recording: Store.data.is_recording
+		})
+		const left = Math.min(Math.max(Store.data.controls.yaw, -1), 1) * 50 + 50
+		return m( "div", {class: classes}, 
+			m("div", {class:"sliderKnob", style:"left:" + left + "%;"}) 
+		)
 	}
 }
 
-const PilotsView = function() {
-	return {
-		view: function (ctrl) {
-		    return m('select', { 
-		    	onchange: m.withAttr('value', function(value) {
-		    		const payload = {"target": "pilot", "value": {"index" : Store.data.pilot.pilots.indexOf(value)}}
-			    	Dispatcher.set(payload, true)
-		    	}
-		    ) }, [
-		      	Store.data.pilot.pilots.map(function(name, index) {
-		        	return m('option' + (Store.data.pilot.index === index  ? '[selected=true]' : ''), name)
-		      	})
-		    ])
-		}
+const PilotsView = {
+	view: function (ctrl) {
+	    return m('select', { 
+	    	onchange: m.withAttr('value', function(value) {
+	    		const payload = {"target": "pilot", "value": {"index" : Store.data.pilot.pilots.indexOf(value)}}
+		    	Dispatcher.set(payload, true)
+	    	}
+	    ) }, [
+	      	Store.data.pilot.pilots.map(function(name, index) {
+	        	return m('option' + (Store.data.pilot.index === index  ? '[selected=true]' : ''), name)
+	      	})
+	    ])
 	}
 }
 
-const RecordBox = function() {
-	return {
-		view: function(ctrl) {
-			return m('input', {
-				type: "checkbox", 
-				class: "js-switch",
-				checked: Store.data.record,
-				onchange: m.withAttr('checked', function(checked) {
-					const payload = {"target": "record", "value": {"record" : checked}}
-			    	Dispatcher.set(payload, true)
-				}) }, "Record")
-		}
+const RecordBox = {
+	view: function(ctrl) {
+		return m('input', {
+			type: "checkbox", 
+			class: "js-switch",
+			checked: Store.data.record,
+			onchange: m.withAttr('checked', function(checked) {
+				const payload = {"target": "record", "value": {"record" : checked}}
+		    	Dispatcher.set(payload, true)
+			}) }, "Record")
 	}
 }
 
-const ThrottleValue = function() {
-	return {
-		view: function() {
-			return m("span", Math.round((Store.data.controls.throttle * -1 + 0.00001) * 100) / 100)
-		}
+const ThrottleValue = {
+	view: function() {
+		return m("span", Math.round((Store.data.controls.throttle * -1 + 0.00001) * 100) / 100)
 	}
 }
 
-const FTimeValue = function() {
-	return {
-		view: function() {
-			return m("span", Math.round((Store.data.f_time + 0.00001) * 1000) + " ms")
-		}
+const FTimeValue = {
+	view: function() {
+		return m("span", Math.round((Store.data.f_time + 0.00001) * 1000) + " ms")
 	}
 }
 
-const Veil = function() {
-	return {
-		view: function(ctrl) {
-			const vis = waiting == true?"visible":"hidden"
-			const style = "visibility:" + vis + ";"
-			return m('div', {class:"veil", style:style},"")
-		}
+const Veil = {
+	view: function(ctrl) {
+		const vis = waiting == true?"visible":"hidden"
+		const style = "visibility:" + vis + ";"
+		return m('div', {class:"veil", style:style},"")
 	}
 }
 
