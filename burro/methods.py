@@ -69,6 +69,12 @@ functions to help with discovering i2c devices
 '''
 
 def i2c_addresses(bus_index):
+    '''
+    Get I2C Addresses using i2cdetect. 
+    Unfortunately the alternative, simpler implementation
+    using smbus does not detect NAVIO2 properly, so it's
+    needed that i2cdetect is called.
+    '''
     addresses = []
 
     p = subprocess.Popen(['i2cdetect', '-y','1'],stdout=subprocess.PIPE,)
@@ -81,8 +87,11 @@ def i2c_addresses(bus_index):
             
 
 def board_type():
+    '''
+    Guess the available board type based on the
+    I2C addresses found.
+    '''
     addresses = i2c_addresses(1)
-    import ipdb; ipdb.set_trace()
     if not addresses:
         return None
     if '0x77' in addresses:
