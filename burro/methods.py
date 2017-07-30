@@ -1,5 +1,9 @@
 from __future__ import division
 
+import os
+import subprocess
+import re
+
 import numpy as np
 
 import config
@@ -65,22 +69,23 @@ functions to help with discovering i2c devices
 '''
 
 def i2c_addresses(bus_index):
-    import smbus
-
-    bus = smbus.SMBus(bus_index)
     addresses = []
 
-    for device in range(128):
-          try:
-             bus.read_byte(device)
-             addresses.append(hex(device))
-          except: # exception if read_byte fails
-             pass
+    p = subprocess.Popen(['i2cdetect', '-y','1'],stdout=subprocess.PIPE,)
+    for i in range(0,9):
+        line = str(p.stdout.readline())
+        for match in re.finditer("[0-9][0-9]:.*[0-9][0-9]", line):
+            for number in re.finditer("[0-9][0-9](?!:)", match.group()):
+                addresses.append('0x' + number.group())
     return addresses
+            
 
 def board_type():
     addresses = i2c_addresses(1)
-    if '0x48' in addresses and '0x77' in addresses:
+    import ipdb; ipdb.set_trace()
+    if not addresses:
+        return None
+    if '0x77' in addresses:
         return 'navio'
     elif '0x60' in addresses:
         return 'adafruit'
