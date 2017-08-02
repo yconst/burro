@@ -1,7 +1,13 @@
 from __future__ import division
 
 import os
+<<<<<<< HEAD
 import os.path
+=======
+import subprocess
+import re
+
+>>>>>>> db8fb8534c1565dfb5fb6ad867011af852a5f1dd
 import numpy as np
 
 import config
@@ -44,7 +50,6 @@ def angle_to_yaw(angle, limit=config.CAR_MAX_STEERING_ANGLE):
     '''
     return angle / float(limit)
 
-
 def yaw_to_angle(yaw, limit=config.CAR_MAX_STEERING_ANGLE):
     '''
     Convert from yaw to angle
@@ -71,7 +76,6 @@ def parse_img_filepath(filepath):
 
     return angle, throttle, milliseconds
 
-
 def create_file(path):
     '''
     Create a file at path if not exist
@@ -92,3 +96,39 @@ def create_file(path):
 
     mkdir_p(os.path.dirname(path))
     touch(path)
+
+
+'''
+I2C TOOLS
+functions to help with discovering i2c devices
+'''
+
+def i2c_addresses(bus_index):
+    '''
+    Get I2C Addresses using i2cdetect.
+    Unfortunately the alternative, simpler implementation
+    using smbus does not detect NAVIO2 properly, so it's
+    needed that i2cdetect is called.
+    '''
+    addresses = []
+
+    p = subprocess.Popen(['i2cdetect', '-y','1'],stdout=subprocess.PIPE,)
+    for i in range(0,9):
+        line = str(p.stdout.readline())
+        for match in re.finditer("[0-9][0-9]:.*[0-9][0-9]", line):
+            for number in re.finditer("[0-9][0-9](?!:)", match.group()):
+                addresses.append('0x' + number.group())
+    return addresses
+
+def board_type():
+    '''
+    Guess the available board type based on the
+    I2C addresses found.
+    '''
+    addresses = i2c_addresses(1)
+    if not addresses:
+        return None
+    if '0x77' in addresses:
+        return 'navio'
+    elif '0x60' in addresses:
+        return 'adafruit'

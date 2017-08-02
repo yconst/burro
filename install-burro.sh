@@ -6,7 +6,7 @@ sudo apt-get install --assume-yes libtiff5-dev libjpeg-dev zlib1g-dev \
   libfreetype6-dev liblcms2-dev \
   libwebp-dev tcl8.5-dev tk8.5-dev python-tk
 sudo apt-get install --assume-yes python-numpy python-scipy python-pillow \
-  libhdf5-dev python-h5py python-dev
+  libhdf5-dev python-h5py python-dev python-pip
 sudo apt-get install --assume-yes python-smbus i2c-tools
 
 echo "\nBurro Installer: Creating environment\n"
