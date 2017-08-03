@@ -58,6 +58,8 @@ Choose your driving method (by default it is either gamepad or RC, based on avai
 
 Please take a look at the [Burro Wiki](https://github.com/yconst/burro/wiki) for more information, including [help on configuring](https://github.com/yconst/burro/wiki/Configuring).
 
+Regular news and examples are posted in the [Unmanned Build](http://unmannedbuild.yconst.com) blog.
+
 
 ### Contributing
 
