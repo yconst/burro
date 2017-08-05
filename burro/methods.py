@@ -30,7 +30,7 @@ def to_one_hot(y, low=-1.0, high=1.0, bins=config.MODEL_OUTPUT_SIZE):
 
 def from_one_hot(y):
     v = np.argmax(y)
-    v = from_index(v, low=low, high=high)
+    v = from_index(v)
     return v
 
 
