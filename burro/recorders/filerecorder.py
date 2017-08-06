@@ -29,10 +29,11 @@ class FileRecorder(BaseRecorder):
         Create a directory for the current session based on time,
         and a global sessions directory if it does not exist.
         '''
-        if not os.path.isdir(sessions_path):
-            os.makedirs(sessions_path)
+        real_path = os.path.abspath(os.path.expanduser(sessions_path))
+        if not os.path.isdir(real_path):
+            os.makedirs(real_path)
         instance_name = time.strftime('%Y_%m_%d__%I_%M_%S_%p')
-        instance_path = os.path.join(sessions_path, instance_name)
+        instance_path = os.path.join(real_path, instance_name)
         if not os.path.isdir(instance_path):
             os.makedirs(instance_path)
         return instance_path
