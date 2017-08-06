@@ -8,6 +8,7 @@ import numpy as np
 
 import config
 
+
 '''
 BINNING
 functions to help convert between floating point numbers and categories.
@@ -38,7 +39,6 @@ def from_one_hot(y):
 ANGLE CONVERSIONS
 functions to help converting between angles and yaw input values.
 '''
-
 
 def angle_to_yaw(angle, limit=config.CAR_MAX_STEERING_ANGLE):
     '''
