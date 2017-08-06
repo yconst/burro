@@ -61,9 +61,8 @@ class KerasCategorical(BasePilot):
         else:
             yaw_binned = prediction
             throttle = 0
-        yaw_unbinned = methods.from_one_hot(yaw_binned)
+        yaw = methods.from_one_hot(yaw_binned)
 
-        yaw = yaw_unbinned[0]
         avf = config.KERAS_AVERAGE_FACTOR
         yaw = avf * self.yaw + (1.0 - avf) * yaw
         self.yaw = yaw
