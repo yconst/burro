@@ -14,9 +14,7 @@ class NAVIO2PWM(Driver):
     def __init__(self, channel, frequency=50):
         from navio import pwm as navio_pwm
         from navio import util
-
         util.check_apm()
-
         self.pwm = navio_pwm.PWM(channel)
         self.pwm.initialize()
         self.channel = channel
@@ -39,7 +37,6 @@ class Adafruit_MotorHAT(Driver):
 
     def __init__(self, motor_index):
         from adafruit_motorhat import Adafruit_MotorHAT, Adafruit_DCMotor
-
         self.mh = Adafruit_MotorHAT(addr=0x60)
         self.motor_index = motor_index
         atexit.register(self.turnOffMotors)
