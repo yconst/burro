@@ -1,4 +1,8 @@
+import os
+
 from configobj import ConfigObj
+
+config = None
 
 def config2object(config):
     """
@@ -23,7 +27,17 @@ def config2object(config):
     else:
         return config
 
-config_dict = ConfigObj('defaults.ini', unrepr=True)
-user_dict = ConfigObj('user.ini', unrepr=True, create_empty=True)
-config_dict.merge(user_dict)
-config = config2object(config_dict)
+def setup_config():
+    global config
+
+    config_dir = os.path.dirname(os.path.realpath(__file__))
+    defaults_path = os.path.join(config_dir, 'defaults.ini')
+    config_dict = ConfigObj(defaults_path, unrepr=True)
+
+    user_path = os.path.join(config_dir, 'user.ini')
+    user_dict = ConfigObj(user_path, unrepr=True, create_empty=True)
+    config_dict.merge(user_dict)
+
+    config = config2object(config_dict)
+
+setup_config()

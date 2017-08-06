@@ -40,14 +40,14 @@ ANGLE CONVERSIONS
 functions to help converting between angles and yaw input values.
 '''
 
-def angle_to_yaw(angle, limit=config.ackermann.max_steering_angle):
+def angle_to_yaw(angle, limit=config.ackermann_car.max_steering_angle):
     '''
     Convert from angle to yaw
     '''
     return angle / float(limit)
 
 
-def yaw_to_angle(yaw, limit=config..ackermann.max_steering_angle):
+def yaw_to_angle(yaw, limit=config.ackermann_car.max_steering_angle):
     '''
     Convert from yaw to angle
     '''
