@@ -2,7 +2,7 @@
 
 rc.py
 
-A pilot using RC control
+Pilots using RC control
 
 '''
 
@@ -20,18 +20,17 @@ import methods, config
 
 
 class RC(BasePilot):
+    '''
+    A pilot for NAVIO2 RC input
+    '''
     def __init__(self, **kwargs):
-
         self.rcin = rcinput.RCInput()
-
         self.throttle_center = 1500
         self.yaw_center = 1500
         self.calibrated = False
-
         super(RC, self).__init__(**kwargs)
 
     def decide(self, img_arr):
-
         if float(self.rcin.read(config.ARM_CHANNEL)) > 1490:
             if not self.calibrated:
                 self.calibrate_rc(self.rcin)
@@ -49,7 +48,6 @@ class RC(BasePilot):
         return methods.yaw_to_angle(yaw), throttle
 
     def calibrate_rc(self, rcin):
-
         print("Please center your receiver sticks")
         time.sleep(2.00)
 
