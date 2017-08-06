@@ -16,13 +16,14 @@ import helpers
 from generators.file_generators import filename_generator
 from generators.pil_generators import (image_count,
                             image_generator, image_flip, image_resize,
-                            image_rotate, array_generator)
+                            image_rotate, array_generator,
+                            image_voffset)
 from generators.numpy_generators import (category_generator,
                               brightness_shifter, batch_image_generator,
                               center_normalize, equalize_probs, nth_select)
 
 
-def train(data_dir, track, optimizer='adam', patience=10, eq_prob=0.98):
+def train(data_dir, track, optimizer='adam', patience=10, eq_prob=0.60):
     offset = 4
 
     gen_batch = 256
@@ -37,7 +38,7 @@ def train(data_dir, track, optimizer='adam', patience=10, eq_prob=0.98):
     hist = helpers.angles_histogram(data_dir)
     print hist[0]
     print hist[1]
-    
+
     model_dir = os.path.abspath(os.path.expanduser(config.MODELS_DIR))
     model_path = os.path.join(model_dir,
         'model-' + track + '-' + optimizer +
@@ -57,11 +58,12 @@ def train(data_dir, track, optimizer='adam', patience=10, eq_prob=0.98):
     gen = equalize_probs(gen, prob=eq_prob)
     gen = image_generator(gen)
     gen = image_flip(gen)
+    gen = image_voffset(gen)
     gen = image_rotate(gen)
     gen = image_resize(gen)
     gen = array_generator(gen)
     gen = center_normalize(gen)
-    gen = brightness_shifter(gen, min_shift=-0.18, max_shift=0.18)
+    gen = brightness_shifter(gen, min_shift=-0.28, max_shift=0.18)
     gen = category_generator(gen)
     gen = batch_image_generator(gen, batch_size=gen_batch)
 
@@ -70,10 +72,12 @@ def train(data_dir, track, optimizer='adam', patience=10, eq_prob=0.98):
     val = equalize_probs(val, prob=eq_prob)
     val = image_generator(val)
     val = image_flip(val)
+    val = image_voffset(val)
+    val = image_rotate(val)
     val = image_resize(val)
     val = array_generator(val)
     val = center_normalize(val)
-    val = brightness_shifter(val, min_shift=-0.1, max_shift=0.1)
+    val = brightness_shifter(val, min_shift=-0.2, max_shift=0.1)
     val = category_generator(val)
     val = batch_image_generator(val, batch_size=val_batch)
 
