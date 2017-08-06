@@ -1,13 +1,10 @@
 from __future__ import division
 
 import os
-<<<<<<< HEAD
-import os.path
-=======
 import subprocess
 import re
+import errno
 
->>>>>>> db8fb8534c1565dfb5fb6ad867011af852a5f1dd
 import numpy as np
 
 import config
