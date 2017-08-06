@@ -68,7 +68,7 @@ Burro includes an installation script that handles installing a neural network t
 
     wget https://raw.githubusercontent.com/yconst/burro/master/install-burro.sh
     chmod +x install-burro.sh
-    ./install-burro.sh
+    ./install-trainer.sh
 
 ## Next Steps
 
