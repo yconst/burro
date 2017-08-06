@@ -11,6 +11,7 @@ from keras.callbacks import TensorBoard, ReduceLROnPlateau, ModelCheckpoint, Ear
 
 import config
 import methods
+import helpers
 
 from generators.file_generators import filename_generator
 from generators.pil_generators import (image_count,
@@ -21,7 +22,7 @@ from generators.numpy_generators import (category_generator,
                               center_normalize, equalize_probs, nth_select)
 
 
-def train(data_dir, track, optimizer='adam', patience=10):
+def train(data_dir, track, optimizer='adam', patience=10, eq_prob=0.98):
     offset = 4
 
     gen_batch = 256
@@ -33,6 +34,10 @@ def train(data_dir, track, optimizer='adam', patience=10):
 
     now = time.strftime("%c")
 
+    hist = helpers.angles_histogram(data_dir)
+    print hist[0]
+    print hist[1]
+    
     model_dir = os.path.abspath(os.path.expanduser(config.MODELS_DIR))
     model_path = os.path.join(model_dir,
         'model-' + track + '-' + optimizer +
@@ -49,7 +54,7 @@ def train(data_dir, track, optimizer='adam', patience=10):
     im_count = image_count(data_dir)
     gen = filename_generator(data_dir, indefinite=True)
     gen = nth_select(gen, mode='reject_nth', nth=10, offset=offset)
-    gen = equalize_probs(gen)
+    gen = equalize_probs(gen, prob=eq_prob)
     gen = image_generator(gen)
     gen = image_flip(gen)
     gen = image_rotate(gen)
@@ -62,7 +67,7 @@ def train(data_dir, track, optimizer='adam', patience=10):
 
     val = filename_generator(data_dir, indefinite=True)
     val = nth_select(val, mode='accept_nth', nth=10, offset=offset)
-    val = equalize_probs(val)
+    val = equalize_probs(val, prob=eq_prob)
     val = image_generator(val)
     val = image_flip(val)
     val = image_resize(val)
