@@ -1,17 +1,14 @@
 
-
 # RC Control
 
 THROTTLE_CHANNEL = 2
 YAW_CHANNEL = 0
 ARM_CHANNEL = 4
 
-
 # Recording
 
 THROTTLE_RECORD_LIMIT = 0.010
 SESSION_DIR = "~/burro/sessions"
-
 
 # Sensors
 
@@ -19,7 +16,6 @@ CAMERA_RESOLUTION = (132, 99)
 CAMERA_FRAMERATE = 30
 CAMERA_HORIZONTAL_FOV = 120.
 CAMERA_OUTPUT_RANGE = (0, 255)
-
 
 # Vehicle - General
 

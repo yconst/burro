@@ -32,22 +32,19 @@ class BasePilot(object):
         self.last_modified = last_modified
 
     def decide(self, img_arr):
-        angle = 0.0
-        speed = 0.0
-        return angle, speed
-
-    def load(self):
-        pass
+        return 0., 0.
 
     def pname(self):
         return self.name or "Default"
 
 
 class KerasCategorical(BasePilot):
+    '''
+    A pilot based on a CNN with categorical output
+    '''
     def __init__(self, model_path, **kwargs):
-        self.model_path = model_path
-        self.model = None  # load() loads the model
         self.yaw = 0
+        self.model = keras.models.load_model(model_path)
         super(KerasCategorical, self).__init__(**kwargs)
 
     def decide(self, img_arr):
@@ -67,9 +64,6 @@ class KerasCategorical(BasePilot):
         yaw = avf * self.yaw + (1.0 - avf) * yaw
         self.yaw = yaw
         return methods.yaw_to_angle(yaw), throttle * 0.15
-
-    def load(self):
-        self.model = keras.models.load_model(self.model_path)
 
     def pname(self):
         return self.name or "Keras Categorical"
