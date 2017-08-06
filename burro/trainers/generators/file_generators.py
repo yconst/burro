@@ -6,12 +6,12 @@ import methods
 import config
 
 
-def filename_generator(path, indefinite=False, signal_end=False):
+def filename_generator(file_dir, indefinite=False, signal_end=False):
     '''
     Generator that loops (indefinitely) through
     files and telemetry data embedded in file names.
     '''
-    paths = glob.glob(os.path.join(path, '*.jpg'))
+    paths = glob.glob(os.path.join(file_dir, '*.jpg'))
     if not paths:
         return
     while True:
