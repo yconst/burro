@@ -14,6 +14,7 @@ cd burro-trainer
 echo "\nBurro Trainer Installer: Preparing Burro\n"
 git clone https://github.com/yconst/burro
 cd burro
+git checkout training
 ../bin/pip install -r requirements-trainer.txt
 
 echo "\nBurro Trainer Installer: Done.\n"
