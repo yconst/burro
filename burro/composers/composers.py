@@ -45,9 +45,8 @@ class Composer(object):
             rc = None
         model_paths = list_models()
         for model_path, model_name in model_paths:
-            keras = KerasCategorical(model_path, name=model_name)
             logging.info("Loading model " + model_name)
-            keras.load()
+            keras = KerasCategorical(model_path, name=model_name)
             if f710:
                 pilots.append(MixedF710(keras, f710))
             if rc:
