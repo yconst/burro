@@ -8,7 +8,7 @@ ARM_CHANNEL = 4
 # Recording
 
 THROTTLE_RECORD_LIMIT = 0.010
-SESSION_DIR = "~/burro/sessions"
+SESSION_DIR = "../sessions"
 
 # Sensors
 
@@ -37,5 +37,5 @@ RIGHT_MOTOR_REVERSE = False
 MODEL_INPUT_RANGE = (0, 255)
 MODEL_OUTPUT_SIZE = 15
 KERAS_AVERAGE_FACTOR = 0.8
-MODELS_DIR = "~/burro/models"
-LOGS_DIR = "~/burro/logs"
+MODELS_DIR = "../models"
+LOGS_DIR = "../logs"
