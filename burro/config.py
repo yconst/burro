@@ -8,7 +8,7 @@ ARM_CHANNEL = 4
 # Recording
 
 THROTTLE_RECORD_LIMIT = 0.010
-SESSION_DIR = "/home/pi/burro_sessions"
+SESSION_DIR = "../sessions"
 
 # Sensors
 
