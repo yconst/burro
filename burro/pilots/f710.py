@@ -27,8 +27,12 @@ import config
 
 
 class F710(BasePilot):
+    '''
+    A pilot using the F710 gamepad
+    '''
     def __init__(self, **kwargs):
-        self.setup_pad()
+        self.gamepad = Gamepad()
+        self.gamepad._read_gamepad()
         self.thread = Thread(target=self.loop_values)
         self.thread.daemon = True
         self.thread.start()
@@ -38,9 +42,10 @@ class F710(BasePilot):
 
     def decide(self, img_arr):
         st = self.gamepad._state
-        if int(st[2]) == 1:
+        direction = int(st[2])
+        if direction == 1: # forward
                 self.throttle = -0.095 - st[4]/255.
-        elif int(st[2]) == 2:
+        elif direction == 2: # reverse
                 self.throttle = 0.095 + st[4]/255.
         else:
             self.throttle = 0
@@ -48,10 +53,6 @@ class F710(BasePilot):
         self.yaw = (float(st[10]) - 128.0) / 128.0
 
         return methods.yaw_to_angle(self.yaw), self.throttle
-
-    def setup_pad(self):
-        self.gamepad = Gamepad()
-        self.gamepad._read_gamepad()
 
     def loop_values(self):
         while True:
@@ -81,8 +82,6 @@ class Gamepad(object):
             for dev in devs:
                 if dev.idVendor == 0x046d and dev.idProduct == 0xc21f:
                     d = dev
-        #conf = d.configurations[0]
-        #intf = conf.interfaces[0][0]
         if d is not None:
             self._dev = d.open()
             try:
@@ -91,7 +90,6 @@ class Gamepad(object):
                 logging.warning("Gamepad: Error detaching kernel driver (usually no problem)")
             except AttributeError:
                 pass
-            #handle.interruptWrite(0, 'W')
             self._dev.setConfiguration(1)
             self._dev.claimInterface(0)
 

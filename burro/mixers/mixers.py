@@ -31,10 +31,8 @@ class AckermannSteeringMixer(BaseMixer):
     def update(self, throttle, angle):
         throttle = min(1, max(-1, -throttle))
         yaw = min(1, max(-1, methods.angle_to_yaw(angle)))
-
         if not config.REVERSE_STEERING:
             yaw = -yaw
-
         self.throttle_driver.update(throttle)
         self.steering_driver.update(yaw)
         
@@ -51,7 +49,6 @@ class DifferentialSteeringMixer(BaseMixer):
     
     def update(self, throttle, angle):
         throttle = min(1, max(-1, throttle))
-
         l_speed = (throttle - angle * throttle / 90.) * config.LEFT_MOTOR_MULT
         r_speed = (throttle + angle * throttle / 90.) * config.RIGHT_MOTOR_MULT
         l_speed = min(max(l_speed, -1), 1)
@@ -60,7 +57,6 @@ class DifferentialSteeringMixer(BaseMixer):
             l_speed = -l_speed
         if config.RIGHT_MOTOR_REVERSE:
             r_speed = -r_speed
-        
         self.left_driver.update(l_speed)
         self.right_driver.update(r_speed)
 
