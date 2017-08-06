@@ -48,7 +48,8 @@ class FileRecorder(BaseRecorder):
         # we are only interested in forward values of throttle
         # angle is counter-clockwise, i.e. left is positive
         # TODO: make a proper value mapping here, and then transform
-        if throttle * -1.0 < config.recording.throttle_threshold:
+        if (throttle * -1.0 < config.recording.throttle_threshold or
+            abs(angle) < config.recording.steering_threshold):
             self.is_recording = False
             return
         self.is_recording = True
