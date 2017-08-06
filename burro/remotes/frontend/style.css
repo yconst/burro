@@ -208,6 +208,12 @@ input[type=checkbox]:checked:after {
 	#primaryContainer {
 		cursor: auto;
 		position: static;
+		top: 0;
+		left: 0;
+	}
+
+	#imageContainer {
+		padding: 0;
 	}
 
   	#secondaryContainer {
