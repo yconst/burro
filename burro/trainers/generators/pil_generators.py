@@ -7,7 +7,9 @@ from random import randint as ri
 
 import numpy as np
 
-from PIL import Image, ImageOps
+from PIL import Image, ImageOps, ImageChops
+
+import pyblur
 
 import methods
 import config
@@ -59,7 +61,7 @@ def image_flip(generator):
         yield img, angle
 
 
-def image_rotate(generator, prob=0.6, max_angle=5):
+def image_rotate(generator, prob=0.4, max_angle=5):
     '''
     Generator that augments batches of images and telemetry
     through random rotation
@@ -73,6 +75,24 @@ def image_rotate(generator, prob=0.6, max_angle=5):
                     0, 255), ri(
                     0, 255)))
             rot = img.rotate(image_angle, expand=False)
+            dst_im.paste(rot)
+            img = dst_im.convert('RGB')
+        yield img, input_angle
+
+
+def image_voffset(generator, prob=0.4, max_pixels=5):
+    '''
+    Generator that vertically offsets an image
+    '''
+    for img, input_angle in generator:
+        if prob < random.uniform(0, 1):
+            image_offset = random.randrange(-max_pixels, max_pixels)
+            dst_im = Image.new(
+                "RGBA", img.size, (ri(
+                    0, 255), ri(
+                    0, 255), ri(
+                    0, 255)))
+            rot = ImageChops.offset(img, 0, image_offset)
             dst_im.paste(rot)
             img = dst_im.convert('RGB')
         yield img, input_angle
