@@ -98,7 +98,7 @@ class PiVideoStream(BaseCamera):
             # TODO: here consider using hardware crop (called zoom)
             # it's not used cause it's hard to work with
             if config.camera.crop_top or config.camera.crop_bottom:
-                h,w = img.shape
+                h,w,_ = frame.shape
                 t = config.camera.crop_top
                 l = h - config.camera.crop_top - config.camera.crop_bottom
                 frame = frame[t:l,:]
