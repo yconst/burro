@@ -23,7 +23,7 @@ from generators.numpy_generators import (category_generator,
                               center_normalize, equalize_probs, nth_select)
 
 
-def train(data_dir, track, optimizer='adam', patience=10, eq_prob=0.60):
+def train(data_dir, track, optimizer='adam', patience=10, eq_prob=0.98):
     offset = 4
 
     gen_batch = 256
@@ -114,6 +114,8 @@ def train(data_dir, track, optimizer='adam', patience=10, eq_prob=0.60):
     model_cp = ModelCheckpoint(model_path, monitor='val_loss',
                                save_best_only=True, mode='auto', period=1)
     e_stop = EarlyStopping(monitor='val_loss', patience=patience)
+
+    print "Best model saved in " + model_path
 
     hist = model.fit_generator(gen,
                                epochs=200,
