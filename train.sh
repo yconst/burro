@@ -23,7 +23,7 @@ if [ -n $path ] && [ -n $name ];
 then
   SCRIPT_DIR="$( cd "$( dirname "$0" )" && pwd )"
   DATA_DIR=$(realpath $path)
-  $SCRIPT_DIR/env/bin/python $SCRIPT_DIR/burro/train.py --data-dir $DATA_DIR --model-name $name
+  $SCRIPT_DIR/../bin/python $SCRIPT_DIR/burro/train.py --data-dir $DATA_DIR --model-name $name
 else
   echo "Data directory and model name arguments are required" >&2
   exit 1
