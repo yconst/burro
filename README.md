@@ -66,9 +66,9 @@ Choose your driving method (by default it is either gamepad or RC, based on avai
 
 Burro includes an installation script that handles installing a neural network training environment, except the installation of Tensorflow. You should have Tensorflow installed before proceeding with installing a training environment. This is not a requirement for setting up a car (see above) To download and run:
 
-    wget https://raw.githubusercontent.com/yconst/burro/master/install-burro.sh
-    chmod +x install-burro.sh
-    ./install-burro.sh
+    wget https://raw.githubusercontent.com/yconst/burro/training/install-trainer.sh
+    chmod +x install-trainer.sh
+    ./install-trainer.sh
 
 ## Next Steps
 
