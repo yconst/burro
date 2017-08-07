@@ -40,16 +40,17 @@ def image_count(path):
     return len(paths)
 
 
-def image_crop_top(generator, top=10, bottom=0):
+def image_crop(generator, top=config.CAMERA_CROP_TOP,
+        bottom=config.CAMERA_CROP_BOTTOM):
     '''
     Generator that crops the top pixels of an image
     '''
     for img, angle in generator:
         w, h = img.size
-        return img.crop((0, top, w, h-top-bottom)), angle
+        yield img.crop((0, top, w, h-bottom)), angle
 
 
-def image_resize(generator, size=(132, 99)):
+def image_resize(generator, size=config.CAMERA_RESOLUTION):
     '''
     Generator that resizes images
     '''
