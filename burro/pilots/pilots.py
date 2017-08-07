@@ -52,7 +52,7 @@ class KerasCategorical(BasePilot):
         if config.camera.crop_top or config.camera.crop_bottom:
             h,w,_ = img_arr.shape
             t = config.camera.crop_top
-            l = h - config.camera.crop_top - config.camera.crop_bottom
+            l = h - config.camera.crop_bottom
             img_arr = img_arr[t:l,:]
 
         img_arr = np.interp(img_arr,config.camera.output_range,
