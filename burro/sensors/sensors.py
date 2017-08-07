@@ -7,8 +7,9 @@ import cStringIO
 from threading import Thread
 from itertools import cycle
 
-import numpy as np
+import logging
 
+import numpy as np
 from PIL import Image
 
 import config
@@ -84,7 +85,7 @@ class PiVideoStream(BaseCamera):
         self.frame = None
         self.stopped = False
 
-        print('PiVideoStream loaded.. .warming camera')
+        logging.info("PiVideoStream loaded.. .warming camera")
 
         time.sleep(2)
         self.start()
@@ -93,14 +94,20 @@ class PiVideoStream(BaseCamera):
         # keep looping infinitely until the thread is stopped
         for f in self.camera.capture_continuous(
                 self.rawCapture, format="rgb", use_video_port=True):
-            # grab the frame from the stream and clear the stream in
-            # preparation for the next frame
-            self.frame = f.array
+            frame = f.array
+
+            # TODO: here consider using hardware crop (called zoom)
+            # it's not used cause it's hard to work with
+            if config.CAMERA_CROP_TOP or config.CAMERA_CROP_BOTTOM:
+                h,w = img.shape
+                t = config.CAMERA_CROP_TOP
+                l = h - config.CAMERA_CROP_TOP - config.CAMERA_CROP_BOTTOM
+                frame = frame[t:l,:]
+
+            self.frame = frame
             self.rawCapture.truncate(0)
             self.frame_time = time.time()
 
-            # if the thread indicator variable is set, stop the thread
-            # and resource camera resources
             if self.stopped:
                 self.stream.close()
                 self.rawCapture.close()
