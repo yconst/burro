@@ -63,7 +63,6 @@ class BaseCamera(object):
         return base64_buffer
 
 
-
 class PiVideoStream(BaseCamera):
     def __init__(self, resolution=config.CAMERA_RESOLUTION,
                 framerate=config.CAMERA_FRAMERATE,
