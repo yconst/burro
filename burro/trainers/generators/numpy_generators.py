@@ -55,7 +55,7 @@ def center_normalize(generator):
         yield X, Y
 
 
-def equalize_probs(generator, prob=0.6):
+def equalize_probs(generator, prob=config.EQUALIZE_PROB_STRENGTH):
     '''
     Generators that attempts to equalize the number of times
     each bin has appeared in the stream
