@@ -40,13 +40,13 @@ def image_count(path):
     return len(paths)
 
 
-def image_crop_top(generator, pixels=10):
+def image_crop_top(generator, top=10, bottom=0):
     '''
     Generator that crops the top pixels of an image
     '''
     for img, angle in generator:
         w, h = img.size
-        return img.crop((0, pixels, w, h-pixels)), angle
+        return img.crop((0, top, w, h-top-bottom)), angle
 
 
 def image_resize(generator, size=(132, 99)):
