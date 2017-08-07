@@ -6,6 +6,7 @@ import numpy as np
 
 sys.path.insert(1, os.path.join(sys.path[0], '..'))
 import methods
+import config
 
 def angles_histogram(image_dir):
     '''
@@ -15,4 +16,4 @@ def angles_histogram(image_dir):
     angles = []
     for _, angle in filename_generator(image_dir):
         angles.append(angle)
-    return np.histogram(angles)
+    return np.histogram(angles, config.MODEL_OUTPUT_SIZE)
