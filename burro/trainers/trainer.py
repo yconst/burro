@@ -17,7 +17,7 @@ from generators.file_generators import filename_generator
 from generators.pil_generators import (image_count,
                             image_generator, image_flip, image_resize,
                             image_rotate, array_generator,
-                            image_voffset)
+                            image_voffset, image_crop)
 from generators.numpy_generators import (category_generator,
                               brightness_shifter, batch_image_generator,
                               center_normalize, equalize_probs, nth_select)
@@ -55,13 +55,13 @@ def train(data_dir, track, optimizer='adam', patience=10):
     im_count = image_count(data_dir)
     gen = filename_generator(data_dir, indefinite=True)
     gen = nth_select(gen, mode='reject_nth', nth=10, offset=offset)
-    gen = equalize_probs(gen, prob=config.EQUALIZE_PROB_STRENGTH)
+    gen = equalize_probs(gen)
     gen = image_generator(gen)
-    gen = image_crop(gen, top=config.CAMERA_CROP_TOP)
     gen = image_flip(gen)
     gen = image_voffset(gen)
     gen = image_rotate(gen)
     gen = image_resize(gen)
+    gen = image_crop(gen)
     gen = array_generator(gen)
     gen = center_normalize(gen)
     gen = brightness_shifter(gen, min_shift=-0.28, max_shift=0.18)
@@ -70,13 +70,13 @@ def train(data_dir, track, optimizer='adam', patience=10):
 
     val = filename_generator(data_dir, indefinite=True)
     val = nth_select(val, mode='accept_nth', nth=10, offset=offset)
-    val = equalize_probs(val, prob=config.EQUALIZE_PROB_STRENGTH)
+    val = equalize_probs(val)
     val = image_generator(val)
-    val = image_crop(val, top=config.CAMERA_CROP_TOP)
     val = image_flip(val)
     val = image_voffset(val)
     val = image_rotate(val)
     val = image_resize(val)
+    val = image_crop(val)
     val = array_generator(val)
     val = center_normalize(val)
     val = brightness_shifter(val, min_shift=-0.2, max_shift=0.1)
