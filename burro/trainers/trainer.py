@@ -23,7 +23,7 @@ from generators.numpy_generators import (category_generator,
                               center_normalize, equalize_probs, nth_select)
 
 
-def train(data_dir, track, optimizer='adam', patience=10, eq_prob=0.98):
+def train(data_dir, track, optimizer='adam', patience=10):
     offset = 4
 
     gen_batch = 256
@@ -55,8 +55,9 @@ def train(data_dir, track, optimizer='adam', patience=10, eq_prob=0.98):
     im_count = image_count(data_dir)
     gen = filename_generator(data_dir, indefinite=True)
     gen = nth_select(gen, mode='reject_nth', nth=10, offset=offset)
-    gen = equalize_probs(gen, prob=eq_prob)
+    gen = equalize_probs(gen, prob=config.EQUALIZE_PROB_STRENGTH)
     gen = image_generator(gen)
+    gen = image_crop(gen, top=config.CAMERA_CROP_TOP)
     gen = image_flip(gen)
     gen = image_voffset(gen)
     gen = image_rotate(gen)
@@ -69,8 +70,9 @@ def train(data_dir, track, optimizer='adam', patience=10, eq_prob=0.98):
 
     val = filename_generator(data_dir, indefinite=True)
     val = nth_select(val, mode='accept_nth', nth=10, offset=offset)
-    val = equalize_probs(val, prob=eq_prob)
+    val = equalize_probs(val, prob=config.EQUALIZE_PROB_STRENGTH)
     val = image_generator(val)
+    val = image_crop(val, top=config.CAMERA_CROP_TOP)
     val = image_flip(val)
     val = image_voffset(val)
     val = image_rotate(val)
@@ -86,7 +88,7 @@ def train(data_dir, track, optimizer='adam', patience=10, eq_prob=0.98):
         Convolution2D(
             24, (5, 5), strides=(
                 2, 2), activation='relu', input_shape=(
-                99, 132, 3)))
+                99-config.CAMERA_CROP_TOP, 132, 3)))
     model.add(Convolution2D(32, (5, 5), strides=(2, 2), activation='relu'))
     model.add(Convolution2D(64, (5, 5), strides=(2, 2), activation='relu'))
     model.add(Convolution2D(64, (3, 3), strides=(2, 2), activation='relu'))
