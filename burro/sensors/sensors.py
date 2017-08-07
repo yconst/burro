@@ -58,14 +58,15 @@ class BaseCamera(object):
             self.base64_buffer = base64_buffer
             self.base64_time = time.time()
         else:
-            base64_buffer = self.base64_buffer    
+            base64_buffer = self.base64_buffer
         return base64_buffer
 
 
 
 class PiVideoStream(BaseCamera):
-    def __init__(self, resolution=config.CAMERA_RESOLUTION, 
-                framerate=config.CAMERA_FRAMERATE, **kwargs):
+    def __init__(self, resolution=config.CAMERA_RESOLUTION,
+                framerate=config.CAMERA_FRAMERATE,
+                rotation=config.CAMERA_ROTATION, **kwargs):
         from picamera.array import PiRGBArray
         from picamera import PiCamera
 
@@ -75,7 +76,7 @@ class PiVideoStream(BaseCamera):
         self.camera = PiCamera()
         self.camera.resolution = resolution
         self.camera.framerate = framerate
-        self.camera.rotation = 90  # TODO: move to settings
+        self.camera.rotation = rotation
         self.rawCapture = PiRGBArray(self.camera, size=resolution)
 
         # initialize the frame and the variable used to indicate
@@ -109,4 +110,3 @@ class PiVideoStream(BaseCamera):
     def stop(self):
         # indicate that the thread should be stopped
         self.stopped = True
-
