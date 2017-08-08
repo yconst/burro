@@ -12,12 +12,12 @@ import logging
 import numpy as np
 from PIL import Image
 
-import config
+from config import config
 
 
 class BaseCamera(object):
 
-    def __init__(self, resolution=config.CAMERA_RESOLUTION):
+    def __init__(self, resolution=config.camera.resolution):
         self.resolution = resolution
         self.frame = np.zeros(
             shape=(
@@ -64,9 +64,9 @@ class BaseCamera(object):
 
 
 class PiVideoStream(BaseCamera):
-    def __init__(self, resolution=config.CAMERA_RESOLUTION,
-                framerate=config.CAMERA_FRAMERATE,
-                rotation=config.CAMERA_ROTATION, **kwargs):
+    def __init__(self, resolution=config.camera.resolution,
+                framerate=config.camera.framerate,
+                rotation=config.camera.rotation, **kwargs):
         from picamera.array import PiRGBArray
         from picamera import PiCamera
 
@@ -97,10 +97,10 @@ class PiVideoStream(BaseCamera):
 
             # TODO: here consider using hardware crop (called zoom)
             # it's not used cause it's hard to work with
-            if config.CAMERA_CROP_TOP or config.CAMERA_CROP_BOTTOM:
+            if config.camera.crop_top or config.camera.crop_bottom:
                 h,w = img.shape
-                t = config.CAMERA_CROP_TOP
-                l = h - config.CAMERA_CROP_TOP - config.CAMERA_CROP_BOTTOM
+                t = config.camera.crop_top
+                l = h - config.camera.crop_top - config.camera.crop_bottom
                 frame = frame[t:l,:]
 
             self.frame = frame

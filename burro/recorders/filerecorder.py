@@ -4,7 +4,8 @@ import os
 
 from PIL import Image
 
-import methods, config
+import methods
+from config import config
 
 def current_milli_time(): return int(round(time.time() * 1000))
 
@@ -21,7 +22,7 @@ class BaseRecorder(object):
 class FileRecorder(BaseRecorder):
 
     def __init__(self):
-        self.instance_path = self.make_instance_dir(config.SESSION_DIR)
+        self.instance_path = self.make_instance_dir(config.recording.session_dir)
         super(FileRecorder, self).__init__()
 
     def make_instance_dir(self, sessions_path):
@@ -47,7 +48,7 @@ class FileRecorder(BaseRecorder):
         # we are only interested in forward values of throttle
         # angle is counter-clockwise, i.e. left is positive
         # TODO: make a proper value mapping here, and then transform
-        if throttle * -1.0 < config.THROTTLE_RECORD_LIMIT:
+        if throttle * -1.0 < config.recording.throttle_threshold:
             self.is_recording = False
             return
         self.is_recording = True

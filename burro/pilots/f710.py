@@ -19,7 +19,7 @@ from datetime import datetime
 from pilots import BasePilot
 
 import methods
-import config
+from config import config
 
 # Note: The code below could be very easily adapted to a
 # F310 gamepad. See:
@@ -194,4 +194,3 @@ class Gamepad(object):
     def __del__(self):
         if self.is_initialized:
             self._dev.releaseInterface()
-

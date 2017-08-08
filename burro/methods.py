@@ -6,7 +6,7 @@ import re
 
 import numpy as np
 
-import config
+from config import config
 
 
 '''
@@ -14,18 +14,18 @@ BINNING
 functions to help convert between floating point numbers and categories.
 '''
 
-def to_index(a, low=-1.0, high=1.0, bins=config.MODEL_OUTPUT_SIZE):
+def to_index(a, low=-1.0, high=1.0, bins=config.model.output_size):
     step = (high - low) / bins
     b = min( int((a - low)/step), bins-1)
     return b
 
-def from_index(b, low=-1.0, high=1.0, bins=config.MODEL_OUTPUT_SIZE):
+def from_index(b, low=-1.0, high=1.0, bins=config.model.output_size):
     step = (high - low) / bins
     a = (b + 0.5) * step + low
     return a
 
-def to_one_hot(y, low=-1.0, high=1.0, bins=config.MODEL_OUTPUT_SIZE):
-    arr = np.zeros(config.MODEL_OUTPUT_SIZE)
+def to_one_hot(y, low=-1.0, high=1.0, bins=config.model.output_size):
+    arr = np.zeros(config.model.output_size)
     arr[to_index(y, low=low, high=high, bins=bins)] = 1
     return arr
 
@@ -40,14 +40,14 @@ ANGLE CONVERSIONS
 functions to help converting between angles and yaw input values.
 '''
 
-def angle_to_yaw(angle, limit=config.CAR_MAX_STEERING_ANGLE):
+def angle_to_yaw(angle, limit=config.ackermann.max_steering_angle):
     '''
     Convert from angle to yaw
     '''
     return angle / float(limit)
 
 
-def yaw_to_angle(yaw, limit=config.CAR_MAX_STEERING_ANGLE):
+def yaw_to_angle(yaw, limit=config..ackermann.max_steering_angle):
     '''
     Convert from yaw to angle
     '''
@@ -61,7 +61,7 @@ functions to help with discovering i2c devices
 
 def i2c_addresses(bus_index):
     '''
-    Get I2C Addresses using i2cdetect. 
+    Get I2C Addresses using i2cdetect.
     Unfortunately the alternative, simpler implementation
     using smbus does not detect NAVIO2 properly, so it's
     needed that i2cdetect is called.
@@ -75,7 +75,7 @@ def i2c_addresses(bus_index):
             for number in re.finditer("[0-9][0-9](?!:)", match.group()):
                 addresses.append('0x' + number.group())
     return addresses
-            
+
 
 def board_type():
     '''

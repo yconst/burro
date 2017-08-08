@@ -3,8 +3,8 @@ mixers.py
 Classes to wrap motor controllers into a functional drive unit.
 '''
 
-import config
 import methods
+from config import config
 
 
 class BaseMixer():
@@ -18,12 +18,12 @@ class BaseMixer():
 
 class AckermannSteeringMixer(BaseMixer):
     '''
-    Mixer for vehicles steered by changing the 
+    Mixer for vehicles steered by changing the
     angle of the front wheels.
     This is used for RC car-type vehicles.
     '''
-    def __init__(self, 
-                 steering_driver=None, 
+    def __init__(self,
+                 steering_driver=None,
                  throttle_driver=None):
         self.steering_driver = steering_driver
         self.throttle_driver = throttle_driver
@@ -31,11 +31,11 @@ class AckermannSteeringMixer(BaseMixer):
     def update(self, throttle, angle):
         throttle = min(1, max(-1, -throttle))
         yaw = min(1, max(-1, methods.angle_to_yaw(angle)))
-        if not config.REVERSE_STEERING:
+        if not config.ackermann.reverse_steering:
             yaw = -yaw
         self.throttle_driver.update(throttle)
         self.steering_driver.update(yaw)
-        
+
 
 class DifferentialSteeringMixer(BaseMixer):
     '''
@@ -46,17 +46,16 @@ class DifferentialSteeringMixer(BaseMixer):
     def __init__(self, left_driver, right_driver):
         self.left_driver = left_driver
         self.right_driver = right_driver
-    
+
     def update(self, throttle, angle):
         throttle = min(1, max(-1, throttle))
-        l_speed = (throttle - angle * throttle / 90.) * config.LEFT_MOTOR_MULT
-        r_speed = (throttle + angle * throttle / 90.) * config.RIGHT_MOTOR_MULT
+        l_speed = (throttle - angle * throttle / 90.) * config.differential.left_mult
+        r_speed = (throttle + angle * throttle / 90.) * config.differential.right_mult
         l_speed = min(max(l_speed, -1), 1)
         r_speed = min(max(r_speed, -1), 1)
-        if config.LEFT_MOTOR_REVERSE:
+        if config.differential.left_reverse:
             l_speed = -l_speed
-        if config.RIGHT_MOTOR_REVERSE:
+        if config.differential.right_reverse:
             r_speed = -r_speed
         self.left_driver.update(l_speed)
         self.right_driver.update(r_speed)
-

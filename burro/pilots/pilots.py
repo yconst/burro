@@ -19,7 +19,8 @@ from datetime import datetime
 import numpy as np
 import keras
 
-import config, methods
+import methods
+from config import config
 
 
 class BasePilot(object):
@@ -48,8 +49,8 @@ class KerasCategorical(BasePilot):
         super(KerasCategorical, self).__init__(**kwargs)
 
     def decide(self, img_arr):
-        img_arr = np.interp(img_arr,config.CAMERA_OUTPUT_RANGE,
-            config.MODEL_INPUT_RANGE)
+        img_arr = np.interp(img_arr,config.camera.output_range,
+            config.model.input_range)
         img_arr = np.expand_dims(img_arr, axis=0)
         prediction = self.model.predict(img_arr)
         if len(prediction) == 2:
@@ -60,7 +61,7 @@ class KerasCategorical(BasePilot):
             throttle = 0
         yaw = methods.from_one_hot(yaw_binned)
 
-        avf = config.KERAS_AVERAGE_FACTOR
+        avf = config.model.average_factor
         yaw = avf * self.yaw + (1.0 - avf) * yaw
         self.yaw = yaw
         return methods.yaw_to_angle(yaw), throttle * 0.15

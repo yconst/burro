@@ -1,12 +1,13 @@
 
-import methods, config
+import methods
+from config import config
 
 class Indicator(object):
 	'''
 	Generic class for onboard state indicators, such as
 	LEDs
 	'''
-	
+
 	def set_state(self, state):
 		'''
 		Set the state of the indicator. Common values are:

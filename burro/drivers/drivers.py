@@ -8,8 +8,8 @@ class Driver:
 
 
 class NAVIO2PWM(Driver):
-    ''' 
-    NAVIO2 PWM controler. 
+    '''
+    NAVIO2 PWM controler.
     '''
     def __init__(self, channel, frequency=50):
         from navio import pwm as navio_pwm
@@ -27,7 +27,7 @@ class NAVIO2PWM(Driver):
         '''
         assert(value <= 1 and -1 <= value)
         pwm_val = 1.5 + value * 0.5
-        self.pwm.set_duty_cycle(pwm_val) 
+        self.pwm.set_duty_cycle(pwm_val)
 
 
 class Adafruit_MotorHAT(Driver):
@@ -59,5 +59,3 @@ class Adafruit_MotorHAT(Driver):
         Disable all motors
         '''
         self.mh.getMotor(self.motor_index).run(Adafruit_MotorHAT.RELEASE)
-     
-    
