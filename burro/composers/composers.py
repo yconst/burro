@@ -1,12 +1,12 @@
 import sys
 
 import methods
-import config
+from config import config
 
 from rover import Rover
 from sensors import PiVideoStream
 from models import list_models
-from pilots import (KerasCategorical, 
+from pilots import (KerasCategorical,
     RC, F710, MixedRC, MixedF710)
 from mixers import AckermannSteeringMixer, DifferentialSteeringMixer
 from drivers import NAVIO2PWM, Adafruit_MotorHAT
@@ -17,7 +17,7 @@ from recorders import FileRecorder
 import logging
 
 class Composer(object):
-    
+
     def new_vehicle(self):
         rover = Rover()
         self.board_type = methods.board_type()
@@ -28,7 +28,7 @@ class Composer(object):
         self.setup_indicators(rover)
         self.setup_sensors(rover)
         return rover
-        
+
     def setup_pilots(self, rover):
         pilots = []
         try:
@@ -63,14 +63,14 @@ class Composer(object):
             throttle_driver = NAVIO2PWM(2)
             steering_driver = NAVIO2PWM(0)
             rover.mixer = AckermannSteeringMixer(
-                steering_driver=steering_driver, 
+                steering_driver=steering_driver,
                 throttle_driver=throttle_driver)
         elif self.board_type is 'adafruit':
             logging.info("Found Adafruit Motor HAT - Setting up differential car")
-            left_driver = Adafruit_MotorHAT(config.LEFT_MOTOR_TERMINAL)
-            right_driver = Adafruit_MotorHAT(config.RIGHT_MOTOR_TERMINAL)
+            left_driver = Adafruit_MotorHAT(config.differential.left_terminal)
+            right_driver = Adafruit_MotorHAT(config.differential.right_terminal)
             rover.mixer = DifferentialSteeringMixer(
-                left_driver=left_driver, 
+                left_driver=left_driver,
                 right_driver=right_driver)
         else:
             logging.error("No drivers found - exiting")

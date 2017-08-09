@@ -16,7 +16,8 @@ from pilots import BasePilot
 
 from navio import rcinput
 
-import methods, config
+import methods
+from config import config
 
 
 class RC(BasePilot):
@@ -31,12 +32,12 @@ class RC(BasePilot):
         super(RC, self).__init__(**kwargs)
 
     def decide(self, img_arr):
-        if float(self.rcin.read(config.ARM_CHANNEL)) > 1490:
+        if float(self.rcin.read(config.rc.arm_channel)) > 1490:
             if not self.calibrated:
                 self.calibrate_rc(self.rcin)
 
-            rc_pos_throttle = float(self.rcin.read(config.THROTTLE_CHANNEL))
-            rc_pos_yaw = float(self.rcin.read(config.YAW_CHANNEL))
+            rc_pos_throttle = float(self.rcin.read(config.rc.throttle_channel))
+            rc_pos_yaw = float(self.rcin.read(config.rc.yaw_channel))
 
             throttle = (rc_pos_throttle - self.throttle_center) / 500.0
             yaw = (rc_pos_yaw - self.yaw_center) / 500.0
@@ -56,8 +57,8 @@ class RC(BasePilot):
         throttle = 0
 
         for x in range(0, 100):
-            yaw += float(rcin.read(config.YAW_CHANNEL))
-            throttle += float(rcin.read(config.THROTTLE_CHANNEL))
+            yaw += float(rcin.read(config.rc.yaw_channel))
+            throttle += float(rcin.read(config.rc.throttle_channel))
 
             time.sleep(0.02)
 

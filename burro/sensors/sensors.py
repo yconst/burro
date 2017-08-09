@@ -7,16 +7,17 @@ import cStringIO
 from threading import Thread
 from itertools import cycle
 
-import numpy as np
+import logging
 
+import numpy as np
 from PIL import Image
 
-import config
+from config import config
 
 
 class BaseCamera(object):
 
-    def __init__(self, resolution=config.CAMERA_RESOLUTION):
+    def __init__(self, resolution=config.camera.resolution):
         self.resolution = resolution
         self.frame = np.zeros(
             shape=(
@@ -58,14 +59,14 @@ class BaseCamera(object):
             self.base64_buffer = base64_buffer
             self.base64_time = time.time()
         else:
-            base64_buffer = self.base64_buffer    
+            base64_buffer = self.base64_buffer
         return base64_buffer
 
 
-
 class PiVideoStream(BaseCamera):
-    def __init__(self, resolution=config.CAMERA_RESOLUTION, 
-                framerate=config.CAMERA_FRAMERATE, **kwargs):
+    def __init__(self, resolution=config.camera.resolution,
+                framerate=config.camera.framerate,
+                rotation=config.camera.rotation, **kwargs):
         from picamera.array import PiRGBArray
         from picamera import PiCamera
 
@@ -75,7 +76,7 @@ class PiVideoStream(BaseCamera):
         self.camera = PiCamera()
         self.camera.resolution = resolution
         self.camera.framerate = framerate
-        self.camera.rotation = 90  # TODO: move to settings
+        self.camera.rotation = rotation
         self.rawCapture = PiRGBArray(self.camera, size=resolution)
 
         # initialize the frame and the variable used to indicate
@@ -83,7 +84,7 @@ class PiVideoStream(BaseCamera):
         self.frame = None
         self.stopped = False
 
-        print('PiVideoStream loaded.. .warming camera')
+        logging.info("PiVideoStream loaded.. .warming camera")
 
         time.sleep(2)
         self.start()
@@ -92,14 +93,20 @@ class PiVideoStream(BaseCamera):
         # keep looping infinitely until the thread is stopped
         for f in self.camera.capture_continuous(
                 self.rawCapture, format="rgb", use_video_port=True):
-            # grab the frame from the stream and clear the stream in
-            # preparation for the next frame
-            self.frame = f.array
+            frame = f.array
+
+            # TODO: here consider using hardware crop (called zoom)
+            # it's not used cause it's hard to work with
+            if config.camera.crop_top or config.camera.crop_bottom:
+                h,w,_ = frame.shape
+                t = config.camera.crop_top
+                l = h - config.camera.crop_top - config.camera.crop_bottom
+                frame = frame[t:l,:]
+
+            self.frame = frame
             self.rawCapture.truncate(0)
             self.frame_time = time.time()
 
-            # if the thread indicator variable is set, stop the thread
-            # and resource camera resources
             if self.stopped:
                 self.stream.close()
                 self.rawCapture.close()
@@ -109,4 +116,3 @@ class PiVideoStream(BaseCamera):
     def stop(self):
         # indicate that the thread should be stopped
         self.stopped = True
-
