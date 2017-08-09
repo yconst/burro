@@ -2,7 +2,6 @@
 from PIL import Image, ImageOps
 
 import methods
-import config
 
 
 def gen_sin(generator):

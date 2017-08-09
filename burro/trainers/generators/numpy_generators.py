@@ -10,7 +10,7 @@ def category_generator(generator):
     '''
     Generator that yields categorical angle from scalar
     '''
-    max_steering_angle = config.CAR_MAX_STEERING_ANGLE
+    max_steering_angle = config.ackermann_car.max_steering_angle
     for inp, angle in generator:
         yield inp, methods.to_one_hot(angle,
                                       low=-max_steering_angle,
@@ -55,7 +55,7 @@ def center_normalize(generator):
         yield X, Y
 
 
-def equalize_probs(generator, prob=config.EQUALIZE_PROB_STRENGTH):
+def equalize_probs(generator, prob=config.training.equalize_prob_strength):
     '''
     Generators that attempts to equalize the number of times
     each bin has appeared in the stream
@@ -63,8 +63,8 @@ def equalize_probs(generator, prob=config.EQUALIZE_PROB_STRENGTH):
     however it is more practical to place it early in the
     pipeline before the angle is converted to category
     '''
-    max_steering_angle = config.CAR_MAX_STEERING_ANGLE
-    picks = np.ones(config.MODEL_OUTPUT_SIZE)
+    max_steering_angle = config.ackermann_car.max_steering_angle
+    picks = np.ones(config.model.output_size)
     for inp, angle in generator:
         inp_idx = methods.to_index(angle,
                                    low=-max_steering_angle,

@@ -3,7 +3,6 @@ import time
 import glob
 
 import methods
-import config
 
 
 def filename_generator(file_dir, indefinite=False, signal_end=False):

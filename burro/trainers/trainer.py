@@ -39,12 +39,15 @@ def train(data_dir, track, optimizer='adam', patience=10):
     print hist[0]
     print hist[1]
 
-    model_dir = os.path.abspath(os.path.expanduser(config.MODELS_DIR))
+    input_shape=(99-config.camera.crop_top, 132, 3)
+    print "Input shape: " + str(input_shape)
+
+    model_dir = os.path.abspath(os.path.expanduser(config.training.model_dir))
     model_path = os.path.join(model_dir,
         'model-' + track + '-' + optimizer +
         '-' + str(dense1) + '-' + str(dense2) +
         '-' + now + '.h5')
-    log_dir = os.path.abspath(os.path.expanduser(config.LOGS_DIR))
+    log_dir = os.path.abspath(os.path.expanduser(config.training.log_dir))
     log_path = os.path.join(log_dir,
     track + '/' + optimizer + '-' +
     str(dense1) + '-' + str(dense2) +
@@ -87,8 +90,7 @@ def train(data_dir, track, optimizer='adam', patience=10):
     model.add(
         Convolution2D(
             24, (5, 5), strides=(
-                2, 2), activation='relu', input_shape=(
-                99-config.CAMERA_CROP_TOP, 132, 3)))
+                2, 2), activation='relu', input_shape=input_shape))
     model.add(Convolution2D(32, (5, 5), strides=(2, 2), activation='relu'))
     model.add(Convolution2D(64, (5, 5), strides=(2, 2), activation='relu'))
     model.add(Convolution2D(64, (3, 3), strides=(2, 2), activation='relu'))
@@ -101,7 +103,7 @@ def train(data_dir, track, optimizer='adam', patience=10):
 
     model.add(
         Dense(
-            config.MODEL_OUTPUT_SIZE,
+            config.model.output_size,
             activation='softmax',
             name='angle_out'))
     model.compile(
