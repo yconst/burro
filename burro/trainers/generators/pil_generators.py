@@ -12,7 +12,7 @@ from PIL import Image, ImageOps, ImageChops
 import pyblur
 
 import methods
-import config
+from config import config
 
 import logging
 

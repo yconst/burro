@@ -3,7 +3,7 @@ import random
 import numpy as np
 
 import methods
-import config
+from config import config
 
 
 def category_generator(generator):
