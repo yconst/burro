@@ -9,7 +9,7 @@ from keras.optimizers import SGD
 from keras.preprocessing.image import ImageDataGenerator
 from keras.callbacks import TensorBoard, ReduceLROnPlateau, ModelCheckpoint, EarlyStopping
 
-import config
+from config import config
 import methods
 import helpers
 
@@ -42,13 +42,13 @@ def train(data_dir, track, optimizer='adam', patience=10):
     input_shape=(99-config.camera.crop_top, 132, 3)
     print "Input shape: " + str(input_shape)
 
-    model_dir = os.path.abspath(os.path.expanduser(config.training.model_dir))
-    model_path = os.path.join(model_dir,
+    models_dir = os.path.abspath(os.path.expanduser(config.training.models_dir))
+    model_path = os.path.join(models_dir,
         'model-' + track + '-' + optimizer +
         '-' + str(dense1) + '-' + str(dense2) +
         '-' + now + '.h5')
-    log_dir = os.path.abspath(os.path.expanduser(config.training.log_dir))
-    log_path = os.path.join(log_dir,
+    logs_dir = os.path.abspath(os.path.expanduser(config.training.logs_dir))
+    log_path = os.path.join(logs_dir,
     track + '/' + optimizer + '-' +
     str(dense1) + '-' + str(dense2) +
     '-' + now)
