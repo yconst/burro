@@ -93,17 +93,8 @@ class PiVideoStream(BaseCamera):
         # keep looping infinitely until the thread is stopped
         for f in self.camera.capture_continuous(
                 self.rawCapture, format="rgb", use_video_port=True):
-            frame = f.array
+            self.frame = f.array
 
-            # TODO: here consider using hardware crop (called zoom)
-            # it's not used cause it's hard to work with
-            if config.camera.crop_top or config.camera.crop_bottom:
-                h,w,_ = frame.shape
-                t = config.camera.crop_top
-                l = h - config.camera.crop_top - config.camera.crop_bottom
-                frame = frame[t:l,:]
-
-            self.frame = frame
             self.rawCapture.truncate(0)
             self.frame_time = time.time()
 

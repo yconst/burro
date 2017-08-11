@@ -49,6 +49,12 @@ class KerasCategorical(BasePilot):
         super(KerasCategorical, self).__init__(**kwargs)
 
     def decide(self, img_arr):
+        if config.camera.crop_top or config.camera.crop_bottom:
+            h,w,_ = img_arr.shape
+            t = config.camera.crop_top
+            l = h - config.camera.crop_bottom
+            img_arr = img_arr[t:l,:]
+
         img_arr = np.interp(img_arr,config.camera.output_range,
             config.model.input_range)
         img_arr = np.expand_dims(img_arr, axis=0)
