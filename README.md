@@ -70,6 +70,16 @@ Burro includes an installation script that handles installing a neural network t
     chmod +x install-trainer.sh
     ./install-trainer.sh
 
+### Training
+
+`cd` where your `install-trainer.sh` script that you downloaded earlier is, and:
+
+    cd burro/burro
+    ./train.sh -d your/data/directory -n model_name
+
+This will launch a "default" training process with several pre-processing filters. The model will be output in `burro/models/model_name.h5` Take a look at `burro/burro/trainers/train.py` for details.
+
+
 ## Next Steps
 
 Please take a look at the [Burro Wiki](https://github.com/yconst/burro/wiki) for more information, including [help on configuring your car](https://github.com/yconst/burro/wiki/Configuring).
