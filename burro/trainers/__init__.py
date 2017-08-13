@@ -1,1 +1,1 @@
-from trainer import train
+from trainer import train_categorical, train_regression
