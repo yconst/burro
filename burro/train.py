@@ -21,13 +21,13 @@ from docopt import docopt
 import methods
 import config
 
-from trainers import train
+from trainers import train_categorical, train_regression
 
 def main():
     arguments = docopt(__doc__)
     data_dir = arguments['--data-dir']
     model_name = arguments['--model-name']
-    train(data_dir, model_name)
+    train_regression(data_dir, model_name)
 
 if __name__ == "__main__":
     main()
