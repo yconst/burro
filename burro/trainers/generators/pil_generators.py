@@ -1,6 +1,5 @@
 import os
 import time
-import glob
 import math
 import random
 from random import randint as ri
@@ -30,16 +29,6 @@ def image_generator(generator):
             logging.warning(err)
 
 
-def image_count(path):
-    '''
-    Accepts a path and returns the image count contained
-    '''
-    paths = glob.glob(os.path.join(path, '*.jpg'))
-    if not paths:
-        return 0
-    return len(paths)
-
-
 def image_crop(generator, top=config.camera.crop_top,
         bottom=config.camera.crop_bottom):
     '''
@@ -59,10 +48,10 @@ def image_resize(generator, size=config.camera.resolution):
         yield img, angle
 
 
-def image_flip(generator):
+def image_mirror(generator):
     '''
     Generator that augments batches of images and telemetry
-    through flipping
+    through mirroring
     '''
     for img, angle in generator:
         if random.uniform(0.0, 1.0) > 0.5:
