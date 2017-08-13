@@ -1,4 +1,4 @@
 #!/bin/sh -
 
-DIR="$( cd "$( dirname "$0" )" && pwd )"
-sudo $DIR/../bin/python $DIR/burro/drive.py
+SCRIPT_DIR=$(dirname "$SCRIPT")
+sudo $SCRIPT_DIR/../bin/python $DIR/burro/drive.py
