@@ -2,11 +2,12 @@ import os
 import time
 import math
 import random
+import psutil
 from random import randint as ri
 
 import numpy as np
 
-from PIL import Image, ImageOps, ImageChops
+from PIL import Image, ImageOps, ImageChops, ImageDraw, ImageFont
 
 import pyblur
 
@@ -28,7 +29,6 @@ def image_generator(generator):
         except IOError as err:
             logging.warning(err)
 
-
 def image_crop(generator, top=config.camera.crop_top,
         bottom=config.camera.crop_bottom):
     '''
@@ -38,7 +38,6 @@ def image_crop(generator, top=config.camera.crop_top,
         w, h = img.size
         yield img.crop((0, top, w, h-bottom)), angle
 
-
 def image_resize(generator, size=config.camera.resolution):
     '''
     Generator that resizes images
@@ -46,7 +45,6 @@ def image_resize(generator, size=config.camera.resolution):
     for img, angle in generator:
         img = img.resize(size, Image.ANTIALIAS)
         yield img, angle
-
 
 def image_mirror(generator):
     '''
@@ -57,10 +55,10 @@ def image_mirror(generator):
         if random.uniform(0.0, 1.0) > 0.5:
             img = ImageOps.mirror(img)
             yield img, -angle
-        yield img, angle
+        else:
+            yield img, angle
 
-
-def image_rotate(generator, prob=0.4, max_angle=5):
+def image_rotate(generator, prob=0.4, max_angle=9):
     '''
     Generator that augments batches of images and telemetry
     through random rotation
@@ -73,11 +71,10 @@ def image_rotate(generator, prob=0.4, max_angle=5):
                     0, 255), ri(
                     0, 255), ri(
                     0, 255)))
-            rot = img.rotate(image_angle, expand=False)
+            rot = img.rotate(image_angle, resample=Image.BICUBIC, expand=False)
             dst_im.paste(rot)
             img = dst_im.convert('RGB')
         yield img, input_angle
-
 
 def image_voffset(generator, prob=0.4, max_pixels=5):
     '''
@@ -96,10 +93,33 @@ def image_voffset(generator, prob=0.4, max_pixels=5):
             img = dst_im.convert('RGB')
         yield img, input_angle
 
-
 def array_generator(generator):
     '''
     Generator that yields a numpy array from a PIL image
     '''
     for img, outp in generator:
         yield np.array(img), outp
+
+def show_image(generator, k=280):
+    '''
+    Accepts a generator and shows images on screen with a prompt to continue
+    '''
+    for img, angle in generator:
+        if type(img) is np.ndarray:
+            img = (img + 1.) * 128.
+            img = img.astype(np.uint8)
+            img = Image.fromarray(img, 'RGB')
+        if img.height < img.width:
+            factor = float(k) / img.height
+        else:
+            factor = float(k) / img.width
+        img = img.resize((int(img.width* factor), int(img.height * factor)))
+        draw = ImageDraw.Draw(img)
+        font = ImageFont.load_default()
+        draw.text((9, 9),str(angle),(255,0,0),font=font)
+        img.show()
+        raw_input("Press Enter to continue...")
+        # hide image
+        for proc in psutil.process_iter():
+            if proc.name() == "display":
+                proc.kill()
