@@ -22,10 +22,11 @@ def brightness_shifter(generator, min_shift=-0.1, max_shift=0.1):
     Generator that shifts brightness of an np array
     '''
     for img_array, angle in generator:
-        shift = np.array([random.uniform(min_shift, max_shift),
-                          random.uniform(min_shift, max_shift),
-                          random.uniform(min_shift, max_shift)])
-        img_out = img_array + shift
+        shift_value = random.uniform(min_shift, max_shift)
+        shift = np.array([shift_value,
+                          shift_value,
+                          shift_value])
+        img_out = np.clip(img_array + shift, -1.0, 0.9999)
         yield img_out, angle
 
 
