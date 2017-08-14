@@ -4,7 +4,7 @@ import time
 import numpy as np
 
 from keras.models import Model, Sequential
-from keras.layers import Input, Activation, Dense, Convolution2D, LocallyConnected2D, Dropout, Flatten
+from keras.layers import Input, Activation, Dense, Convolution2D, Dropout, Flatten
 from keras.optimizers import SGD
 from keras.preprocessing.image import ImageDataGenerator
 from keras.callbacks import TensorBoard, ReduceLROnPlateau, ModelCheckpoint, EarlyStopping
@@ -22,11 +22,10 @@ val_stride = 20
 
 dense1 = 150
 dense2 = 50
-dense3 = 10
 
 now = time.strftime("%c")
 
-def train_categorical(data_dir, track, optimizer='adam', patience=15):
+def train_categorical(data_dir, track, optimizer='adam', patience=10):
 
     hist = helpers.angles_histogram(data_dir)
     print hist[0]
@@ -98,7 +97,7 @@ def train_categorical(data_dir, track, optimizer='adam', patience=15):
 
     return np.min(hist.history['val_loss'])
 
-def train_regression(data_dir, track, optimizer='adam', patience=15):
+def train_regression(data_dir, track, optimizer='adam', patience=10):
 
     hist = helpers.angles_histogram(data_dir)
     print hist[0]
@@ -129,17 +128,16 @@ def train_regression(data_dir, track, optimizer='adam', patience=15):
     model = Sequential()
     model.add(
         Convolution2D(
-            32, (8, 8), strides=(
+            24, (6, 6), strides=(
                 2, 2), activation='relu', input_shape=input_shape))
     model.add(Convolution2D(32, (5, 5), strides=(2, 2), activation='relu'))
     model.add(Convolution2D(64, (5, 5), strides=(2, 2), activation='relu'))
-    model.add(LocallyConnected2D(16, (3, 3), strides=(1, 1), activation='relu'))
+    model.add(Convolution2D(64, (3, 3), strides=(1, 2), activation='relu'))
+    model.add(Convolution2D(24, (3, 3), strides=(1, 1), activation='relu'))
     model.add(Flatten())
     model.add(Dense(dense1, activation='selu'))
     model.add( Dropout(.1) )
     model.add(Dense(dense2, activation='selu'))
-    model.add( Dropout(.1) )
-    model.add(Dense(dense3, activation='softmax'))
 
     model.add(Dense(1,activation='linear',name='angle_out'))
     model.compile(
