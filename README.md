@@ -74,7 +74,7 @@ Burro includes an installation script that handles installing a neural network t
 
 `cd` where your `install-trainer.sh` script that you downloaded earlier is, and:
 
-    cd burro/burro
+    cd burro-trainer/burro
     ./train.sh -d your/data/directory -n model_name
 
 This will launch a "default" training process with several pre-processing filters. The model will be output in `burro/models/model_name.h5`. To modify the pre-processing pipeline, you'll need to edit `burro/burro/trainers/train.py`. Better method for editing pipeline pending.
