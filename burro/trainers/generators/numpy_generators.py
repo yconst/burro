@@ -56,7 +56,9 @@ def center_normalize(generator):
         yield X, Y
 
 
-def equalize_probs(generator, prob=config.training.equalize_prob_strength):
+def equalize_probs(generator,
+                   prob=config.training.equalize_prob_strength,
+                   symmetric=config.training.symmetric):
     '''
     Generators that attempts to equalize the number of times
     each bin has appeared in the stream
@@ -64,8 +66,9 @@ def equalize_probs(generator, prob=config.training.equalize_prob_strength):
     however it is more practical to place it early in the
     pipeline before the angle is converted to category
     '''
+    size = config.model.output_size
     max_steering_angle = config.ackermann_car.max_steering_angle
-    picks = np.ones(config.model.output_size)
+    picks = np.ones(size)
     for inp, angle in generator:
         inp_idx = methods.to_index(angle,
                                    low=-max_steering_angle,
@@ -74,6 +77,8 @@ def equalize_probs(generator, prob=config.training.equalize_prob_strength):
         if picks[inp_idx] > pick_mean and random.uniform(0, 1) < prob:
             continue
         picks[inp_idx] += 1
+        if symmetric and inp_idx != size - inp_idx - 1:
+            picks[size - inp_idx - 1] += 1
         yield inp, angle
 
 
