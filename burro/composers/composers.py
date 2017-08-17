@@ -6,7 +6,7 @@ from config import config
 from rover import Rover
 from sensors import PiVideoStream
 from models import list_models
-from pilots import (KerasCategorical,
+from pilots import (KerasRegression,
     RC, F710, MixedRC, MixedF710)
 from mixers import AckermannSteeringMixer, DifferentialSteeringMixer
 from drivers import NAVIO2PWM, Adafruit_MotorHAT
@@ -46,7 +46,7 @@ class Composer(object):
         model_paths = list_models()
         for model_path, model_name in model_paths:
             logging.info("Loading model " + model_name)
-            keras = KerasCategorical(model_path, name=model_name)
+            keras = KerasRegression(model_path, name=model_name)
             if f710:
                 pilots.append(MixedF710(keras, f710))
             if rc:
