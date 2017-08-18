@@ -131,12 +131,12 @@ def train_regression(data_dir, track, optimizer='adam', patience=10):
             24, (6, 6), strides=(
                 2, 2), activation='relu', input_shape=input_shape))
     model.add(Convolution2D(32, (5, 5), strides=(2, 2), activation='relu'))
-    model.add(Convolution2D(64, (5, 5), strides=(2, 2), activation='relu'))
-    model.add(Convolution2D(64, (3, 3), strides=(1, 2), activation='relu'))
+    model.add(Convolution2D(48, (5, 5), strides=(2, 2), activation='relu'))
+    model.add(Convolution2D(64, (3, 3), strides=(2, 2), activation='relu'))
     model.add(Convolution2D(24, (3, 3), strides=(1, 1), activation='relu'))
     model.add(Flatten())
     model.add(Dense(dense1, activation='selu'))
-    model.add( Dropout(.1) )
+    #model.add( Dropout(.1) )
     model.add(Dense(dense2, activation='selu'))
 
     model.add(Dense(1,activation='linear',name='angle_out'))
@@ -153,8 +153,6 @@ def train_regression(data_dir, track, optimizer='adam', patience=10):
                                save_best_only=True, mode='auto', period=1)
     e_stop = EarlyStopping(monitor='val_loss', patience=patience)
 
-    print "Best model saved in " + model_path
-
     hist = model.fit_generator(gen,
                                epochs=200,
                                steps_per_epoch=im_count / gen_batch,
@@ -162,4 +160,8 @@ def train_regression(data_dir, track, optimizer='adam', patience=10):
                                validation_steps=im_count / (val_batch * val_stride),
                                callbacks=[tb, model_cp, e_stop])
 
-    return np.min(hist.history['val_loss'])
+    min_val = np.min(hist.history['val_loss'])
+    print "Best model: " + str(min_val)
+    print "Saved in " + model_path
+
+    return min_val
