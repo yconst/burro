@@ -84,7 +84,7 @@ class RaspiRobot_HAT(Driver):
         if rr.motor_index == 0:
             rr.left_pwm.ChangeDutyCycle(left_pwm * 100 * rr.pwm_scale)
             GPIO.output(rr.LEFT_1_PIN, value > 0)
-            GPIO.outputrr.LEFT_2_PIN, not value < 0)
+            GPIO.output(rr.LEFT_2_PIN, value < 0)
         elif rr.motor_index == 1:
             rr.right_pwm.ChangeDutyCycle(right_pwm * 100 * rr.pwm_scale)
             GPIO.output(rr.RIGHT_1_PIN, value > 0)
