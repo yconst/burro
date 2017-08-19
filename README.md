@@ -22,7 +22,7 @@ Depending on your hardware Burro will automatically select and setup the right k
 - Raspberry Pi 2 or 3
 - An SD card with at least 16Gb capacity
 - RaspiCam, Fisheye model (something like [this](http://www.ebay.com/itm/191723967593))
-- [Adafruit Motor HAT](https://www.adafruit.com/product/2348)
+- [Adafruit Motor HAT](https://www.adafruit.com/product/2348) OR [RasPiRobot Board V3](https://www.monkmakes.com/rrb3/) (the latter is untested)
 - A Logitech F710 Gamepad
 
 #### Software
