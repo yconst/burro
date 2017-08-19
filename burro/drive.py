@@ -35,6 +35,5 @@ if __name__ == "__main__":
     setup_logging()
     composer = Composer()
     rover = composer.new_vehicle()
-    print arguments["--record"]
     rover.record = arguments["--record"]
     rover.run()
