@@ -1,6 +1,6 @@
 #!/bin/sh -
 
-SCRIPT_DIR=$(dirname "$SCRIPT")
+SCRIPT_DIR="$( cd "$( dirname "$0" )" && pwd )"
 RECORD=false
 
 while getopts ":r" opt; do
