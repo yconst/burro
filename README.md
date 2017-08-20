@@ -22,8 +22,10 @@ Depending on your hardware Burro will automatically select and setup the right k
 - Raspberry Pi 2 or 3
 - An SD card with at least 16Gb capacity
 - RaspiCam, Fisheye model (something like [this](http://www.ebay.com/itm/191723967593))
-- [Adafruit Motor HAT](https://www.adafruit.com/product/2348) OR [RasPiRobot Board V3](https://www.monkmakes.com/rrb3/) (the latter is untested)
+- [Adafruit Motor HAT](https://www.adafruit.com/product/2348)
 - A Logitech F710 Gamepad
+
+You could also use Burro with a [RasPiRobot Board V3](https://www.monkmakes.com/rrb3/) to make a differential steering car, but this requires to edit code and is untested.
 
 #### Software
 
@@ -82,7 +84,7 @@ This will launch a "default" training process with several pre-processing filter
 
 ## Next Steps
 
-Please take a look at the [Burro Wiki](https://github.com/yconst/burro/wiki) for more information, including [help on configuring your car](https://github.com/yconst/burro/wiki/Configuring).
+Please take a look at the [Burro Wiki](https://github.com/yconst/burro/wiki) for more information, including [help on configuring](https://github.com/yconst/burro/wiki/Configuring) and [controlling your car](https://github.com/yconst/burro/wiki/Control-a-Burro-car-using-the-F710-Gamepad).
 
 Regular news and examples are posted in the [Unmanned Build](http://unmannedbuild.yconst.com) blog.
 
