@@ -24,7 +24,7 @@ done
 
 if [ -n $path ] && [ -n $name ];
 then
-  SCRIPT_DIR=$(dirname "$SCRIPT")
+  SCRIPT_DIR="$( cd "$( dirname "$0" )" && pwd )"
   DATA_DIR=$(realpath $path)
   $SCRIPT_DIR/../bin/python $SCRIPT_DIR/burro/train.py --data-dir $DATA_DIR --model-name $name --mode $mode
 else
