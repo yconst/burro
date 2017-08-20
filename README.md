@@ -24,6 +24,8 @@ Depending on your hardware Burro will automatically select and setup the right k
 - [Adafruit Motor HAT](https://www.adafruit.com/product/2348)
 - A Logitech F710 Gamepad
 
+You could also use Burro with a [RasPiRobot Board V3](https://www.monkmakes.com/rrb3/) to make a differential steering car, but this requires to edit code and is untested.
+
 #### Software
 
 Burro runs on Raspbian. We recommend the latest Raspbian image from the folks at EMLID. [Here are the instructions](https://docs.emlid.com/navio2/common/ardupilot/configuring-raspberry-pi/) to get it installed and running on an SD card. You will need to [expand your filesystem](http://elinux.org/RPi_raspi-config#expand_rootfs_-_Expand_root_partition_to_fill_SD_card).
@@ -56,7 +58,7 @@ Choose your driving method (by default it is either gamepad or RC, based on avai
 
 ### Next Steps
 
-Please take a look at the [Burro Wiki](https://github.com/yconst/burro/wiki) for more information, including [help on configuring](https://github.com/yconst/burro/wiki/Configuring).
+Please take a look at the [Burro Wiki](https://github.com/yconst/burro/wiki) for more information, including [help on configuring](https://github.com/yconst/burro/wiki/Configuring) and [controlling your car](https://github.com/yconst/burro/wiki/Control-a-Burro-car-using-the-F710-Gamepad).
 
 Regular news and examples are posted in the [Unmanned Build](http://unmannedbuild.yconst.com) blog.
 

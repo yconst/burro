@@ -44,7 +44,7 @@ class Adafruit_MotorHAT(Driver):
     def update(self, value):
         '''
         Accepts an input [-1, 1] and applies it as
-        a PWM with RC-style duty cycle [1, 2].
+        a full-scale PWM.
         '''
         assert(value <= 1 and -1 <= value)
         motor = self.mh.getMotor(self.motor_index)
@@ -59,3 +59,39 @@ class Adafruit_MotorHAT(Driver):
         Disable all motors
         '''
         self.mh.getMotor(self.motor_index).run(Adafruit_MotorHAT.RELEASE)
+
+rr = None
+
+class RaspiRobot_HAT(Driver):
+    '''
+    Raspirobot HAT
+    '''
+
+    def __init__(self, motor_index=0):
+        from rrb3 import *
+        if not rr:
+            rr = RRB3(8, 6)
+        assert(motor_index == 0 or motor_index == 1)
+        self.motor_index = motor_index
+        atexit.register(self.turnOffMotors)
+
+    def update(self, value):
+        '''
+        Accepts an input [-1, 1] and applies it as
+        a PWM with RC-style duty cycle [1, 2].
+        '''
+        assert(value <= 1 and -1 <= value)
+        if rr.motor_index == 0:
+            rr.left_pwm.ChangeDutyCycle(left_pwm * 100 * rr.pwm_scale)
+            GPIO.output(rr.LEFT_1_PIN, value > 0)
+            GPIO.output(rr.LEFT_2_PIN, value < 0)
+        elif rr.motor_index == 1:
+            rr.right_pwm.ChangeDutyCycle(right_pwm * 100 * rr.pwm_scale)
+            GPIO.output(rr.RIGHT_1_PIN, value > 0)
+            GPIO.output(rr.RIGHT_2_PIN, value < 0)
+
+    def turnOffMotors(self):
+        '''
+        Disable all motors
+        '''
+        rr.stop()

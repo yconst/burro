@@ -29,6 +29,10 @@ echo "\nSetting up Adafruit Motor HAT drivers\n"
 cd Adafruit_HAT
 sudo ../../bin/python setup.py install
 cd ..
+echo "\nSetting up Raspirobot drivers\n"
+cd Raspirobot/python
+sudo ../../../bin/python setup.py install
+cd ../..
 
 echo "\nBurro Installer: Creating symlinks\n"
 DIR="$( cd "$( dirname "$0" )" && pwd )"
