@@ -4,3 +4,6 @@
 [submodule "Adafruit_HAT"]
 	path = Adafruit_HAT
 	url = https://github.com/adafruit/Adafruit-Motor-HAT-Python-Library
+[submodule "Raspirobot"]
+	path = Raspirobot
+	url = https://github.com/simonmonk/raspirobotboard3.git
