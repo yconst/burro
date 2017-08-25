@@ -61,10 +61,11 @@ class FileRecorder(BaseRecorder):
             file_angle,
             file_throttle)
         im = Image.fromarray(image_array)
-        im.save(filepath)
+        im.save(filepath, compress_level=0)
         self.frame_count += 1
 
-    def create_img_filepath(self, directory, frame_count, angle, throttle):
+    def create_img_filepath(self, directory, frame_count, 
+        angle, throttle, file_type='png'):
         '''
         Generate the complete filepath for saving an image
         '''
@@ -78,5 +79,5 @@ class FileRecorder(BaseRecorder):
                        str(angle) +
                        "_mil_" +
                        str(current_milli_time()) +
-                       '.jpg')
+                       '.' + file_type)
         return filepath
