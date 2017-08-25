@@ -54,7 +54,7 @@ class BaseCamera(object):
         if self.frame_time > self.base64_time:
             buffer = cStringIO.StringIO()
             img = self.capture_img()
-            img.save(buffer, format="JPEG")
+            img.save(buffer, format="PNG", compress_level=0)
             base64_buffer = base64.b64encode(buffer.getvalue())
             self.base64_buffer = base64_buffer
             self.base64_time = time.time()
