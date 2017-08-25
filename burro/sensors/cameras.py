@@ -69,8 +69,9 @@ class BaseCamera(object):
         efficiency.
         '''
         if self.frame_time > self.base64_time:
-            img = self.image_buffer()
-            base64_buffer = base64.b64encode(buffer.getvalue())
+            image_buffer = self.image_buffer()
+            image_buffer.seek(0)
+            base64_buffer = base64.b64encode(image_buffer.read())
             self.base64_buffer = base64_buffer
             self.base64_time = time.time()
         else:

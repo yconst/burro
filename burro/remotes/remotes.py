@@ -54,7 +54,7 @@ class SocketHandler(websocket.WebSocketHandler):
 
     def send_status(self):
         v = self.application.vehicle
-        img64 = v.vision_sensor.get_base64()
+        img64 = v.vision_sensor.base64()
         status = {
             "image": img64,
             "controls": {
