@@ -1,4 +1,3 @@
-
 import io
 import os
 import time
@@ -25,10 +24,10 @@ class BaseCamera(object):
                 self.resolution[0],
                 3))
         self.frame_time = 0
+        self.encoded_time = 0
         self.base64_time = 0
 
     def start(self):
-        # start the thread to read frames from the video stream
         t = Thread(target=self.update, args=())
         t.daemon = True
         t.start()
@@ -36,25 +35,23 @@ class BaseCamera(object):
         return self
 
     def update(self):
-        while True:
-            pass
+        pass
 
-    def read(self):
-        return self.frame
-
-    def capture_arr(self):
-        return self.read()
-
-    def capture_img(self):
-        arr = self.capture_arr()
-        img = Image.fromarray(arr, 'RGB')
-        return img
-
-    def capture_base64(self):
-        if self.frame_time > self.base64_time:
+    def get_encoded(self):
+        if self.frame_time > self.encoded_time:
+            arr = self.frame
+            img = Image.fromarray(arr, 'RGB')
             buffer = cStringIO.StringIO()
-            img = self.capture_img()
             img.save(buffer, format="JPEG")
+            self.encoded_buffer = encoded_buffer
+            self.encoded_time = time.time()
+        else:
+            encoded_buffer = self.encoded_buffer
+        return encoded_buffer
+
+    def get_base64(self):
+        if self.frame_time > self.base64_time:
+            img = self.get_encoded()
             base64_buffer = base64.b64encode(buffer.getvalue())
             self.base64_buffer = base64_buffer
             self.base64_time = time.time()
@@ -72,15 +69,12 @@ class PiVideoStream(BaseCamera):
 
         super(PiVideoStream, self).__init__(resolution, **kwargs)
 
-        # initialize the camera and stream
         self.camera = PiCamera()
         self.camera.resolution = resolution
         self.camera.framerate = framerate
         self.camera.rotation = rotation
         self.rawCapture = PiRGBArray(self.camera, size=resolution)
 
-        # initialize the frame and the variable used to indicate
-        # if the thread should be stopped
         self.frame = None
         self.stopped = False
 
@@ -90,7 +84,6 @@ class PiVideoStream(BaseCamera):
         self.start()
 
     def update(self):
-        # keep looping infinitely until the thread is stopped
         for f in self.camera.capture_continuous(
                 self.rawCapture, format="rgb", use_video_port=True):
             self.frame = f.array
@@ -105,5 +98,4 @@ class PiVideoStream(BaseCamera):
                 return
 
     def stop(self):
-        # indicate that the thread should be stopped
         self.stopped = True

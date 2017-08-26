@@ -39,7 +39,7 @@ class FileRecorder(BaseRecorder):
             os.makedirs(instance_path)
         return instance_path
 
-    def record_frame(self, image_array, angle, throttle):
+    def record_frame(self, encoded_img, angle, throttle):
         '''
         Record a single frame, with frame index, angle and throttle values
         as its filename
@@ -60,8 +60,7 @@ class FileRecorder(BaseRecorder):
             self.frame_count,
             file_angle,
             file_throttle)
-        im = Image.fromarray(image_array)
-        im.save(filepath)
+        encoded_img.save(filepath)
         self.frame_count += 1
 
     def create_img_filepath(self, directory, frame_count, angle, throttle):
