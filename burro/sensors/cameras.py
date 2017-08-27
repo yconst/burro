@@ -1,4 +1,3 @@
-
 import io
 import os
 import time
@@ -25,10 +24,13 @@ class BaseCamera(object):
                 self.resolution[0],
                 3))
         self.frame_time = 0
+        self.encoded_time = 0
         self.base64_time = 0
 
     def start(self):
-        # start the thread to read frames from the video stream
+        '''
+        Start receiving values from the sensor
+        '''
         t = Thread(target=self.update, args=())
         t.daemon = True
         t.start()
@@ -36,25 +38,38 @@ class BaseCamera(object):
         return self
 
     def update(self):
-        while True:
-            pass
+        '''
+        Performs sensor update steps. This is called
+        in a separate thread
+        '''
+        pass
 
-    def read(self):
-        return self.frame
+    def image_buffer(self):
+        '''
+        Returns the JPEG image buffer corresponding to 
+        the current frame. Caches result for
+        efficiency.
+        '''
+        if self.frame_time > self.encoded_time:
+            arr = self.frame
+            img = Image.fromarray(arr, 'RGB')
+            encoded_buffer = cStringIO.StringIO()
+            img.save(encoded_buffer, format="JPEG", 
+                quality=100, subsampling=0)
+            self.encoded_buffer = encoded_buffer
+            self.encoded_time = time.time()
+        else:
+            encoded_buffer = self.encoded_buffer
+        return encoded_buffer
 
-    def capture_arr(self):
-        return self.read()
-
-    def capture_img(self):
-        arr = self.capture_arr()
-        img = Image.fromarray(arr, 'RGB')
-        return img
-
-    def capture_base64(self):
+    def base64(self):
+        '''
+        Returns a base-64 encoded string corresponding
+        to the current frame. Caches result for
+        efficiency.
+        '''
         if self.frame_time > self.base64_time:
-            buffer = cStringIO.StringIO()
-            img = self.capture_img()
-            img.save(buffer, format="JPEG")
+            img = self.get_encoded()
             base64_buffer = base64.b64encode(buffer.getvalue())
             self.base64_buffer = base64_buffer
             self.base64_time = time.time()
@@ -64,6 +79,7 @@ class BaseCamera(object):
 
 
 class PiVideoStream(BaseCamera):
+
     def __init__(self, resolution=config.camera.resolution,
                 framerate=config.camera.framerate,
                 rotation=config.camera.rotation, **kwargs):
@@ -72,15 +88,12 @@ class PiVideoStream(BaseCamera):
 
         super(PiVideoStream, self).__init__(resolution, **kwargs)
 
-        # initialize the camera and stream
         self.camera = PiCamera()
         self.camera.resolution = resolution
         self.camera.framerate = framerate
         self.camera.rotation = rotation
         self.rawCapture = PiRGBArray(self.camera, size=resolution)
 
-        # initialize the frame and the variable used to indicate
-        # if the thread should be stopped
         self.frame = None
         self.stopped = False
 
@@ -90,7 +103,6 @@ class PiVideoStream(BaseCamera):
         self.start()
 
     def update(self):
-        # keep looping infinitely until the thread is stopped
         for f in self.camera.capture_continuous(
                 self.rawCapture, format="rgb", use_video_port=True):
             self.frame = f.array
@@ -105,5 +117,4 @@ class PiVideoStream(BaseCamera):
                 return
 
     def stop(self):
-        # indicate that the thread should be stopped
         self.stopped = True
