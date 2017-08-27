@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 #-*- coding:utf-8 -*-
 
 import json
@@ -18,11 +17,13 @@ define("port", default=80, help="run on the given port", type=int)
 
 
 class MainHandler(web.RequestHandler):
+
     def get(self):
         self.render('index.html')
 
 
 class SocketHandler(websocket.WebSocketHandler):
+
     def check_origin(self, origin):
         return True
 
@@ -80,6 +81,7 @@ class SocketHandler(websocket.WebSocketHandler):
 
 
 class WebRemote(web.Application):
+
     def __init__(self, vehicle):
         self.vehicle = vehicle
         base_dir = os.path.dirname(__file__)
@@ -100,7 +102,3 @@ class WebRemote(web.Application):
         self.thread = threading.Thread(target=self.loop.start)
         self.thread.daemon = True
         self.thread.start()
-
-
-if __name__ == "__main__":
-    main()

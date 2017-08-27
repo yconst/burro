@@ -89,3 +89,14 @@ def board_type():
         return 'navio'
     elif '0x60' in addresses:
         return 'adafruit'
+
+
+'''
+TIME TOOLS
+'''
+
+def current_milis(): 
+    '''
+    Return the current time in miliseconds
+    '''
+    return int(round(time.time() * 1000))

@@ -35,7 +35,7 @@ class Rover(object):
 
         if self.record:
             self.recorder.record_frame(
-                self.vision_sensor.get_encoded(), 
+                self.vision_sensor.image_buffer(), 
                 pilot_angle, pilot_throttle)
 
         if self.recorder.is_recording:
