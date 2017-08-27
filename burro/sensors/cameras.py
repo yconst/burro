@@ -28,6 +28,9 @@ class BaseCamera(object):
         self.base64_time = 0
 
     def start(self):
+        '''
+        Start receiving values from the sensor
+        '''
         t = Thread(target=self.update, args=())
         t.daemon = True
         t.start()
@@ -35,21 +38,36 @@ class BaseCamera(object):
         return self
 
     def update(self):
+        '''
+        Performs sensor update steps. This is called
+        in a separate thread
+        '''
         pass
 
-    def get_encoded(self):
+    def image_buffer(self):
+        '''
+        Returns the JPEG image buffer corresponding to 
+        the current frame. Caches result for
+        efficiency.
+        '''
         if self.frame_time > self.encoded_time:
             arr = self.frame
             img = Image.fromarray(arr, 'RGB')
-            buffer = cStringIO.StringIO()
-            img.save(buffer, format="JPEG")
+            encoded_buffer = cStringIO.StringIO()
+            img.save(encoded_buffer, format="JPEG", 
+                quality=100, subsampling=0)
             self.encoded_buffer = encoded_buffer
             self.encoded_time = time.time()
         else:
             encoded_buffer = self.encoded_buffer
         return encoded_buffer
 
-    def get_base64(self):
+    def base64(self):
+        '''
+        Returns a base-64 encoded string corresponding
+        to the current frame. Caches result for
+        efficiency.
+        '''
         if self.frame_time > self.base64_time:
             img = self.get_encoded()
             base64_buffer = base64.b64encode(buffer.getvalue())
@@ -61,6 +79,7 @@ class BaseCamera(object):
 
 
 class PiVideoStream(BaseCamera):
+
     def __init__(self, resolution=config.camera.resolution,
                 framerate=config.camera.framerate,
                 rotation=config.camera.rotation, **kwargs):

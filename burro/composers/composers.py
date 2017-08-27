@@ -4,7 +4,7 @@ import methods
 from config import config
 
 from rover import Rover
-from sensors import PiVideoStream
+from sensors.cameras import PiVideoStream
 from models import list_models
 from pilots import (KerasCategorical,
     RC, F710, MixedRC, MixedF710)
