@@ -18,12 +18,12 @@ import logging
 
 class Composer(object):
 
-    def new_vehicle(self):
+    def new_vehicle(self, type=config.car.type):
         rover = Rover()
         self.board_type = methods.board_type()
         self.setup_pilots(rover)
         self.setup_recorders(rover)
-        self.setup_mixers(rover)
+        self.setup_mixers(rover, type)
         self.setup_remote(rover)
         self.setup_indicators(rover)
         self.setup_sensors(rover)
@@ -57,18 +57,26 @@ class Composer(object):
     def setup_recorders(self, rover):
         rover.recorder = FileRecorder()
 
-    def setup_mixers(self, rover):
+    def setup_mixers(self, rover, type):
         if self.board_type is 'navio':
-            logging.info("Found NAVIO2 HAT - Setting up Ackermann car")
-            throttle_driver = NAVIO2PWM(2)
-            steering_driver = NAVIO2PWM(0)
-            rover.mixer = AckermannSteeringMixer(
-                steering_driver=steering_driver,
-                throttle_driver=throttle_driver)
+            if type == 'differential':
+                logging.info("Found NAVIO2 HAT - Setting up differential car")
+                left_driver = NAVIO2PWM(config.differential_car.left_channel)
+                right_driver = NAVIO2PWM(config.differential_car.right_channel)
+                rover.mixer = DifferentialSteeringMixer(
+                    left_driver=left_driver,
+                    right_driver=right_driver)
+            else:
+                logging.info("Found NAVIO2 HAT - Setting up Ackermann car")
+                throttle_driver = NAVIO2PWM(config.ackermann_car.throttle_channel)
+                steering_driver = NAVIO2PWM(config.ackermann_car.steering_channel)
+                rover.mixer = AckermannSteeringMixer(
+                    steering_driver=steering_driver,
+                    throttle_driver=throttle_driver)
         elif self.board_type is 'adafruit':
             logging.info("Found Adafruit Motor HAT - Setting up differential car")
-            left_driver = Adafruit_MotorHAT(config.differential.left_terminal)
-            right_driver = Adafruit_MotorHAT(config.differential.right_terminal)
+            left_driver = Adafruit_MotorHAT(config.differential_car.left_channel+1)
+            right_driver = Adafruit_MotorHAT(config.differential_car.right_channel+1)
             rover.mixer = DifferentialSteeringMixer(
                 left_driver=left_driver,
                 right_driver=right_driver)
