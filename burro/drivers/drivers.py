@@ -12,8 +12,8 @@ class NAVIO2PWM(Driver):
     NAVIO2 PWM controler.
     '''
     def __init__(self, channel, frequency=50):
-        from navio import pwm as navio_pwm
-        from navio import util
+        from navio2 import pwm as navio_pwm
+        from navio2 import util
         util.check_apm()
         self.pwm = navio_pwm.PWM(channel)
         self.pwm.initialize()
