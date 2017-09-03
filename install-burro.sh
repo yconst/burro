@@ -15,7 +15,7 @@ virtualenv --system-site-packages burro
 cd burro
 
 echo "\nBurro Installer: Preparing Burro\n"
-git clone https://github.com/yconst/burro
+git clone https://github.com/adricl/burro
 cd burro
 echo "Burro Installer: Installing Python libraries\n"
 echo "Burro Installer: (this can take some time..)\n"
