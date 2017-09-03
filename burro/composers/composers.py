@@ -37,7 +37,7 @@ class Composer(object):
             logging.info("Loaded F710 Gamepad module")
         except Exception as e:
             f710 = None
-        if self.board_type is 'navio':
+        if self.board_type is 'navio2':
             rc = RC()
             pilots.append(rc)
             logging.info("Loaded RC module")
@@ -58,7 +58,7 @@ class Composer(object):
         rover.recorder = FileRecorder()
 
     def setup_mixers(self, rover):
-        if self.board_type is 'navio':
+        if self.board_type is 'navio2':
             logging.info("Found NAVIO2 HAT - Setting up Ackermann car")
             throttle_driver = NAVIO2PWM(2)
             steering_driver = NAVIO2PWM(0)
@@ -83,7 +83,7 @@ class Composer(object):
         rover.remote = WebRemote(rover)
 
     def setup_indicators(self, rover):
-        if self.board_type is 'navio':
+        if self.board_type is 'navio2':
             rover.indicator = NAVIO2LED()
         else:
             rover.indicator = Indicator()

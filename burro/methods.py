@@ -85,7 +85,9 @@ def board_type():
     addresses = i2c_addresses(1)
     if not addresses:
         return None
-    if '0x77' in addresses:
+    if '0x40' in addresses:
         return 'navio'
+    if '0x77' in addresses:
+        return 'navio2'
     elif '0x60' in addresses:
         return 'adafruit'
