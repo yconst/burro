@@ -37,10 +37,14 @@ class Composer(object):
             logging.info("Loaded F710 Gamepad module")
         except Exception as e:
             f710 = None
+        if self.board_type is 'navio':
+            rc = RC()
+            pilots.append(rc)
+            logging.info("Loaded RC module for Navio")
         if self.board_type is 'navio2':
             rc = RC()
             pilots.append(rc)
-            logging.info("Loaded RC module")
+            logging.info("Loaded RC module for Navio2")
         else:
             rc = None
         model_paths = list_models()
@@ -58,7 +62,15 @@ class Composer(object):
         rover.recorder = FileRecorder()
 
     def setup_mixers(self, rover):
-        if self.board_type is 'navio2':
+        if self.board_type is 'navio':
+            logging.info("Found NAVIO HAT - Setting up Ackermann car")
+            throttle_driver = NAVIO2PWM(2)
+            steering_driver = NAVIO2PWM(0)
+            rover.mixer = AckermannSteeringMixer(
+                steering_driver=steering_driver,
+                throttle_driver=throttle_driver)
+
+        elif self.board_type is 'navio2':
             logging.info("Found NAVIO2 HAT - Setting up Ackermann car")
             throttle_driver = NAVIO2PWM(2)
             steering_driver = NAVIO2PWM(0)
