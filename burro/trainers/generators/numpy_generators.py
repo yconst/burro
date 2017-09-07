@@ -95,3 +95,15 @@ def nth_select(generator, nth, mode='reject_nth', offset=0):
             not is_nth and mode == 'reject_nth'):
             yield inp, angle
         counter += 1
+
+
+def gaussian_noise(generator, scale=config.training.noise_scale):
+    '''
+    Generator that adds gaussian noise to an 2d numpy
+    array (an image)
+    '''
+    for inp, angle in generator:
+        scale_instance = np.random.randn() * scale
+        noisy = np.random.randn(*inp.shape) * scale_instance
+        inp = np.clip(inp + noisy, -1.0, 0.9999)
+        yield inp, angle
