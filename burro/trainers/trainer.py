@@ -11,7 +11,10 @@ from keras.callbacks import TensorBoard, ReduceLROnPlateau, ModelCheckpoint, Ear
 
 from config import config
 import methods
-import helpers
+
+from generators import file_generators
+import histograms
+import img_pipelines
 
 
 offset = 4
@@ -20,14 +23,14 @@ gen_batch = 256
 val_batch = 32
 val_stride = 20
 
-dense1 = 150
+dense1 = 100
 dense2 = 50
 
 now = time.strftime("%c")
 
 def train_categorical(data_dir, track, optimizer='adam', patience=10):
 
-    hist = helpers.angles_histogram(data_dir)
+    hist = histograms.angles_histogram(data_dir)
     print hist[0]
     print hist[1]
 
@@ -47,10 +50,10 @@ def train_categorical(data_dir, track, optimizer='adam', patience=10):
 
     methods.create_file(model_path)
 
-    im_count = helpers.image_count(data_dir)
-    gen = helpers.categorical_pipeline(data_dir, mode='reject_nth',
+    im_count = file_generators.file_count(data_dir)
+    gen = img_pipelines.categorical_pipeline(data_dir, mode='reject_nth',
         batch_size=gen_batch, offset=offset)
-    val = helpers.categorical_pipeline(data_dir, mode='accept_nth',
+    val = img_pipelines.categorical_pipeline(data_dir, mode='accept_nth',
         batch_size=val_batch, offset=offset)
 
     model = Sequential()
@@ -60,13 +63,13 @@ def train_categorical(data_dir, track, optimizer='adam', patience=10):
                 2, 2), activation='relu', input_shape=input_shape))
     model.add(Convolution2D(32, (5, 5), strides=(2, 2), activation='relu'))
     model.add(Convolution2D(64, (5, 5), strides=(2, 2), activation='relu'))
-    model.add(Convolution2D(64, (3, 3), strides=(2, 2), activation='relu'))
-    model.add(Convolution2D(24, (3, 3), strides=(1, 1), activation='relu'))
+    model.add(Convolution2D(64, (3, 3), strides=(1, 1), activation='relu'))
+    model.add(Convolution2D(64, (2, 2), strides=(1, 1), activation='relu'))
     model.add(Flatten())
-    model.add(Dense(dense1, activation='relu'))
-    #model.add( Dropout(.1) )
-    model.add(Dense(dense2, activation='relu'))
-    #model.add( Dropout(.1) )
+    model.add(Dense(dense1, activation='selu'))
+    model.add( Dropout(.1) )
+    model.add(Dense(dense2, activation='selu'))
+    model.add( Dropout(.1) )
 
     model.add(
         Dense(
@@ -99,7 +102,7 @@ def train_categorical(data_dir, track, optimizer='adam', patience=10):
 
 def train_regression(data_dir, track, optimizer='adam', patience=10):
 
-    hist = helpers.angles_histogram(data_dir)
+    hist = histograms.angles_histogram(data_dir)
     print hist[0]
     print hist[1]
 
@@ -119,10 +122,10 @@ def train_regression(data_dir, track, optimizer='adam', patience=10):
 
     methods.create_file(model_path)
 
-    im_count = helpers.image_count(data_dir)
-    gen = helpers.regression_pipeline(data_dir, mode='reject_nth',
+    im_count = file_generators.file_count(data_dir)
+    gen = img_pipelines.regression_pipeline(data_dir, mode='reject_nth',
         batch_size=gen_batch, val_every=5, offset=offset)
-    val = helpers.regression_pipeline(data_dir, mode='accept_nth',
+    val = img_pipelines.regression_pipeline(data_dir, mode='accept_nth',
         batch_size=val_batch, val_every=5, offset=offset)
 
     model = Sequential()
@@ -131,15 +134,16 @@ def train_regression(data_dir, track, optimizer='adam', patience=10):
             24, (6, 6), strides=(
                 2, 2), activation='relu', input_shape=input_shape))
     model.add(Convolution2D(32, (5, 5), strides=(2, 2), activation='relu'))
-    model.add(Convolution2D(48, (5, 5), strides=(2, 2), activation='relu'))
-    model.add(Convolution2D(64, (3, 3), strides=(2, 2), activation='relu'))
-    model.add(Convolution2D(24, (3, 3), strides=(1, 1), activation='relu'))
+    model.add(Convolution2D(64, (5, 5), strides=(2, 2), activation='relu'))
+    model.add(Convolution2D(64, (3, 3), strides=(1, 1), activation='relu'))
+    model.add(Convolution2D(64, (2, 2), strides=(1, 1), activation='relu'))
     model.add(Flatten())
     model.add(Dense(dense1, activation='selu'))
-    #model.add( Dropout(.1) )
+    model.add( Dropout(.1) )
     model.add(Dense(dense2, activation='selu'))
+    model.add( Dropout(.1) )
 
-    model.add(Dense(1,activation='linear',name='angle_out'))
+    model.add(Dense(1, activation='linear',name='angle_out'))
     model.compile(
         optimizer=optimizer, loss={
             'angle_out': 'mean_squared_error'})
