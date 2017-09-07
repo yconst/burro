@@ -28,7 +28,11 @@ def main():
     arguments = docopt(__doc__)
     data_dir = arguments['--data-dir']
     model_name = arguments['--model-name']
-    train_regression(data_dir, model_name)
+    mode = arguments['--mode']
+    if mode == 'regression':
+        train_regression(data_dir, model_name)
+    elif mode == 'categorical':
+        train_categorical(data_dir, model_name)
 
 if __name__ == "__main__":
     main()
