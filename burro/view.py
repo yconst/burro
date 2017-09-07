@@ -20,7 +20,7 @@ from docopt import docopt
 import methods
 import config
 
-from trainers.helpers import regression_pipeline
+from trainers.img_pipelines import regression_pipeline
 from trainers.generators.pil_generators import show_image
 
 
