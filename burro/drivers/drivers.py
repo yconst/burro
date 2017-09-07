@@ -29,6 +29,29 @@ class NAVIO2PWM(Driver):
         pwm_val = 1.5 + value * 0.5
         self.pwm.set_duty_cycle(pwm_val)
 
+class NavioPWM(Driver):
+    def __init__(self, channel, frequency=50):
+        from navio.adafruit_pwm_servo_driver import pwm
+        import RPi.GPIO as GPIO
+        from navio import util
+        util.check_apm()
+        
+        GPIO.setmode(GPIO.BCM)
+        GPIO.setup(27, GPIO.OUT)
+        GPIO.output(27,GPIO.LOW)
+
+        self.pwm = pwm.PWM()
+        self.pwm.setPWMFreq(frequency)
+        self.channel = channel
+
+    def update(self, value):
+        '''
+        Accepts an input [-1, 1] and applies it as
+        a PWM with RC-style duty cycle [1, 2].
+        '''
+        assert(value <= 1 and -1 <= value)
+        pwm_val = 1.5 + value * 0.5
+        self.pwm.setPWM(channel, 0, pwm_val)
 
 class Adafruit_MotorHAT(Driver):
     '''
