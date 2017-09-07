@@ -9,7 +9,7 @@ from models import list_models
 from pilots import (KerasCategorical,
     RC, F710, MixedRC, MixedF710)
 from mixers import AckermannSteeringMixer, DifferentialSteeringMixer
-from drivers import NAVIO2PWM, Adafruit_MotorHAT
+from drivers import NAVIO2PWM, NavioPWM, Adafruit_MotorHAT
 from indicators import Indicator, NAVIO2LED
 from remotes import WebRemote
 from recorders import FileRecorder
@@ -64,8 +64,8 @@ class Composer(object):
     def setup_mixers(self, rover):
         if self.board_type is 'navio':
             logging.info("Found NAVIO HAT - Setting up Ackermann car")
-            throttle_driver = NAVIO2PWM(2)
-            steering_driver = NAVIO2PWM(0)
+            throttle_driver = NavioPWM(2)
+            steering_driver = NavioPWM(0)
             rover.mixer = AckermannSteeringMixer(
                 steering_driver=steering_driver,
                 throttle_driver=throttle_driver)
