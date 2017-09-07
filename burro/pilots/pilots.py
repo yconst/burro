@@ -97,10 +97,10 @@ class KerasRegression(BasePilot):
         img_arr = np.expand_dims(img_arr, axis=0)
         prediction = self.model.predict(img_arr)
         if len(prediction) == 2:
-            yaw = prediction[0]
-            throttle = prediction[1]
+            yaw = methods.angle_to_yaw(prediction[0][0])
+            throttle = prediction[1][0]
         else:
-            yaw = prediction
+            yaw = methods.angle_to_yaw(prediction[0][0])
             throttle = 0
 
         avf = config.model.average_factor

@@ -1,6 +1,6 @@
 -r requirements-common.txt
 picamera==1.12
 https://github.com/samjabrahams/tensorflow-on-raspberry-pi/releases/download/v1.1.0/tensorflow-1.1.0-cp27-none-linux_armv7l.whl
-keras==2.0.4
+keras==2.0.6
 pyusb==1.0.0
 configobj==5.0.6

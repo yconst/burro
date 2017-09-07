@@ -4,6 +4,7 @@ import os
 import subprocess
 import re
 import errno
+import time
 
 import numpy as np
 
@@ -41,13 +42,13 @@ ANGLE CONVERSIONS
 functions to help converting between angles and yaw input values.
 '''
 
-def angle_to_yaw(angle, limit=config.ackermann_car.max_steering_angle):
+def angle_to_yaw(angle, limit=config.car.max_steering_angle):
     '''
     Convert from angle to yaw
     '''
     return angle / float(limit)
 
-def yaw_to_angle(yaw, limit=config.ackermann_car.max_steering_angle):
+def yaw_to_angle(yaw, limit=config.car.max_steering_angle):
     '''
     Convert from yaw to angle
     '''
@@ -129,3 +130,14 @@ def board_type():
         return 'navio'
     elif '0x60' in addresses:
         return 'adafruit'
+
+
+'''
+TIME TOOLS
+'''
+
+def current_milis():
+    '''
+    Return the current time in miliseconds
+    '''
+    return int(round(time.time() * 1000))
