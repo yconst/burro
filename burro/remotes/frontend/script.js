@@ -66,7 +66,7 @@ ws.onmessage = function (event) {
 
 const ImageView =  {
 	view: function() {
-		return m("img", {class:"viewport", src:"data:image/jpeg;base64," + Store.data.image})
+		return m("img", {class:"viewport", src:"data:image/png;base64," + Store.data.image})
 	}
 }
 
