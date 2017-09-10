@@ -64,8 +64,8 @@ class Composer(object):
     def setup_mixers(self, rover):
         if self.board_type is 'navio':
             logging.info("Found NAVIO HAT - Setting up Ackermann car")
-            throttle_driver = NavioPWM(2)
-            steering_driver = NavioPWM(0)
+            throttle_driver = NavioPWM(5)
+            steering_driver = NavioPWM(3)
             rover.mixer = AckermannSteeringMixer(
                 steering_driver=steering_driver,
                 throttle_driver=throttle_driver)

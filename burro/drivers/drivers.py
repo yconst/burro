@@ -1,4 +1,5 @@
 import atexit
+import math
 
 class Driver:
     '''
@@ -31,27 +32,39 @@ class NAVIO2PWM(Driver):
 
 class NavioPWM(Driver):
     def __init__(self, channel, frequency=50):
-        from navio.adafruit_pwm_servo_driver import pwm
-        import RPi.GPIO as GPIO
+        from navio import adafruit_pwm_servo_driver as pwm
         from navio import util
+        import RPi.GPIO as GPIO
         util.check_apm()
         
+        #Navio+ requires the GPIO line 27 to be set to low 
+        #before the PCA9685 is accesed 
+        GPIO.setwarnings(False)
         GPIO.setmode(GPIO.BCM)
         GPIO.setup(27, GPIO.OUT)
         GPIO.output(27,GPIO.LOW)
 
-        self.pwm = pwm.PWM()
-        self.pwm.setPWMFreq(frequency)
+        #GPIO.cleanup()
+        self.frequency = frequency
         self.channel = channel
+        self.pwm = pwm.PWM()
+        self.pwm.setPWMFreq(self.frequency)
 
     def update(self, value):
         '''
         Accepts an input [-1, 1] and applies it as
-        a PWM with RC-style duty cycle [1, 2].
+        scale between 0 and 4096
         '''
         assert(value <= 1 and -1 <= value)
         pwm_val = 1.5 + value * 0.5
-        self.pwm.setPWM(channel, 0, pwm_val)
+
+        #SERVO_MIN_ms = 1.250 # mS
+        #SERVO_MAX_ms = 1.750 # mS
+        print('Values %d', value, self.channel)
+        #convert mS to 0-4096 scale:
+        servoScaled = math.trunc((pwm_val * 4096.0) / (1000.0 / self.frequency) - 1)
+        
+        self.pwm.setPWM(self.channel, 0, servoScaled)
 
 class Adafruit_MotorHAT(Driver):
     '''
