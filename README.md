@@ -1,6 +1,6 @@
-[![BCH compliance](https://bettercodehub.com/edge/badge/yconst/burro?branch=master)](https://bettercodehub.com/)
-
 Burro is a platform for small-scale self-driving cars.
+
+[![BCH compliance](https://bettercodehub.com/edge/badge/yconst/burro?branch=master)](https://bettercodehub.com/)
 
 
 ### Requirements
