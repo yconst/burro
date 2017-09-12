@@ -1,4 +1,6 @@
-Burro is a platform for small-scale self-driving cars. It was inspired by [Donkey](http://donkeycar.com).
+[![BCH compliance](https://bettercodehub.com/edge/badge/yconst/burro?branch=master)](https://bettercodehub.com/)
+
+Burro is a platform for small-scale self-driving cars.
 
 
 ### Requirements
