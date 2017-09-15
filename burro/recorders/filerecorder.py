@@ -67,8 +67,8 @@ class FileRecorder(BaseRecorder):
             shutil.copyfileobj(image_buffer, fd, -1)
         self.frame_count += 1
 
-    def create_img_filepath(self, directory, frame_count, 
-        angle, throttle, file_type='png'):
+    def create_img_filepath(self, directory, frame_count,
+        angle, throttle, file_type='jpg'):
         '''
         Generate the complete filepath for saving an image
         '''
