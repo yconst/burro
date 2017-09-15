@@ -1,5 +1,6 @@
 Burro is a platform for small-scale self-driving cars.
 
+[![Build Status](https://travis-ci.org/yconst/burro.svg?branch=master)](https://travis-ci.org/yconst/burro)
 [![BCH compliance](https://bettercodehub.com/edge/badge/yconst/burro?branch=master)](https://bettercodehub.com/)
 
 
