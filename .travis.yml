@@ -5,6 +5,7 @@ install:
   - pip install numpy configobj
 branches:
   only:
+  - master
   - unittests
 script:
   - cd burro
