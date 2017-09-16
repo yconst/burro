@@ -38,8 +38,8 @@ class Composer(object):
         except Exception as e:
             f710 = None
         if self.board_type is 'navio':
-            rc = RC()
-            pilots.append(rc)
+            f710 = F710()
+            pilots.append(f710)
             logging.info("Loaded RC module for Navio")
         if self.board_type is 'navio2':
             rc = RC()
