@@ -1,13 +1,12 @@
-
 import time
 import os
+import shutil
 
 from PIL import Image
 
 import methods
 from config import config
 
-def current_milli_time(): return int(round(time.time() * 1000))
 
 class BaseRecorder(object):
 
@@ -16,6 +15,9 @@ class BaseRecorder(object):
         self.is_recording = False
 
     def record_frame(self, image_array, angle, throttle):
+        '''
+        Record a single image frame
+        '''
         pass
 
 
@@ -39,9 +41,9 @@ class FileRecorder(BaseRecorder):
             os.makedirs(instance_path)
         return instance_path
 
-    def record_frame(self, image_array, angle, throttle):
+    def record_frame(self, image_buffer, angle, throttle):
         '''
-        Record a single frame, with frame index, angle and throttle values
+        Record a single image buffer, with frame index, angle and throttle values
         as its filename
         '''
         # throttle is inversed, i.e. forward is negative, backwards positive
@@ -60,11 +62,13 @@ class FileRecorder(BaseRecorder):
             self.frame_count,
             file_angle,
             file_throttle)
-        im = Image.fromarray(image_array)
-        im.save(filepath)
+        with open (filepath, 'w') as fd:
+            image_buffer.seek(0)
+            shutil.copyfileobj(image_buffer, fd, -1)
         self.frame_count += 1
 
-    def create_img_filepath(self, directory, frame_count, angle, throttle):
+    def create_img_filepath(self, directory, frame_count,
+        angle, throttle, file_type='jpg'):
         '''
         Generate the complete filepath for saving an image
         '''
@@ -77,6 +81,6 @@ class FileRecorder(BaseRecorder):
                        "_agl_" +
                        str(angle) +
                        "_mil_" +
-                       str(current_milli_time()) +
-                       '.jpg')
+                       str(methods.current_milis()) +
+                       '.' + file_type)
         return filepath

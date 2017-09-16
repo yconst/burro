@@ -27,15 +27,21 @@ class Rover(object):
             self.step()
             stop_time = time.time()
             self.f_time = stop_time - start_time
-            time.sleep(max(0.01, 0.05 - self.f_time))
+            time.sleep(max(0.005, 0.05 - self.f_time))
 
     def step(self):
         pilot_angle, pilot_throttle = self.pilot.decide(
             self.vision_sensor.frame)
 
+        self.mixer.update(pilot_throttle, pilot_angle)
+
+        self.pilot_angle = pilot_angle
+        self.pilot_throttle = pilot_throttle
+
         if self.record:
             self.recorder.record_frame(
-                self.vision_sensor.frame, pilot_angle, pilot_throttle)
+                self.vision_sensor.image_buffer(), 
+                pilot_angle, pilot_throttle)
 
         if self.recorder.is_recording:
             self.indicator.set_state('recording')
@@ -43,11 +49,7 @@ class Rover(object):
             self.indicator.set_state('standby')
         else:
             self.indicator.set_state('ready')
-
-        self.pilot_angle = pilot_angle
-        self.pilot_throttle = pilot_throttle
-
-        self.mixer.update(pilot_throttle, pilot_angle)
+        
 
     def selected_pilot_index(self):
         return self.pilots.index(self.pilot)

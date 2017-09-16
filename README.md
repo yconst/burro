@@ -1,4 +1,7 @@
-Burro is a platform for small-scale self-driving cars. It was inspired by [Donkey](http://donkeycar.com).
+Burro is a platform for small-scale self-driving cars.
+
+[![Build Status](https://travis-ci.org/yconst/burro.svg?branch=master)](https://travis-ci.org/yconst/burro)
+[![BCH compliance](https://bettercodehub.com/edge/badge/yconst/burro?branch=master)](https://bettercodehub.com/)
 
 
 ### Requirements
@@ -35,7 +38,7 @@ If you don;t use NAVIO2 you can also use a [vanilla Raspbian image](https://www.
 
 ### Installation
 
-Burro includes an installation script that handles installing necessary libraries, setting up the Python virtualenv and configuring submodules. To download and run:
+Burro includes an installation script that handles installing necessary libraries, setting up the Python virtualenv and configuring submodules. To download and run on a Raspberry Pi:
 
     wget https://raw.githubusercontent.com/yconst/burro/master/install-burro.sh
     chmod +x install-burro.sh
