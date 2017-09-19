@@ -38,10 +38,9 @@ class Composer(object):
         except Exception as e:
             f710 = None
         if self.board_type is 'navio':
-            f710 = F710()
-            pilots.append(f710)
-            logging.info("Loaded RC module for Navio")
-        if self.board_type is 'navio2':
+            #Cant get RC for Navio to work yet
+            logging.info("Loading for Navio")
+        elif self.board_type is 'navio2':
             rc = RC()
             pilots.append(rc)
             logging.info("Loaded RC module for Navio2")
@@ -64,8 +63,8 @@ class Composer(object):
     def setup_mixers(self, rover, type):
         if self.board_type is 'navio':
             logging.info("Found NAVIO HAT - Setting up Ackermann car")
-            throttle_driver = NavioPWM(5)
-            steering_driver = NavioPWM(3)
+            throttle_driver = NavioPWM(config.ackermann_car_navio.throttle_channel)
+            steering_driver = NavioPWM(config.ackermann_car_navio.steering_channel)
             rover.mixer = AckermannSteeringMixer(
                 steering_driver=steering_driver,
                 throttle_driver=throttle_driver)
