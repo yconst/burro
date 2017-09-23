@@ -14,7 +14,7 @@ from operator import itemgetter
 from datetime import datetime
 from pilots import BasePilot
 
-from navio import rcinput
+from navio2 import rcinput
 
 import methods
 from config import config

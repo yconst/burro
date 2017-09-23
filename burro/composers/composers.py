@@ -9,7 +9,7 @@ from models import list_models
 from pilots import (KerasRegression, KerasCategorical,
     RC, F710, MixedRC, MixedF710)
 from mixers import AckermannSteeringMixer, DifferentialSteeringMixer
-from drivers import NAVIO2PWM, Adafruit_MotorHAT
+from drivers import NAVIO2PWM, NavioPWM, Adafruit_MotorHAT
 from indicators import Indicator, NAVIO2LED
 from remotes import WebRemote
 from recorders import FileRecorder
@@ -38,9 +38,12 @@ class Composer(object):
         except Exception as e:
             f710 = None
         if self.board_type is 'navio':
+            #Cant get RC for Navio to work yet
+            logging.info("Loading for Navio")
+        elif self.board_type is 'navio2':
             rc = RC()
             pilots.append(rc)
-            logging.info("Loaded RC module")
+            logging.info("Loaded RC module for Navio2")
         else:
             rc = None
         model_paths = list_models()
@@ -59,6 +62,14 @@ class Composer(object):
 
     def setup_mixers(self, rover, type):
         if self.board_type is 'navio':
+            logging.info("Found NAVIO HAT - Setting up Ackermann car")
+            throttle_driver = NavioPWM(config.ackermann_car_navio.throttle_channel)
+            steering_driver = NavioPWM(config.ackermann_car_navio.steering_channel)
+            rover.mixer = AckermannSteeringMixer(
+                steering_driver=steering_driver,
+                throttle_driver=throttle_driver)
+
+        elif self.board_type is 'navio2':
             if type == 'differential':
                 logging.info("Found NAVIO2 HAT - Setting up differential car")
                 left_driver = NAVIO2PWM(config.differential_car.left_channel)
@@ -91,7 +102,7 @@ class Composer(object):
         rover.remote = WebRemote(rover)
 
     def setup_indicators(self, rover):
-        if self.board_type is 'navio':
+        if self.board_type is 'navio2':
             rover.indicator = NAVIO2LED()
         else:
             rover.indicator = Indicator()

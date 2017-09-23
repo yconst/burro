@@ -15,7 +15,7 @@ virtualenv --system-site-packages burro
 cd burro
 
 echo "\nBurro Installer: Preparing Burro\n"
-git clone https://github.com/yconst/burro
+git clone https://github.com/yconst/burro.git
 cd burro
 echo "Burro Installer: Installing Python libraries\n"
 echo "Burro Installer: (this can take some time..)\n"
@@ -36,7 +36,8 @@ cd ../..
 
 echo "\nBurro Installer: Creating symlinks\n"
 DIR="$( cd "$( dirname "$0" )" && pwd )"
-ln -s $DIR/Navio2/Python/navio2 $DIR/burro/navio
+ln -s $DIR/Navio2/Python/navio2 $DIR/burro/navio2
+ln -s $DIR/Navio/Python/navio $DIR/burro/navio
 ln -s $DIR/Adafruit_HAT/Adafruit_MotorHAT $DIR/burro/adafruit_motorhat
 
 echo "\nBurro Installer: Done. Run sudo start.sh to start Burro\n"
