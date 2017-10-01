@@ -13,8 +13,10 @@ from PIL import Image
 
 from config import config
 
+from sensor import BaseSensor
 
-class BaseCamera(object):
+
+class BaseCamera(BaseSensor):
 
     def __init__(self, resolution=config.camera.resolution):
         self.resolution = resolution
@@ -26,23 +28,6 @@ class BaseCamera(object):
         self.frame_time = 0
         self.encoded_time = 0
         self.base64_time = 0
-
-    def start(self):
-        '''
-        Start receiving values from the sensor
-        '''
-        t = Thread(target=self.update, args=())
-        t.daemon = True
-        t.start()
-        time.sleep(1)
-        return self
-
-    def update(self):
-        '''
-        Performs sensor update steps. This is called
-        in a separate thread
-        '''
-        pass
 
     def image_buffer(self):
         '''
@@ -119,3 +104,10 @@ class PiVideoStream(BaseCamera):
 
     def stop(self):
         self.stopped = True
+
+
+class TestCamera(BaseCamera):
+    '''
+    Test camera class for unit testing
+    '''
+    pass
