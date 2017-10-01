@@ -9,7 +9,6 @@ from itertools import cycle
 import logging
 
 import numpy as np
-from PIL import Image
 
 from config import config
 
@@ -19,6 +18,8 @@ from sensor import BaseSensor
 class BaseCamera(BaseSensor):
 
     def __init__(self, resolution=config.camera.resolution):
+        from PIL import Image
+        
         self.resolution = resolution
         self.frame = np.zeros(
             shape=(
