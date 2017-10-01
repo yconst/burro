@@ -26,6 +26,7 @@ class MixedRC(BasePilot):
     '''
     A pilot that combines a CNN with RC throttle control.
     '''
+
     def __init__(self, keras_pilot, rcpilot, **kwargs):
         self.RCPilot = rcpilot
         self.KerasCategoricalPilot = keras_pilot
@@ -45,6 +46,7 @@ class MixedF710(BasePilot):
     '''
     A pilot that combines a CNN with Gamepad throttle control.
     '''
+
     def __init__(self, keras_pilot, f710pilot, **kwargs):
         self.F710Pilot = f710pilot
         self.KerasCategoricalPilot = keras_pilot

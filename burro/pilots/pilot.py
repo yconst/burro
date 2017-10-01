@@ -6,11 +6,13 @@ Classes representing base pilots.
 
 '''
 
+
 class BasePilot(object):
     '''
     Base class to define common functions.
     When creating a class, only override the funtions you'd like to replace.
     '''
+
     def __init__(self, name=None, last_modified=None):
         self.name = name
         self.last_modified = last_modified
@@ -26,6 +28,7 @@ class TestPilot(BasePilot):
     '''
     Represents a pilot for testing inference
     '''
+
     def set_response(self, angle, throttle):
         self.angle = angle
         self.throttle = throttle

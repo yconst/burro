@@ -22,8 +22,8 @@ class KerasCategorical(BasePilot):
     '''
 
     def __init__(self, model_path, **kwargs):
-    	import keras
-    	
+        import keras
+
         self.yaw = 0
         self.model = keras.models.load_model(model_path)
         super(KerasCategorical, self).__init__(**kwargs)

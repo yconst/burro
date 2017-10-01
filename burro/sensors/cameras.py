@@ -31,7 +31,7 @@ class BaseCamera(BaseSensor):
 
     def image_buffer(self):
         '''
-        Returns the JPEG image buffer corresponding to 
+        Returns the JPEG image buffer corresponding to
         the current frame. Caches result for
         efficiency.
         '''
@@ -39,8 +39,8 @@ class BaseCamera(BaseSensor):
             arr = self.frame
             img = Image.fromarray(arr, 'RGB')
             encoded_buffer = cStringIO.StringIO()
-            img.save(encoded_buffer, format="JPEG", 
-                quality=100, subsampling=0)
+            img.save(encoded_buffer, format="JPEG",
+                     quality=100, subsampling=0)
             self.encoded_buffer = encoded_buffer
             self.encoded_time = time.time()
         else:
@@ -67,8 +67,8 @@ class BaseCamera(BaseSensor):
 class PiVideoStream(BaseCamera):
 
     def __init__(self, resolution=config.camera.resolution,
-                framerate=config.camera.framerate,
-                rotation=config.camera.rotation, **kwargs):
+                 framerate=config.camera.framerate,
+                 rotation=config.camera.rotation, **kwargs):
         from picamera.array import PiRGBArray
         from picamera import PiCamera
 

@@ -16,7 +16,7 @@ from rover import Rover
 
 
 class TestAckermannVehicle(unittest.TestCase):
- 
+
     def setUp(self):
         vehicle = Rover()
 
@@ -37,25 +37,25 @@ class TestAckermannVehicle(unittest.TestCase):
         self.vehicle = vehicle
 
     def test_vehicle_pipeline(self):
-    	angle = random.uniform(-1.0, 1.0) * config.car.max_steering_angle
-    	th = random.uniform(-1.0, 1.0)
-    	
-    	th_out = -th
-    	st_out = -angle / config.car.max_steering_angle
-    	if config.car.reverse_steering:
-    		st_out = -st_out
+        angle = random.uniform(-1.0, 1.0) * config.car.max_steering_angle
+        th = random.uniform(-1.0, 1.0)
 
-    	self.vehicle.pilot.set_response(angle,th)
-    	self.vehicle.step()
+        th_out = -th
+        st_out = -angle / config.car.max_steering_angle
+        if config.car.reverse_steering:
+            st_out = -st_out
+
+        self.vehicle.pilot.set_response(angle, th)
+        self.vehicle.step()
 
         self.assertAlmostEqual(self.vehicle.mixer.throttle_driver.output,
-        	th_out, places=5)
+                               th_out, places=5)
         self.assertAlmostEqual(self.vehicle.mixer.steering_driver.output,
-        	st_out, places=5)
+                               st_out, places=5)
 
 
 class TestDifferentialVehicle(unittest.TestCase):
- 
+
     def setUp(self):
         vehicle = Rover()
 
@@ -76,22 +76,22 @@ class TestDifferentialVehicle(unittest.TestCase):
         self.vehicle = vehicle
 
     def test_vehicle_pipeline(self):
-    	th = random.uniform(-1.0, 1.0)
-    	angle = random.uniform(-1.0, 1.0) * config.car.max_steering_angle
+        th = random.uniform(-1.0, 1.0)
+        angle = random.uniform(-1.0, 1.0) * config.car.max_steering_angle
 
-    	l_out = (th - angle * th / 90.) * config.differential_car.left_mult
+        l_out = (th - angle * th / 90.) * config.differential_car.left_mult
         r_out = (th + angle * th / 90.) * config.differential_car.right_mult
         l_out = min(max(l_out, -1), 1)
         l_out = min(max(l_out, -1), 1)
 
-    	self.vehicle.pilot.set_response(angle,th)
-    	self.vehicle.step()
+        self.vehicle.pilot.set_response(angle, th)
+        self.vehicle.step()
 
         self.assertAlmostEqual(self.vehicle.mixer.left_driver.output,
-        	l_out, places=5)
+                               l_out, places=5)
         self.assertAlmostEqual(self.vehicle.mixer.right_driver.output,
-        	r_out, places=5)
-        
+                               r_out, places=5)
+
 
 if __name__ == '__main__':
     unittest.main()

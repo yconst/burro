@@ -17,6 +17,7 @@ from docopt import docopt
 from rover import Rover
 from composers import Composer
 
+
 def setup_logging():
     '''
     Setup logging to output info to stdout
@@ -29,6 +30,7 @@ def setup_logging():
     formatter = logging.Formatter('%(asctime)s - %(message)s')
     ch.setFormatter(formatter)
     root.addHandler(ch)
+
 
 if __name__ == "__main__":
     arguments = docopt(__doc__)

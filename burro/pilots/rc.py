@@ -24,9 +24,10 @@ class RC(BasePilot):
     '''
     A pilot for NAVIO2 RC input
     '''
+
     def __init__(self, **kwargs):
         from navio import rcinput
-        
+
         self.rcin = rcinput.RCInput()
         self.throttle_center = 1500
         self.yaw_center = 1500

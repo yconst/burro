@@ -70,7 +70,7 @@ class SocketHandler(websocket.WebSocketHandler):
             "record": v.record,
             "is_recording": v.recorder.is_recording,
             "f_time": v.f_time
-            }
+        }
         self.write_message(json.dumps(status))
 
     def send_settings(self):
