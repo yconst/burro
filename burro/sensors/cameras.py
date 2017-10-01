@@ -3,20 +3,23 @@ import os
 import time
 import base64
 import cStringIO
-from threading import Thread
 from itertools import cycle
 
 import logging
 
 import numpy as np
+
 from PIL import Image
 
 from config import config
+from sensor import BaseSensor
 
 
-class BaseCamera(object):
+class BaseCamera(BaseSensor):
 
-    def __init__(self, resolution=config.camera.resolution):
+    def __init__(self, resolution=config.camera.resolution, **kwargs):
+        super(BaseCamera, self).__init__(**kwargs)
+        
         self.resolution = resolution
         self.frame = np.zeros(
             shape=(
@@ -27,26 +30,9 @@ class BaseCamera(object):
         self.encoded_time = 0
         self.base64_time = 0
 
-    def start(self):
-        '''
-        Start receiving values from the sensor
-        '''
-        t = Thread(target=self.update, args=())
-        t.daemon = True
-        t.start()
-        time.sleep(1)
-        return self
-
-    def update(self):
-        '''
-        Performs sensor update steps. This is called
-        in a separate thread
-        '''
-        pass
-
     def image_buffer(self):
         '''
-        Returns the JPEG image buffer corresponding to 
+        Returns the JPEG image buffer corresponding to
         the current frame. Caches result for
         efficiency.
         '''
@@ -54,8 +40,8 @@ class BaseCamera(object):
             arr = self.frame
             img = Image.fromarray(arr, 'RGB')
             encoded_buffer = cStringIO.StringIO()
-            img.save(encoded_buffer, format="JPEG", 
-                quality=100, subsampling=0)
+            img.save(encoded_buffer, format="JPEG",
+                     quality=100, subsampling=0)
             self.encoded_buffer = encoded_buffer
             self.encoded_time = time.time()
         else:
@@ -82,8 +68,8 @@ class BaseCamera(object):
 class PiVideoStream(BaseCamera):
 
     def __init__(self, resolution=config.camera.resolution,
-                framerate=config.camera.framerate,
-                rotation=config.camera.rotation, **kwargs):
+                 framerate=config.camera.framerate,
+                 rotation=config.camera.rotation, **kwargs):
         from picamera.array import PiRGBArray
         from picamera import PiCamera
 
@@ -119,3 +105,10 @@ class PiVideoStream(BaseCamera):
 
     def stop(self):
         self.stopped = True
+
+
+class TestCamera(BaseCamera):
+    '''
+    Test camera class for unit testing
+    '''
+    pass

@@ -1,5 +1,6 @@
 import atexit
 
+
 class Driver:
     '''
     Base driver class
@@ -11,6 +12,7 @@ class NAVIO2PWM(Driver):
     '''
     NAVIO2 PWM controler.
     '''
+
     def __init__(self, channel, frequency=50):
         from navio import pwm as navio_pwm
         from navio import util
@@ -49,9 +51,9 @@ class Adafruit_MotorHAT(Driver):
         assert(value <= 1 and -1 <= value)
         motor = self.mh.getMotor(self.motor_index)
         if value >= 0:
-            motor.run(1) # Forward
+            motor.run(1)  # Forward
         else:
-            motor.run(2) # Backward
+            motor.run(2)  # Backward
         motor.setSpeed(abs(int(value * 255.)))
 
     def turnOffMotors(self):
@@ -60,7 +62,9 @@ class Adafruit_MotorHAT(Driver):
         '''
         self.mh.getMotor(self.motor_index).run(Adafruit_MotorHAT.RELEASE)
 
+
 rr = None
+
 
 class RaspiRobot_HAT(Driver):
     '''
@@ -68,7 +72,7 @@ class RaspiRobot_HAT(Driver):
     '''
 
     def __init__(self, motor_index=0):
-        from rrb3 import *
+        from rrb3 import RRB3
         if not rr:
             rr = RRB3(8, 6)
         assert(motor_index == 0 or motor_index == 1)
@@ -95,3 +99,19 @@ class RaspiRobot_HAT(Driver):
         Disable all motors
         '''
         rr.stop()
+
+
+class TestDriver(Driver):
+    '''
+    A driver for testing vehicle infrastructure
+    '''
+
+    def __init__(self):
+        self.output = 1
+
+    def update(self, value):
+        '''
+        Accepts an input [-1, 1] and assigns it to a local value.
+        '''
+        assert(value <= 1 and -1 <= value)
+        self.output = value

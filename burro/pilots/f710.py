@@ -11,6 +11,8 @@ import math
 import random
 import time
 import logging
+import usb
+import struct
 
 from threading import Thread
 
@@ -21,6 +23,8 @@ from pilots import BasePilot
 import methods
 from config import config
 
+from pilot import BasePilot
+
 # Note: The code below could be very easily adapted to a
 # F310 gamepad. See:
 # https://github.com/sdickreuter/python-gamepad/blob/master/pygamepad/gamepad.py
@@ -30,6 +34,7 @@ class F710(BasePilot):
     '''
     A pilot using the F710 gamepad
     '''
+
     def __init__(self, **kwargs):
         self.gamepad = Gamepad()
         self.gamepad._read_gamepad()
@@ -43,10 +48,10 @@ class F710(BasePilot):
     def decide(self, img_arr):
         st = self.gamepad._state
         direction = int(st[2])
-        if direction == 1: # forward
-                self.throttle = -0.095 - st[4]/255.
-        elif direction == 2: # reverse
-                self.throttle = 0.095 + st[4]/255.
+        if direction == 1:  # forward
+            self.throttle = -0.095 - st[4] / 255.
+        elif direction == 2:  # reverse
+            self.throttle = 0.095 + st[4] / 255.
         else:
             self.throttle = 0
         #self.throttle -= (float(st[12]) - 128.0) / 128.0
@@ -62,14 +67,10 @@ class F710(BasePilot):
         return "F710 Gamepad"
 
 
-import usb
-import struct
-
 USB_VENDOR = 0x046d
 USB_PRODUCT = 0xc21f
 default_state = (0, 20, 0, 0, 0, 0, 123, 251, 128,
                  0, 128, 0, 128, 0, 0, 0, 0, 0, 0, 0)
-
 
 class Gamepad(object):
 
@@ -87,7 +88,8 @@ class Gamepad(object):
             try:
                 self._dev.detachKernelDriver(0)
             except usb.core.USBError:
-                logging.warning("Gamepad: Error detaching kernel driver (usually no problem)")
+                logging.warning(
+                    "Gamepad: Error detaching kernel driver (usually no problem)")
             except AttributeError:
                 pass
             self._dev.setConfiguration(1)
