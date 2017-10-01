@@ -16,6 +16,13 @@ class Indicator(object):
 		pass
 
 
+class DummyIndicator(Indicator):
+	'''
+	Dummy indicator class for unit testing
+	'''
+	pass
+
+
 class NAVIO2LED(Indicator):
 	'''
 	Abstraction of the NAVIO2 LED indicator
