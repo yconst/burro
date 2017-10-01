@@ -72,7 +72,7 @@ class RaspiRobot_HAT(Driver):
     '''
 
     def __init__(self, motor_index=0):
-        from rrb3 import *
+        from rrb3 import RRB3
         if not rr:
             rr = RRB3(8, 6)
         assert(motor_index == 0 or motor_index == 1)
