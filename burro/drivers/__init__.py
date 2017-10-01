@@ -1,1 +1,2 @@
-from drivers import Driver, NAVIO2PWM, Adafruit_MotorHAT, TestDriver
+from drivers import Driver, NavioPWM, NAVIO2PWM, Adafruit_MotorHAT, TestDriver
+

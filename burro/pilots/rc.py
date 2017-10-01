@@ -26,7 +26,7 @@ class RC(BasePilot):
     '''
 
     def __init__(self, **kwargs):
-        from navio import rcinput
+        from navio2 import rcinput
 
         self.rcin = rcinput.RCInput()
         self.throttle_center = 1500

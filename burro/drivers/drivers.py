@@ -1,4 +1,5 @@
 import atexit
+import math
 
 
 class Driver:
@@ -10,12 +11,11 @@ class Driver:
 
 class NAVIO2PWM(Driver):
     '''
-    NAVIO2 PWM controler.
+    NAVIO2 PWM driver
     '''
-
     def __init__(self, channel, frequency=50):
-        from navio import pwm as navio_pwm
-        from navio import util
+        from navio2 import pwm as navio_pwm
+        from navio2 import util
         util.check_apm()
         self.pwm = navio_pwm.PWM(channel)
         self.pwm.initialize()
@@ -32,11 +32,50 @@ class NAVIO2PWM(Driver):
         self.pwm.set_duty_cycle(pwm_val)
 
 
+class NavioPWM(Driver):
+    '''
+    NAVIO PWM driver
+    '''
+    def __init__(self, channel, frequency=50):
+        from navio import adafruit_pwm_servo_driver as pwm
+        from navio import util
+        import RPi.GPIO as GPIO
+        util.check_apm()
+        
+        #Navio+ requires the GPIO line 27 to be set to low 
+        #before the PCA9685 is accesed 
+        GPIO.setwarnings(False)
+        GPIO.setmode(GPIO.BCM)
+        GPIO.setup(27, GPIO.OUT)
+        GPIO.output(27,GPIO.LOW)
+
+        #GPIO.cleanup()
+        self.frequency = frequency
+        self.channel = channel
+        self.pwm = pwm.PWM()
+        self.pwm.setPWMFreq(self.frequency)
+
+    def update(self, value):
+        '''
+        Accepts an input [-1, 1] and applies it as
+        scale between 0 and 4096
+        '''
+        assert(value <= 1 and -1 <= value)
+        pwm_val = 1.5 + value * 0.5
+
+        #SERVO_MIN_ms = 1.250 # mS
+        #SERVO_MAX_ms = 1.750 # mS
+        print('Values %d', value, self.channel)
+        #convert mS to 0-4096 scale:
+        servoScaled = math.trunc((pwm_val * 4096.0) / (1000.0 / self.frequency) - 1)
+        
+        self.pwm.setPWM(self.channel, 0, servoScaled)
+
+
 class Adafruit_MotorHAT(Driver):
     '''
     Adafruit DC Motor and Stepper HAT Driver
     '''
-
     def __init__(self, motor_index):
         from adafruit_motorhat import Adafruit_MotorHAT, Adafruit_DCMotor
         self.mh = Adafruit_MotorHAT(addr=0x60)
@@ -65,12 +104,10 @@ class Adafruit_MotorHAT(Driver):
 
 rr = None
 
-
 class RaspiRobot_HAT(Driver):
     '''
     Raspirobot HAT
     '''
-
     def __init__(self, motor_index=0):
         from rrb3 import RRB3
         if not rr:
@@ -105,7 +142,6 @@ class TestDriver(Driver):
     '''
     A driver for testing vehicle infrastructure
     '''
-
     def __init__(self):
         self.output = 1
 

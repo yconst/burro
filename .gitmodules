@@ -7,3 +7,7 @@
 [submodule "Raspirobot"]
 	path = Raspirobot
 	url = https://github.com/simonmonk/raspirobotboard3.git
+[submodule "Navio"]
+	path = Navio
+	url = https://github.com/emlid/Navio.git
+	branch = master
