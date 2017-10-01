@@ -65,18 +65,17 @@ class F710(BasePilot):
         return "F710 Gamepad"
 
 
-import usb
-import struct
-
 USB_VENDOR = 0x046d
 USB_PRODUCT = 0xc21f
 default_state = (0, 20, 0, 0, 0, 0, 123, 251, 128,
                  0, 128, 0, 128, 0, 0, 0, 0, 0, 0, 0)
 
-
 class Gamepad(object):
 
     def __init__(self):
+        import usb
+        import struct
+
         self.is_initialized = False
         d = None
         busses = usb.busses()
