@@ -16,7 +16,10 @@ import methods
 
 from rc import RC
 from f710 import F710
-from pilots import BasePilot, KerasCategorical
+from pilots import BasePilot
+from cnn import KerasCategorical
+
+from pilot import BasePilot
 
 
 class MixedRC(BasePilot):

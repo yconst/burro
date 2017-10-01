@@ -21,6 +21,8 @@ from pilots import BasePilot
 import methods
 from config import config
 
+from pilot import BasePilot
+
 # Note: The code below could be very easily adapted to a
 # F310 gamepad. See:
 # https://github.com/sdickreuter/python-gamepad/blob/master/pygamepad/gamepad.py

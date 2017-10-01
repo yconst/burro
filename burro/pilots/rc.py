@@ -14,10 +14,10 @@ from operator import itemgetter
 from datetime import datetime
 from pilots import BasePilot
 
-from navio import rcinput
-
 import methods
 from config import config
+
+from pilot import BasePilot
 
 
 class RC(BasePilot):
@@ -25,6 +25,8 @@ class RC(BasePilot):
     A pilot for NAVIO2 RC input
     '''
     def __init__(self, **kwargs):
+        from navio import rcinput
+        
         self.rcin = rcinput.RCInput()
         self.throttle_center = 1500
         self.yaw_center = 1500
