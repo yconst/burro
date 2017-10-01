@@ -2,7 +2,7 @@ language: python
 python:
   - "2.7"
 install:
-  - pip install numpy configobj pil
+  - pip install numpy configobj pillow
 branches:
   only:
   - master
