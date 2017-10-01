@@ -11,6 +11,8 @@ import math
 import random
 import time
 import logging
+import usb
+import struct
 
 from threading import Thread
 
@@ -73,9 +75,6 @@ default_state = (0, 20, 0, 0, 0, 0, 123, 251, 128,
 class Gamepad(object):
 
     def __init__(self):
-        import usb
-        import struct
-
         self.is_initialized = False
         d = None
         busses = usb.busses()

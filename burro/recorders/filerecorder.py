@@ -2,6 +2,8 @@ import time
 import os
 import shutil
 
+from PIL import Image
+
 import methods
 from config import config
 
@@ -14,7 +16,7 @@ class FileRecorder(BaseRecorder):
     '''
 
     def __init__(self):
-        from PIL import Image
+        
         
         self.instance_path = self.make_instance_dir(
             config.recording.session_dir)

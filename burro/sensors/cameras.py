@@ -3,22 +3,22 @@ import os
 import time
 import base64
 import cStringIO
-from threading import Thread
 from itertools import cycle
 
 import logging
 
 import numpy as np
 
-from config import config
+from PIL import Image
 
+from config import config
 from sensor import BaseSensor
 
 
 class BaseCamera(BaseSensor):
 
-    def __init__(self, resolution=config.camera.resolution):
-        from PIL import Image
+    def __init__(self, resolution=config.camera.resolution, **kwargs):
+        super(BaseCamera, self).__init__(**kwargs)
         
         self.resolution = resolution
         self.frame = np.zeros(
