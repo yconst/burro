@@ -95,3 +95,18 @@ class RaspiRobot_HAT(Driver):
         Disable all motors
         '''
         rr.stop()
+
+
+class TestDriver(Driver):
+    '''
+    A driver for testing vehicle infrastructure
+    '''
+    def __init__(self):
+        self.output = 1
+
+    def update(self, value):
+        '''
+        Accepts an input [-1, 1] and assigns it to a local value.
+        '''
+        assert(value <= 1 and -1 <= value)
+        self.output = value
