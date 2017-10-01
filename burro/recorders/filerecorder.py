@@ -7,22 +7,12 @@ from PIL import Image
 import methods
 from config import config
 
-
-class BaseRecorder(object):
-
-    def __init__(self):
-        self.frame_count = 0
-        self.is_recording = False
-
-    def record_frame(self, image_array, angle, throttle):
-        '''
-        Record a single image frame
-        '''
-        pass
-
+from recorder import BaseRecorder
 
 class FileRecorder(BaseRecorder):
-
+    '''
+    Represents a recorder that writes to image files
+    '''
     def __init__(self):
         self.instance_path = self.make_instance_dir(config.recording.session_dir)
         super(FileRecorder, self).__init__()
@@ -84,3 +74,4 @@ class FileRecorder(BaseRecorder):
                        str(methods.current_milis()) +
                        '.' + file_type)
         return filepath
+
