@@ -6,6 +6,7 @@ install:
 branches:
   only:
   - master
+  - dev
   - unittests
 script:
   - cd burro
