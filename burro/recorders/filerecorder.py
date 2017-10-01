@@ -16,8 +16,6 @@ class FileRecorder(BaseRecorder):
     '''
 
     def __init__(self):
-        
-        
         self.instance_path = self.make_instance_dir(
             config.recording.session_dir)
         super(FileRecorder, self).__init__()
@@ -27,7 +25,7 @@ class FileRecorder(BaseRecorder):
         Create a directory for the current session based on time,
         and a global sessions directory if it does not exist.
         '''
-        real_path = os.path.abspath(os.path.expanduser(sessions_path))
+        real_path = os.path.join("/", os.path.expanduser(sessions_path))
         if not os.path.isdir(real_path):
             os.makedirs(real_path)
         instance_name = time.strftime('%Y_%m_%d__%I_%M_%S_%p')
