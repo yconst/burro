@@ -1,4 +1,4 @@
-from pilots import BasePilot, TestPilot
+from pilot import BasePilot, TestPilot
 from cnn import KerasCategorical, KerasRegression
 from rc import RC
 from mixed import MixedRC, MixedF710
