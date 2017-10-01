@@ -22,9 +22,7 @@ class AckermannSteeringMixer(BaseMixer):
     angle of the front wheels.
     This is used for RC car-type vehicles.
     '''
-    def __init__(self,
-                 steering_driver=None,
-                 throttle_driver=None):
+    def __init__(self, steering_driver, throttle_driver):
         self.steering_driver = steering_driver
         self.throttle_driver = throttle_driver
 
