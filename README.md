@@ -24,8 +24,8 @@ Depending on your hardware Burro will automatically select and setup the right k
 - Raspberry Pi 2 or 3
 - An SD card with at least 16Gb capacity
 - RaspiCam, Fisheye model (something like [this](http://www.ebay.com/itm/191723967593))
-- [Adafruit Motor HAT](https://www.adafruit.com/product/2348)
-- A Logitech F710 Gamepad
+- [Adafruit Motor HAT](https://www.adafruit.com/product/2348), [NAVIO2](https://emlid.com/navio/) HAT or [NAVIO+](https://docs.emlid.com/navio/) HAT
+- Either a Logitech F710 Gamepad (Adafruit Motor HAT, NAVIO2 and NAVIO+ support) or a PPM or SBUS-compatible RC receiver (NAVIO2 support)
 
 You could also use Burro with a [RasPiRobot Board V3](https://www.monkmakes.com/rrb3/) to make a differential steering car, but this requires to edit code and is untested.
 
