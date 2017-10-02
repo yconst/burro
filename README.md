@@ -16,8 +16,8 @@ Depending on your hardware Burro will automatically select and setup the right k
 - Raspberry Pi 2 or 3
 - An SD card with at least 16Gb capacity
 - RaspiCam, Fisheye model (something like [this](http://www.ebay.com/itm/191723967593))
-- [NAVIO2](https://emlid.com/navio/) HAT
-- Either a Logitech F710 Gamepad or a PPM or SBUS-compatible RC receiver
+- [NAVIO2](https://emlid.com/navio/) HAT or [NAVIO+](https://docs.emlid.com/navio/) HAT
+- Either a Logitech F710 Gamepad (NAVIO2 and NAVIO+ support) or a PPM or SBUS-compatible RC receiver (NAVIO2 support)
 
 ##### Differential Steering car
 - Differential steering robot kit with two motors
