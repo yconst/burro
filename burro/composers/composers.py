@@ -7,7 +7,7 @@ from rover import Rover
 from sensors.cameras import PiVideoStream
 from models import list_models
 from pilots import (KerasRegression, KerasCategorical,
-    RC, F710, MixedRC, MixedF710)
+                    RC, F710, MixedRC, MixedF710)
 from mixers import AckermannSteeringMixer, DifferentialSteeringMixer
 from drivers import NAVIO2PWM, NavioPWM, Adafruit_MotorHAT
 from indicators import Indicator, NAVIO2LED
@@ -15,6 +15,7 @@ from remotes import WebRemote
 from recorders import FileRecorder
 
 import logging
+
 
 class Composer(object):
 
@@ -79,15 +80,20 @@ class Composer(object):
                     right_driver=right_driver)
             else:
                 logging.info("Found NAVIO2 HAT - Setting up Ackermann car")
-                throttle_driver = NAVIO2PWM(config.ackermann_car.throttle_channel)
-                steering_driver = NAVIO2PWM(config.ackermann_car.steering_channel)
+                throttle_driver = NAVIO2PWM(
+                    config.ackermann_car.throttle_channel)
+                steering_driver = NAVIO2PWM(
+                    config.ackermann_car.steering_channel)
                 rover.mixer = AckermannSteeringMixer(
                     steering_driver=steering_driver,
                     throttle_driver=throttle_driver)
         elif self.board_type is 'adafruit':
-            logging.info("Found Adafruit Motor HAT - Setting up differential car")
-            left_driver = Adafruit_MotorHAT(config.differential_car.left_channel+1)
-            right_driver = Adafruit_MotorHAT(config.differential_car.right_channel+1)
+            logging.info(
+                "Found Adafruit Motor HAT - Setting up differential car")
+            left_driver = Adafruit_MotorHAT(
+                config.differential_car.left_channel + 1)
+            right_driver = Adafruit_MotorHAT(
+                config.differential_car.right_channel + 1)
             rover.mixer = DifferentialSteeringMixer(
                 left_driver=left_driver,
                 right_driver=right_driver)

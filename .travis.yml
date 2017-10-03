@@ -2,10 +2,11 @@ language: python
 python:
   - "2.7"
 install:
-  - pip install numpy configobj
+  - pip install numpy configobj pillow pyusb
 branches:
   only:
   - master
+  - dev
   - unittests
 script:
   - cd burro

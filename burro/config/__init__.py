@@ -4,6 +4,7 @@ from configobj import ConfigObj
 
 config = None
 
+
 def config2object(config):
     """
     Convert dictionary into instance allowing access to dictionary keys using
@@ -13,10 +14,13 @@ def config2object(config):
         """
         Represents configuration options' group, works like a dict
         """
+
         def __init__(self, *args, **kwargs):
             dict.__init__(self, *args, **kwargs)
+
         def __getattr__(self, name):
             return self[name]
+
         def __setattr__(self, name, val):
             self[name] = val
     if isinstance(config, dict):
@@ -26,6 +30,7 @@ def config2object(config):
         return result
     else:
         return config
+
 
 def setup_config():
     global config
@@ -39,5 +44,6 @@ def setup_config():
     config_dict.merge(user_dict)
 
     config = config2object(config_dict)
+
 
 setup_config()
