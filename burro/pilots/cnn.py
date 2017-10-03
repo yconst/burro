@@ -1,40 +1,19 @@
 '''
 
-pilots.py
+cnn.py
 
 Classes representing various CNN-based pilots.
 
 '''
+
 from __future__ import division
 
-import os
-import math
-import random
-from operator import itemgetter
-from datetime import datetime
-
 import numpy as np
-import keras
 
 import methods
 from config import config
 
-
-class BasePilot(object):
-    '''
-    Base class to define common functions.
-    When creating a class, only override the funtions you'd like to replace.
-    '''
-
-    def __init__(self, name=None, last_modified=None):
-        self.name = name
-        self.last_modified = last_modified
-
-    def decide(self, img_arr):
-        return 0., 0.
-
-    def pname(self):
-        return self.name or "Default"
+from pilot import BasePilot
 
 
 class KerasCategorical(BasePilot):
@@ -43,6 +22,8 @@ class KerasCategorical(BasePilot):
     '''
 
     def __init__(self, model_path, **kwargs):
+        import keras
+
         self.yaw = 0
         self.model = keras.models.load_model(model_path)
         super(KerasCategorical, self).__init__(**kwargs)
