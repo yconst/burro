@@ -31,7 +31,7 @@ class NAVIO2PWM(Driver):
         self.pwm.set_duty_cycle(pwm_val)
 
 class NavioPWM(Driver):
-    def __init__(self, channel, frequency=50):
+    def __init__(self, channel, frequency=60):
         from navio import adafruit_pwm_servo_driver as pwm
         from navio import util
         import RPi.GPIO as GPIO
@@ -56,15 +56,18 @@ class NavioPWM(Driver):
         scale between 0 and 4096
         '''
         assert(value <= 1 and -1 <= value)
-        pwm_val = 1.5 + value * 0.5
+        #convert val to ms
+        pwm_val = 1600 - value * 500
 
-        #SERVO_MIN_ms = 1.250 # mS
-        #SERVO_MAX_ms = 1.750 # mS
-        print('Values %d', value, self.channel)
-        #convert mS to 0-4096 scale:
-        servoScaled = math.trunc((pwm_val * 4096.0) / (1000.0 / self.frequency) - 1)
-        
-        self.pwm.setPWM(self.channel, 0, servoScaled)
+        #SERVO_MIN_ms = 1100
+        #SERVO_MAX_ms = 2100
+        stepsPerCycle = 4096
+        cycleLengthMicroSeconds = 1000000 / self.frequency
+        stepLengthMicroSeconds = cycleLengthMicroSeconds / stepsPerCycle
+        #convert mS to 0-4096 scale
+        pulseLengthInSteps = math.trunc(pwm_val / stepLengthMicroSeconds) - 1
+        print('Values %d', value, self.channel, pulseLengthInSteps)
+        self.pwm.setPWM(self.channel, 0, pulseLengthInSteps)
 
 class Adafruit_MotorHAT(Driver):
     '''
