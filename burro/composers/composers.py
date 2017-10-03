@@ -22,6 +22,7 @@ class Composer(object):
     def new_vehicle(self, type=config.car.type):
         rover = Rover()
         self.board_type = methods.board_type()
+        self.log_board_type()
         self.setup_pilots(rover)
         self.setup_recorders(rover)
         self.setup_mixers(rover, type)
@@ -29,6 +30,14 @@ class Composer(object):
         self.setup_indicators(rover)
         self.setup_sensors(rover)
         return rover
+
+    def log_board_type(self):
+        if (self.board_type is 'navio'):
+            logging.info("Found NAVIO+ HAT")
+        elif (self.board_type is 'navio2'):
+            logging.info("Found NAVIO2 HAT")
+        elif (self.board_type is 'adafruit'):
+            logging.info("Found Adafruit Motor HAT")
 
     def setup_pilots(self, rover):
         pilots = []
@@ -40,11 +49,11 @@ class Composer(object):
             f710 = None
         if self.board_type is 'navio':
             #Cant get RC for Navio to work yet
-            logging.info("Loading for Navio")
+            pass
         elif self.board_type is 'navio2':
             rc = RC()
             pilots.append(rc)
-            logging.info("Loaded RC module for Navio2")
+            logging.info("Loaded RC module")
         else:
             rc = None
         model_paths = list_models()
@@ -63,7 +72,7 @@ class Composer(object):
 
     def setup_mixers(self, rover, type):
         if self.board_type is 'navio':
-            logging.info("Found NAVIO HAT - Setting up Ackermann car")
+            logging.info("Setting up Ackermann car")
             throttle_driver = NavioPWM(config.ackermann_car_navio.throttle_channel, 
                 invert=config.ackermann_car_navio.throttle_channel_invert)
             steering_driver = NavioPWM(config.ackermann_car_navio.steering_channel,
@@ -74,14 +83,14 @@ class Composer(object):
 
         elif self.board_type is 'navio2':
             if type == 'differential':
-                logging.info("Found NAVIO2 HAT - Setting up differential car")
+                logging.info("Setting up differential car")
                 left_driver = NAVIO2PWM(config.differential_car.left_channel)
                 right_driver = NAVIO2PWM(config.differential_car.right_channel)
                 rover.mixer = DifferentialSteeringMixer(
                     left_driver=left_driver,
                     right_driver=right_driver)
             else:
-                logging.info("Found NAVIO2 HAT - Setting up Ackermann car")
+                logging.info("Setting up Ackermann car")
                 throttle_driver = NAVIO2PWM(
                     config.ackermann_car.throttle_channel)
                 steering_driver = NAVIO2PWM(
@@ -90,8 +99,7 @@ class Composer(object):
                     steering_driver=steering_driver,
                     throttle_driver=throttle_driver)
         elif self.board_type is 'adafruit':
-            logging.info(
-                "Found Adafruit Motor HAT - Setting up differential car")
+            logging.info("Setting up differential car")
             left_driver = Adafruit_MotorHAT(
                 config.differential_car.left_channel + 1)
             right_driver = Adafruit_MotorHAT(

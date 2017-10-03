@@ -1,4 +1,3 @@
-
 import methods
 from config import config
 
@@ -30,7 +29,8 @@ class NAVIO2LED(Indicator):
     '''
 
     def __init__(self, **kwargs):
-        from navio import leds
+        from navio2 import leds
+        
         self.led = leds.Led()
         super(NAVIO2LED, self).__init__(**kwargs)
 

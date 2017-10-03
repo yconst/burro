@@ -11,9 +11,8 @@ class Driver:
 
 class NAVIO2PWM(Driver):
     '''
-    NAVIO2 PWM controler.
+    NAVIO2 PWM driver
     '''
-
     def __init__(self, channel, frequency=50):
         from navio2 import pwm as navio_pwm
         from navio2 import util
@@ -32,7 +31,11 @@ class NAVIO2PWM(Driver):
         pwm_val = 1.5 + value * 0.5
         self.pwm.set_duty_cycle(pwm_val)
 
+
 class NavioPWM(Driver):
+    '''
+    NAVIO PWM driver
+    '''
     def __init__(self, channel, invert=False):
         from navio import adafruit_pwm_servo_driver as pwm
         from navio import util
@@ -77,11 +80,11 @@ class NavioPWM(Driver):
         print('Values %d', value, self.channel, pulseLengthInSteps)
         self.pwm.setPWM(self.channel, 0, pulseLengthInSteps)
 
+
 class Adafruit_MotorHAT(Driver):
     '''
     Adafruit DC Motor and Stepper HAT Driver
     '''
-
     def __init__(self, motor_index):
         from adafruit_motorhat import Adafruit_MotorHAT, Adafruit_DCMotor
         self.mh = Adafruit_MotorHAT(addr=0x60)
@@ -110,12 +113,10 @@ class Adafruit_MotorHAT(Driver):
 
 rr = None
 
-
 class RaspiRobot_HAT(Driver):
     '''
     Raspirobot HAT
     '''
-
     def __init__(self, motor_index=0):
         from rrb3 import RRB3
         if not rr:
@@ -150,7 +151,6 @@ class TestDriver(Driver):
     '''
     A driver for testing vehicle infrastructure
     '''
-
     def __init__(self):
         self.output = 1
 
