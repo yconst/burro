@@ -33,7 +33,7 @@ class NAVIO2PWM(Driver):
         self.pwm.set_duty_cycle(pwm_val)
 
 class NavioPWM(Driver):
-    def __init__(self, channel, frequency=60):
+    def __init__(self, channel, invert=False):
         from navio import adafruit_pwm_servo_driver as pwm
         from navio import util
         import RPi.GPIO as GPIO
@@ -47,8 +47,9 @@ class NavioPWM(Driver):
         GPIO.output(27,GPIO.LOW)
 
         #GPIO.cleanup()
-        self.frequency = frequency
+        self.frequency = 60
         self.channel = channel
+        self.invert = invert
         self.pwm = pwm.PWM()
         self.pwm.setPWMFreq(self.frequency)
 
@@ -59,7 +60,12 @@ class NavioPWM(Driver):
         '''
         assert(value <= 1 and -1 <= value)
         #convert val to ms
-        pwm_val = 1600 - value * 500
+        pwm_val = 1600
+
+        if self.invert:
+            pwm_val -= value * 500
+        else:
+            pwm_val +=  value * 500
 
         #SERVO_MIN_ms = 1100
         #SERVO_MAX_ms = 2100
