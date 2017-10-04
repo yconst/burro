@@ -3,6 +3,7 @@ setuptools==5.5.1
 tornado==4.4.2
 picamera==1.12
 Pillow==4.1.1
-keras==2.0.4
+keras==2.0.8
 pyusb==1.0.0
 configobj==5.0.6
+h5py==2.7.1
