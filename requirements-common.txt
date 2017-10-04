@@ -5,3 +5,4 @@ picamera==1.12
 Pillow==4.1.1
 keras==2.0.4
 pyusb==1.0.0
+configobj==5.0.6
