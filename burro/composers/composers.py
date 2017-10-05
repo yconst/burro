@@ -47,6 +47,7 @@ class Composer(object):
             logging.info("Loaded F710 Gamepad module")
         except Exception as e:
             f710 = None
+        rc = None
         if self.board_type is 'navio':
             #Cant get RC for Navio to work yet
             pass
@@ -54,8 +55,7 @@ class Composer(object):
             rc = RC()
             pilots.append(rc)
             logging.info("Loaded RC module")
-        else:
-            rc = None
+
         model_paths = list_models()
         for model_path, model_name in model_paths:
             logging.info("Loading model " + model_name)
