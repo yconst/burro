@@ -63,9 +63,9 @@ class DifferentialSteeringMixer(BaseMixer):
             angle_radians = math.radians(angle)
             steer_tan = math.tan(angle_radians)
             r = l_a / steer_tan
-            l_speed = throttle * (1.0 - (w_d * 0.5 - w_o)/r ) * \
+            l_speed = throttle * (1.0 - (w_d * 0.5 + w_o)/r ) * \
                 config.differential_car.left_mult
-            r_speed = throttle * (1.0 + (w_d * 0.5 + w_o)/r ) * \
+            r_speed = throttle * (1.0 + (w_d * 0.5 - w_o)/r ) * \
                 config.differential_car.right_mult
         l_speed = min(max(l_speed, -1), 1)
         r_speed = min(max(r_speed, -1), 1)
