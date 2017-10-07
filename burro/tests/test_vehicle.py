@@ -3,6 +3,7 @@ import os
 import unittest
 import numpy as np
 import random
+import math
 
 from config import config
 
@@ -76,15 +77,23 @@ class TestDifferentialVehicle(unittest.TestCase):
         self.vehicle = vehicle
 
     def test_vehicle_pipeline(self):
-        th = random.uniform(-1.0, 1.0)
+        throttle = random.uniform(-1.0, 1.0)
         angle = random.uniform(-1.0, 1.0) * config.car.max_steering_angle
 
-        l_out = (th - angle * th / 90.) * config.differential_car.left_mult
-        r_out = (th + angle * th / 90.) * config.differential_car.right_mult
+        l_a = config.car.L
+        w_d = config.car.W
+        w_o = config.car.W_offset
+        angle_radians = math.radians(angle)
+        steer_tan = math.tan(angle_radians)
+        r = l_a / steer_tan
+        l_out = throttle * (1.0 - (w_d * 0.5 - w_o)/r ) * \
+            config.differential_car.left_mult
+        r_out = throttle * (1.0 + (w_d * 0.5 + w_o)/r ) * \
+            config.differential_car.right_mult
         l_out = min(max(l_out, -1), 1)
         l_out = min(max(l_out, -1), 1)
 
-        self.vehicle.pilot.set_response(angle, th)
+        self.vehicle.pilot.set_response(angle, throttle)
         self.vehicle.step()
 
         self.assertAlmostEqual(self.vehicle.mixer.left_driver.output,
