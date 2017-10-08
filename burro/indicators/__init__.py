@@ -1,1 +1,1 @@
-from indicators import Indicator, NAVIO2LED
+from indicators import Indicator, DummyIndicator, NAVIO2LED

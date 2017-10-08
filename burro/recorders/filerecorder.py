@@ -7,24 +7,17 @@ from PIL import Image
 import methods
 from config import config
 
-
-class BaseRecorder(object):
-
-    def __init__(self):
-        self.frame_count = 0
-        self.is_recording = False
-
-    def record_frame(self, image_array, angle, throttle):
-        '''
-        Record a single image frame
-        '''
-        pass
+from recorder import BaseRecorder
 
 
 class FileRecorder(BaseRecorder):
+    '''
+    Represents a recorder that writes to image files
+    '''
 
     def __init__(self):
-        self.instance_path = self.make_instance_dir(config.recording.session_dir)
+        self.instance_path = self.make_instance_dir(
+            config.recording.session_dir)
         super(FileRecorder, self).__init__()
 
     def make_instance_dir(self, sessions_path):
@@ -32,7 +25,7 @@ class FileRecorder(BaseRecorder):
         Create a directory for the current session based on time,
         and a global sessions directory if it does not exist.
         '''
-        real_path = os.path.abspath(os.path.expanduser(sessions_path))
+        real_path = os.path.join("/", os.path.expanduser(sessions_path))
         if not os.path.isdir(real_path):
             os.makedirs(real_path)
         instance_name = time.strftime('%Y_%m_%d__%I_%M_%S_%p')
@@ -51,7 +44,7 @@ class FileRecorder(BaseRecorder):
         # angle is counter-clockwise, i.e. left is positive
         # TODO: make a proper value mapping here, and then transform
         if (throttle * -1.0 < config.recording.throttle_threshold or
-            abs(angle) < config.recording.steering_threshold):
+                abs(angle) < config.recording.steering_threshold):
             self.is_recording = False
             return
         self.is_recording = True
@@ -62,13 +55,13 @@ class FileRecorder(BaseRecorder):
             self.frame_count,
             file_angle,
             file_throttle)
-        with open (filepath, 'w') as fd:
+        with open(filepath, 'w') as fd:
             image_buffer.seek(0)
             shutil.copyfileobj(image_buffer, fd, -1)
         self.frame_count += 1
 
     def create_img_filepath(self, directory, frame_count,
-        angle, throttle, file_type='jpg'):
+                            angle, throttle, file_type='jpg'):
         '''
         Generate the complete filepath for saving an image
         '''

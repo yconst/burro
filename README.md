@@ -1,4 +1,7 @@
-Burro is a platform for driving RC cars and small robots using neural networks. Using Burro you can have an RC car drive itself. You can also set up a machine to train neural networks to drive your RC car.
+Burro is a platform for small-scale self-driving cars.
+
+[![Build Status](https://travis-ci.org/yconst/burro.svg?branch=master)](https://travis-ci.org/yconst/burro)
+[![BCH compliance](https://bettercodehub.com/edge/badge/yconst/burro?branch=master)](https://bettercodehub.com/)
 
 ## Setting up a car
 
@@ -14,16 +17,16 @@ Depending on your hardware Burro will automatically select and setup the right k
 - Raspberry Pi 2 or 3
 - An SD card with at least 16Gb capacity
 - RaspiCam, Fisheye model (something like [this](http://www.ebay.com/itm/191723967593))
-- [NAVIO2](https://emlid.com/navio/) HAT
-- Either a Logitech F710 Gamepad or a PPM or SBUS-compatible RC receiver
+- [NAVIO2](https://emlid.com/navio/) HAT or [NAVIO+](https://docs.emlid.com/navio/) HAT
+- Either a Logitech F710 Gamepad (NAVIO2 and NAVIO+ support) or a PPM or SBUS-compatible RC receiver (NAVIO2 support)
 
 ##### Differential Steering car
 - Differential steering robot kit with two motors
 - Raspberry Pi 2 or 3
 - An SD card with at least 16Gb capacity
 - RaspiCam, Fisheye model (something like [this](http://www.ebay.com/itm/191723967593))
-- [Adafruit Motor HAT](https://www.adafruit.com/product/2348)
-- A Logitech F710 Gamepad
+- [Adafruit Motor HAT](https://www.adafruit.com/product/2348), [NAVIO2](https://emlid.com/navio/) HAT or [NAVIO+](https://docs.emlid.com/navio/) HAT
+- Either a Logitech F710 Gamepad (Adafruit Motor HAT, NAVIO2 and NAVIO+ support) or a PPM or SBUS-compatible RC receiver (NAVIO2 support)
 
 You could also use Burro with a [RasPiRobot Board V3](https://www.monkmakes.com/rrb3/) to make a differential steering car, but this requires to edit code and is untested.
 
@@ -36,7 +39,7 @@ If you don;t use NAVIO2 you can also use a [vanilla Raspbian image](https://www.
 
 ### Installation
 
-Burro includes an installation script that handles installing necessary libraries, setting up the Python virtualenv and configuring submodules. To download and run:
+Burro includes an installation script that handles installing necessary libraries, setting up the Python virtualenv and configuring submodules. To download and run on a Raspberry Pi:
 
     wget https://raw.githubusercontent.com/yconst/burro/master/install-burro.sh
     chmod +x install-burro.sh

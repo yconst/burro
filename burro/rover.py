@@ -1,6 +1,7 @@
 import sys
 import time
 
+
 class Rover(object):
     '''
     Rover class
@@ -40,7 +41,7 @@ class Rover(object):
 
         if self.record:
             self.recorder.record_frame(
-                self.vision_sensor.image_buffer(), 
+                self.vision_sensor.image_buffer(),
                 pilot_angle, pilot_throttle)
 
         if self.recorder.is_recording:
@@ -49,7 +50,6 @@ class Rover(object):
             self.indicator.set_state('standby')
         else:
             self.indicator.set_state('ready')
-        
 
     def selected_pilot_index(self):
         return self.pilots.index(self.pilot)

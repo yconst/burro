@@ -5,3 +5,4 @@ burro/navio
 burro/adafruit_motorhat
 burro/models/*.h5
 burro/config/user.ini
+.vscode/*
