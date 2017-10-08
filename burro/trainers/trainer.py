@@ -34,7 +34,7 @@ def train_categorical(data_dir, track, optimizer='adam', patience=10):
     print hist[0]
     print hist[1]
 
-    input_shape=(99-config.camera.crop_top, 132, 3)
+    input_shape=(99-config.camera.crop_top - config.camera.crop_bottom, 132, 3)
     print "Input shape: " + str(input_shape)
 
     models_dir = os.path.abspath(os.path.expanduser(config.training.models_dir))
@@ -64,7 +64,6 @@ def train_categorical(data_dir, track, optimizer='adam', patience=10):
     model.add(Convolution2D(32, (5, 5), strides=(2, 2), activation='relu'))
     model.add(Convolution2D(64, (5, 5), strides=(2, 2), activation='relu'))
     model.add(Convolution2D(64, (3, 3), strides=(1, 1), activation='relu'))
-    model.add(Convolution2D(64, (2, 2), strides=(1, 1), activation='relu'))
     model.add(Flatten())
     model.add(Dense(dense1, activation='selu'))
     model.add( Dropout(.1) )
@@ -106,7 +105,7 @@ def train_regression(data_dir, track, optimizer='adam', patience=10):
     print hist[0]
     print hist[1]
 
-    input_shape=(99-config.camera.crop_top, 132, 3)
+    input_shape=(99-config.camera.crop_top - config.camera.crop_bottom, 132, 3)
     print "Input shape: " + str(input_shape)
 
     models_dir = os.path.abspath(os.path.expanduser(config.training.models_dir))
