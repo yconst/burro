@@ -144,10 +144,7 @@ def board_type():
 TIME TOOLS
 '''
 
-<<<<<<< HEAD
-=======
 
->>>>>>> master
 def current_milis():
     '''
     Return the current time in miliseconds
