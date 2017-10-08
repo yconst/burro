@@ -18,7 +18,7 @@ def angle_to_yaw(generator):
     Generator that converts angle values to yaw [-1, 1]
     '''
     for inp, angle in generator:
-        yield inp, float(angle)/config.ackermann_car.max_steering_angle
+        yield inp, float(angle)/config.car.max_steering_angle
 
 def yaw_to_log(generator):
     '''

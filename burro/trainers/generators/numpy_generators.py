@@ -10,7 +10,7 @@ def category_generator(generator):
     '''
     Generator that yields categorical angle from scalar
     '''
-    max_steering_angle = config.ackermann_car.max_steering_angle
+    max_steering_angle = config.car.max_steering_angle
     for inp, angle in generator:
         yield inp, methods.to_one_hot(angle,
                                       low=-max_steering_angle,
@@ -67,7 +67,7 @@ def equalize_probs(generator,
     pipeline before the angle is converted to category
     '''
     size = config.model.output_size
-    max_steering_angle = config.ackermann_car.max_steering_angle
+    max_steering_angle = config.car.max_steering_angle
     picks = np.ones(size)
     for inp, angle in generator:
         inp_idx = methods.to_index(angle,
