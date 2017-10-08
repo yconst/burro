@@ -6,12 +6,12 @@ train.py
 Trains a model
 
 Usage:
-    train.py --data-dir <dir> --model-name <name> --mode <mode>
+    train.py --data-dir <DIR>, --model-name <NAME>, [--mode <MODE>]
 
 Options:
-  --data-dir <dir>      data directory
-  --model-name <name>   model name
-  --mode <mode>         either regression or categorical [default:regression]
+  --data-dir <DIR>      data directory
+  --model-name <NAME>   model name
+  --mode <MODE>         either regression or categorical [default: categorical]
 """
 
 import sys
