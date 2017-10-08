@@ -27,7 +27,7 @@ def categorical_pipeline(data_dir, mode='reject_nth', batch_size=32,
     gen = image_generator(gen)
     gen = image_mirror(gen)
     #gen = image_voffset(gen)
-    gen = image_rotate(gen)
+    #gen = image_rotate(gen)
     gen = image_resize(gen)
     gen = image_crop(gen)
     gen = array_generator(gen)
