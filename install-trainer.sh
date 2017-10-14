@@ -5,7 +5,6 @@ echo "\nBurro Trainer Installer\n"
 echo "\nFor security and compatibility reasons this installer will not install any system-wide packages.\n"
 echo "\nIf you do not yet have your preferred Tensorflow version, you will have to install it yourself.\n"
 
-
 echo "\nBurro Trainer Installer: Creating environment\n"
 pip install virtualenv
 virtualenv --system-site-packages burro-trainer

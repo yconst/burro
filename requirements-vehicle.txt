@@ -3,4 +3,3 @@ picamera==1.12
 https://github.com/samjabrahams/tensorflow-on-raspberry-pi/releases/download/v1.1.0/tensorflow-1.1.0-cp27-none-linux_armv7l.whl
 keras==2.0.8
 pyusb==1.0.0
-configobj==5.0.6
