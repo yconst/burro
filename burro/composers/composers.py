@@ -6,8 +6,7 @@ from config import config
 from rover import Rover
 from sensors.cameras import PiVideoStream
 from models import list_models
-from pilots import (KerasRegression, KerasCategorical,
-                    RC, F710, MixedRC, MixedF710)
+from pilots import KerasRegression, KerasCategorical, RC, F710
 from mixers import AckermannSteeringMixer, DifferentialSteeringMixer
 from drivers import NAVIO2PWM, NavioPWM, Adafruit_MotorHAT
 from indicators import Indicator, NAVIO2LED
@@ -40,32 +39,27 @@ class Composer(object):
             logging.info("Found Adafruit Motor HAT")
 
     def setup_pilots(self, rover):
-        pilots = []
+        manual_pilots = []
         try:
             f710 = F710()
-            pilots.append(f710)
+            manual_pilots.append(f710)
             logging.info("Loaded F710 Gamepad module")
         except Exception as e:
             f710 = None
-        rc = None
         if self.board_type is 'navio':
             #Cant get RC for Navio to work yet
             pass
         elif self.board_type is 'navio2':
-            rc = RC()
-            pilots.append(rc)
+            manual_pilots.append(RC())
             logging.info("Loaded RC module")
+        rover.manual_pilots = manual_pilots
 
         model_paths = list_models()
         for model_path, model_name in model_paths:
             logging.info("Loading model " + model_name)
             keras = KerasCategorical(model_path, name=model_name)
-            if f710:
-                pilots.append(MixedF710(keras, f710))
-            if rc:
-                pilots.append(MixedRC(keras, rc))
-        rover.pilots = pilots
-        rover.set_pilot(0)
+            auto_pilots.append(keras)
+        rover.auto_pilots = auto_pilots
 
     def setup_recorders(self, rover):
         rover.recorder = FileRecorder()
