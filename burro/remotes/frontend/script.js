@@ -8,8 +8,8 @@ const Store = {
 			"yaw":0, 
 			"throttle":0
 		},
-		"pilot": {
-			"pilots":["None"], 
+		"auto_pilot": {
+			"auto_pilots":["None"], 
 			"index":0
 		},
 		"record": false,
@@ -31,6 +31,8 @@ const Dispatcher = {
 	set: function(payload, update_backend) {
 		Store.updateData(payload.value)
 		if (update_backend) {
+			payload = payload.slice()
+			denormalizeData(payload.value)
 			payload.action = "set"
 			ws.send(JSON.stringify(payload))
 			waiting = true
@@ -45,20 +47,19 @@ const Dispatcher = {
 
 const ws = new WebSocket("ws://"+window.location.hostname+":80/api/v1/ws")
 ws.onmessage = function (event) {
-	obj = JSON.parse(event.data)
+	const obj = JSON.parse(event.data)
 	if (obj.ack == "ok") {
 		waiting = false
 		m.redraw()
 	}
-	else if (obj.test) { /* TODO */ }
 	else if (obj.image) {
+		normalizeData(obj)
 		const payload = {"target": "data", "value": obj}
 		Dispatcher.set(payload, false)
 	    setTimeout(function() {
 	    	const payload = {"target": "status", "action": "get"}
 	    	ws.send(JSON.stringify(payload))
-	    }, 100)
-	    
+	    }, 100)	    
 	}
 }
 
@@ -88,12 +89,13 @@ const PilotsView = {
 	view: function (ctrl) {
 	    return m('select', { 
 	    	onchange: m.withAttr('value', function(value) {
-	    		const payload = {"target": "pilot", "value": {"index" : Store.data.pilot.pilots.indexOf(value)}}
+	    		const payload = {"target": "auto_pilot", 
+	    						 "value": {"index" : Store.data.auto_pilot.auto_pilots.indexOf(value)}}
 		    	Dispatcher.set(payload, true)
 	    	}
 	    ) }, [
-	      	Store.data.pilot.pilots.map(function(name, index) {
-	        	return m('option' + (Store.data.pilot.index === index  ? '[selected=true]' : ''), name)
+	      	Store.data.auto_pilot.auto_pilots.map(function(name, index) {
+	        	return m('option' + (Store.data.auto_pilot.index === index  ? '[selected=true]' : ''), name)
 	      	})
 	    ])
 	}
@@ -148,4 +150,13 @@ window.onresize = function(event) {
     } else {
     	draggie.enable()
     }
+}
+
+function normalizeData(data) {
+	data.auto_pilot.auto_pilots.unshift("None")
+	data.auto_pilot.index += 1
+}
+
+function denormalizeData(data) {
+
 }
