@@ -65,5 +65,10 @@ class Rover(object):
         else:
             self.indicator.set_state('ready')
 
+    def pilot(self):
+        if self.auto_pilot_index >= 0:
+            return self.auto_pilots[self.auto_pilot_index]
+        return None
+
     def list_auto_pilot_names(self):
         return [p.pname() for p in self.auto_pilots]
