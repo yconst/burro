@@ -14,7 +14,7 @@ class TestMethods(unittest.TestCase):
     def test_angle_conversion(self):
         for yaw in np.arange(-1, 1, 0.1):
             test_yaw = yaw_to_angle(angle_to_yaw(yaw))
-            self.assertEqual(yaw, test_yaw)
+            self.assertAlmostEqual(yaw, test_yaw, places=8)
 
     def test_binning_conversion(self):
         for val in np.arange(-1, 1, 0.1):

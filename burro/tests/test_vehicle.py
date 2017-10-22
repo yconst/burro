@@ -21,8 +21,8 @@ class TestAckermannVehicle(unittest.TestCase):
     def setUp(self):
         vehicle = Rover()
 
-        vehicle.pilots = [TestPilot()]
-        vehicle.set_pilot(0)
+        vehicle.auto_pilots = [TestPilot()]
+        vehicle.auto_pilot_index = 0
 
         ds = TestDriver()
         dt = TestDriver()
@@ -46,7 +46,7 @@ class TestAckermannVehicle(unittest.TestCase):
         if config.car.reverse_steering:
             st_out = -st_out
 
-        self.vehicle.pilot.set_response(angle, th)
+        self.vehicle.pilot().set_response(angle, th)
         self.vehicle.step()
 
         self.assertAlmostEqual(self.vehicle.mixer.throttle_driver.output,
@@ -60,8 +60,8 @@ class TestDifferentialVehicle(unittest.TestCase):
     def setUp(self):
         vehicle = Rover()
 
-        vehicle.pilots = [TestPilot()]
-        vehicle.set_pilot(0)
+        vehicle.auto_pilots = [TestPilot()]
+        vehicle.auto_pilot_index = 0
 
         d1 = TestDriver()
         d2 = TestDriver()
@@ -93,7 +93,7 @@ class TestDifferentialVehicle(unittest.TestCase):
         l_out = min(max(l_out, -1), 1)
         l_out = min(max(l_out, -1), 1)
 
-        self.vehicle.pilot.set_response(angle, throttle)
+        self.vehicle.pilot().set_response(angle, throttle)
         self.vehicle.step()
 
         self.assertAlmostEqual(self.vehicle.mixer.left_driver.output,
