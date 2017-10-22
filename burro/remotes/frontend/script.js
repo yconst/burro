@@ -31,8 +31,8 @@ const Dispatcher = {
 	set: function(payload, update_backend) {
 		Store.updateData(payload.value)
 		if (update_backend) {
-			payload = payload.slice()
-			denormalizeData(payload.value)
+			payload = Object.assign({}, payload);
+			denormalizeOutgoingPayload(payload.value)
 			payload.action = "set"
 			ws.send(JSON.stringify(payload))
 			waiting = true
@@ -53,8 +53,8 @@ ws.onmessage = function (event) {
 		m.redraw()
 	}
 	else if (obj.image) {
-		normalizeData(obj)
 		const payload = {"target": "data", "value": obj}
+		normalizeIncomingPayload(payload)
 		Dispatcher.set(payload, false)
 	    setTimeout(function() {
 	    	const payload = {"target": "status", "action": "get"}
@@ -152,11 +152,13 @@ window.onresize = function(event) {
     }
 }
 
-function normalizeData(data) {
-	data.auto_pilot.auto_pilots.unshift("None")
-	data.auto_pilot.index += 1
+function normalizeIncomingPayload(payload) {
+	payload.value.auto_pilot.auto_pilots.unshift("None")
+	payload.value.auto_pilot.index += 1
 }
 
-function denormalizeData(data) {
-
+function denormalizeOutgoingPayload(payload) {
+	if (payload.hasOwnProperty("index")) {
+		payload.index -= 1
+	}
 }
