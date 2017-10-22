@@ -40,8 +40,8 @@ class SocketHandler(websocket.WebSocketHandler):
             self.send_status()
         if parsed['action'] == "get" and parsed['target'] == "settings":
             self.send_settings()
-        elif parsed['action'] == "set" and parsed['target'] == "pilot":
-            self.application.vehicle.set_pilot(parsed["value"]["index"])
+        elif parsed['action'] == "set" and parsed['target'] == "auto_pilot":
+            self.application.vehicle.auto_pilot_index = parsed["value"]["index"]
             self.write_message(json.dumps({'ack': 'ok'}))
         elif parsed['action'] == "set" and parsed['target'] == "record":
             self.application.vehicle.record = parsed["value"]["record"]
@@ -64,9 +64,9 @@ class SocketHandler(websocket.WebSocketHandler):
                         v.pilot_angle)),
                 "throttle": str(
                     v.pilot_throttle)},
-            "pilot": {
-                "pilots": v.list_pilot_names(),
-                "index": v.selected_pilot_index()},
+            "auto_pilot": {
+                "auto_pilots": v.list_auto_pilot_names(),
+                "index": v.auto_pilot_index},
             "record": v.record,
             "is_recording": v.recorder.is_recording,
             "f_time": v.f_time
