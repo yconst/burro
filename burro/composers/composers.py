@@ -54,6 +54,7 @@ class Composer(object):
             logging.info("Loaded RC module")
         rover.manual_pilots = manual_pilots
 
+        auto_pilots = []
         model_paths = list_models()
         for model_path, model_name in model_paths:
             logging.info("Loading model " + model_name)
