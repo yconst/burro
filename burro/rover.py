@@ -42,7 +42,7 @@ class Rover(object):
             final_throttle += pilot_throttle
 
         if self.auto_pilot_index > -1:
-            pilot = self.auto_pilots[angle_pilot_index];
+            pilot = self.auto_pilots[self.auto_pilot_index];
             pilot_angle, pilot_throttle = pilot.decide(
                 self.vision_sensor.frame)
             final_angle += pilot_angle
