@@ -64,7 +64,7 @@ class SocketHandler(websocket.WebSocketHandler):
                         v.pilot_angle)),
                 "throttle": str(
                     v.pilot_throttle)},
-            "pilot": {
+            "auto_pilot": {
                 "auto_pilots": v.list_auto_pilot_names(),
                 "index": v.auto_pilot_index},
             "record": v.record,
