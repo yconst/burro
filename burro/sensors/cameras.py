@@ -79,6 +79,7 @@ class PiVideoStream(BaseCamera):
         self.camera.resolution = resolution
         self.camera.framerate = framerate
         self.camera.rotation = rotation
+        self.camera.exposure_mode = "sports"
         self.rawCapture = PiRGBArray(self.camera, size=resolution)
 
         self.frame = None
