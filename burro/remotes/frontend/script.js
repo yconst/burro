@@ -31,7 +31,7 @@ const Dispatcher = {
 	set: function(payload, update_backend) {
 		Store.updateData(payload.value)
 		if (update_backend) {
-			payload = Object.assign({}, payload);
+			payload = Object.assign({}, payload)
 			denormalizeOutgoingPayload(payload.value)
 			payload.action = "set"
 			ws.send(JSON.stringify(payload))
@@ -62,6 +62,44 @@ ws.onmessage = function (event) {
 	    }, 100)	    
 	}
 }
+
+var ws
+function connect() {
+	ws = new WebSocket("ws://"+window.location.hostname+":80/api/v1/ws")
+	ws.onopen = function() {
+		ws.send(JSON.stringify({
+			//.... some message the I must send when I connect ....
+		}))
+	}
+  	ws.onmessage = function (event) {
+		const obj = JSON.parse(event.data)
+		if (obj.ack == "ok") {
+			waiting = false
+			m.redraw()
+		}
+		else if (obj.image) {
+			const payload = {"target": "data", "value": obj}
+			normalizeIncomingPayload(payload)
+			Dispatcher.set(payload, false)
+		    setTimeout(function() {
+		    	const payload = {"target": "status", "action": "get"}
+		    	ws.send(JSON.stringify(payload))
+		    }, 100)	    
+		}
+	}
+	ws.onclose = function(e) {
+		console.log('Socket is closed. Reconnect will be attempted in 1 second.', e.reason)
+		setTimeout(function() {
+			connect()
+		}, 1000)
+	}
+	ws.onerror = function(err) {
+		console.error('Socket encountered error: ', err.message, 'Closing socket')
+		ws.close()
+	}
+}
+
+connect()
 
 //--- Views, Factory
 
