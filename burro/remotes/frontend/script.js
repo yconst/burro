@@ -1,3 +1,8 @@
+var waiting = false
+var connected = false
+var ws
+var reconnectTimeout
+
 //--- Model, Singleton
 
 const Store = {
@@ -23,15 +28,13 @@ const Store = {
 	}
 }
 
-var waiting = false
-
 //--- Dispatcher, Singleton
 
 const Dispatcher = {
 	set: function(payload, update_backend) {
 		Store.updateData(payload.value)
 		if (update_backend) {
-			payload = Object.assign({}, payload);
+			payload = Object.assign({}, payload)
 			denormalizeOutgoingPayload(payload.value)
 			payload.action = "set"
 			ws.send(JSON.stringify(payload))
@@ -45,23 +48,40 @@ const Dispatcher = {
 
 //--- API, Singleton
 
-const ws = new WebSocket("ws://"+window.location.hostname+":80/api/v1/ws")
-ws.onmessage = function (event) {
-	const obj = JSON.parse(event.data)
-	if (obj.ack == "ok") {
-		waiting = false
-		m.redraw()
+function connect() {
+	ws = new WebSocket("ws://"+window.location.hostname+":80/api/v1/ws")
+  	ws.onmessage = function (event) {
+		const obj = JSON.parse(event.data)
+		if (obj.ack == "ok") {
+			waiting = false
+			m.redraw()
+		}
+		else if (obj.image) {
+			const payload = {"target": "data", "value": obj}
+			normalizeIncomingPayload(payload)
+			Dispatcher.set(payload, false)
+		    setTimeout(function() {
+		    	const payload = {"target": "status", "action": "get"}
+		    	ws.send(JSON.stringify(payload))
+		    }, 100)	    
+		}
+		connected = true
+		reconnectTimeout = 1000
 	}
-	else if (obj.image) {
-		const payload = {"target": "data", "value": obj}
-		normalizeIncomingPayload(payload)
-		Dispatcher.set(payload, false)
-	    setTimeout(function() {
-	    	const payload = {"target": "status", "action": "get"}
-	    	ws.send(JSON.stringify(payload))
-	    }, 100)	    
+	ws.onclose = function(e) {
+		console.log('Socket is closed. Reconnect will be attempted in '+reconnectTimeout+' ms.', e.reason)
+		connected = false
+		m.redraw()
+		setTimeout(function() { connect() }, reconnectTimeout)
+		reconnectTimeout = Math.min(30000, Math.round(reconnectTimeout * 1.2))
+	}
+	ws.onerror = function(err) {
+		console.error('Socket encountered error: ', err.message, 'Closing socket')
+		ws.close()
 	}
 }
+
+connect()
 
 //--- Views, Factory
 
@@ -126,6 +146,15 @@ const FTimeValue = {
 	}
 }
 
+const ConnectionLED = {
+	view: function() {
+		return m("div", 
+			[m("span", {id:"connectionLED", class: connected ? "green" : "red"}),
+			 m("span", {id:"connectionCaption"}, connected ? "Connected" : "Not Connected")]
+		)
+	}
+}
+
 const Veil = {
 	view: function(ctrl) {
 		const vis = waiting == true?"visible":"hidden"
@@ -140,6 +169,7 @@ m.mount(document.getElementById("pilotsContainer"), PilotsView)
 m.mount(document.getElementById("recordBox"), RecordBox)
 m.mount(document.getElementById("throttleValue"), ThrottleValue)
 m.mount(document.getElementById("ftimeValue"), FTimeValue)
+m.mount(document.getElementById("connectionLEDContainer"), ConnectionLED)
 m.mount(document.getElementById("veilContainer"), Veil)
 
 const draggie = new Draggabilly('#primaryContainer', { containment: '#container' })
