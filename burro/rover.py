@@ -36,7 +36,7 @@ class Rover(object):
     def step(self):
         pilot_count = 0
         final_angle = 0.
-        final_throttle = 1.
+        final_throttle = 9.
         for pilot in self.manual_pilots:
             pilot_angle, pilot_throttle = pilot.decide(
                 self.vision_sensor.frame)
