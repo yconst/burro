@@ -116,6 +116,6 @@ MISC
 '''
 
 def min_abs(v1, v2):
-    if abs(v1) < abs(v2):
+    if abs(v1) <= abs(v2):
         return v1
     return v2
