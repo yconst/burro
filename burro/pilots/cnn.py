@@ -45,17 +45,17 @@ class KerasCategorical(BasePilot):
         else:
             yaw_binned = prediction
         yaw = methods.from_one_hot(yaw_binned)
+        avf = config.model.average_factor
+        yaw = avf * self.yaw + (1.0 - avf) * yaw
+        self.yaw = yaw
 
         if len(prediction) == 2:
             throttle = prediction[1][0]
         else:
-            throttle = (-1 * (0.12 + np.amax(yaw_binned) * (1 - abs(yaw))) *
+            throttle = (0.12 + np.amax(yaw_binned) * (1 - abs(yaw)) *
                        config.model.throttle_mult)
 
-        avf = config.model.average_factor
-        yaw = avf * self.yaw + (1.0 - avf) * yaw
-        self.yaw = yaw
-        return methods.yaw_to_angle(yaw), throttle
+        return methods.yaw_to_angle(yaw), throttle * -1
 
     def pname(self):
         return self.name or "Keras Categorical"
