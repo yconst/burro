@@ -25,6 +25,7 @@ class KerasCategorical(BasePilot):
         import keras
 
         self.yaw = 0
+        self.throttle = 0
         self.model = keras.models.load_model(model_path)
         super(KerasCategorical, self).__init__(**kwargs)
 
@@ -41,12 +42,11 @@ class KerasCategorical(BasePilot):
         prediction = self.model.predict(img_arr)
         if len(prediction) == 2:
             yaw_binned = prediction[0]
-            throttle = prediction[1][0]
         else:
             yaw_binned = prediction
         yaw = methods.from_one_hot(yaw_binned)
-        avf = config.model.average_factor
-        yaw = avf * self.yaw + (1.0 - avf) * yaw
+        avf_yaw = config.model.yaw_average_factor
+        yaw = avf_yaw * self.yaw + (1.0 - avf_yaw) * yaw
         self.yaw = yaw
 
         if len(prediction) == 2:
@@ -54,7 +54,9 @@ class KerasCategorical(BasePilot):
         else:
             throttle = (0.12 + np.amax(yaw_binned) * (1 - abs(yaw)) *
                        config.model.throttle_mult)
-
+        avf_t = config.model.throttle_average_factor
+        throttle = avf_t * self.throttle + (1.0 - avf_t) * throttle
+        self.throttle = throttle
         return methods.yaw_to_angle(yaw), throttle * -1
 
     def pname(self):
@@ -89,7 +91,7 @@ class KerasRegression(BasePilot):
             yaw = methods.angle_to_yaw(prediction[0][0])
             throttle = 0
 
-        avf = config.model.average_factor
+        avf = config.model.yaw_average_factor
         yaw = avf * self.yaw + (1.0 - avf) * yaw
         self.yaw = yaw
         return methods.yaw_to_angle(yaw), throttle
