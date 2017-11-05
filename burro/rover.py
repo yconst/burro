@@ -34,7 +34,6 @@ class Rover(object):
             time.sleep(max(0.005, 0.05 - self.f_time))
 
     def step(self):
-        pilot_count = 0
         final_angle = 0.
         final_throttle = None
         for pilot in self.manual_pilots:
@@ -42,7 +41,6 @@ class Rover(object):
                 self.vision_sensor.frame)
             final_angle += pilot_angle
             final_throttle = min_abs(final_throttle, pilot_throttle)
-            pilot_count += 1
 
         if self.auto_pilot_index > -1:
             pilot = self.auto_pilots[self.auto_pilot_index];
@@ -50,9 +48,7 @@ class Rover(object):
                 self.vision_sensor.frame)
             final_angle += pilot_angle
             final_throttle = min_abs(final_throttle, pilot_throttle)
-            pilot_count += 1
 
-        final_angle = final_angle / pilot_count
         self.mixer.update(final_throttle, final_angle)
 
         self.pilot_angle = final_angle
