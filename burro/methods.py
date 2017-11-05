@@ -115,7 +115,10 @@ def current_milis():
 MISC
 '''
 
-def min_abs(v1, v2):
-    if abs(v1) <= abs(v2):
-        return v1
-    return v2
+def min_abs(vm, v):
+    if vm is None:
+        return v
+    if abs(vm) <= abs(v):
+        return vm
+    sign = -1 if vm < 0 else 1
+    return abs(v) * sign
