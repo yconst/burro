@@ -40,13 +40,19 @@ class KerasCategorical(BasePilot):
                             config.model.input_range)
         img_arr = np.expand_dims(img_arr, axis=0)
         prediction = self.model.predict(img_arr)
+
         if len(prediction) == 2:
             yaw_binned = prediction[0]
         else:
             yaw_binned = prediction
         yaw = methods.from_one_hot(yaw_binned)
-        avf_yaw = config.model.yaw_average_factor
-        yaw = avf_yaw * self.yaw + (1.0 - avf_yaw) * yaw
+        yaw_step = config.model.yaw_step
+        if abs(yaw - self.yaw) < yaw_step:
+            self.yaw = yaw
+        elif yaw < self.yaw:
+            yaw = self.yaw - yaw_step
+        elif yaw > self.yaw:
+            yaw = self.yaw + yaw_step
         self.yaw = yaw
 
         if len(prediction) == 2:
@@ -57,6 +63,7 @@ class KerasCategorical(BasePilot):
         avf_t = config.model.throttle_average_factor
         throttle = avf_t * self.throttle + (1.0 - avf_t) * throttle
         self.throttle = throttle
+        
         return methods.yaw_to_angle(yaw), throttle * -1
 
     def pname(self):
