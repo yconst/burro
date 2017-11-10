@@ -58,12 +58,12 @@ class KerasCategorical(BasePilot):
         if len(prediction) == 2:
             throttle = prediction[1][0]
         else:
-            throttle = (0.12 + np.amax(yaw_binned) * (1 - abs(yaw)) *
+            throttle = (0.07 + np.amax(yaw_binned) * (1 - abs(yaw)) *
                        config.model.throttle_mult)
         avf_t = config.model.throttle_average_factor
         throttle = avf_t * self.throttle + (1.0 - avf_t) * throttle
         self.throttle = throttle
-        
+
         return methods.yaw_to_angle(yaw), throttle * -1
 
     def pname(self):
