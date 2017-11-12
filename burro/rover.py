@@ -1,6 +1,7 @@
 import sys
 import time
 
+from methods import min_abs
 
 class Rover(object):
     '''
@@ -33,20 +34,20 @@ class Rover(object):
             time.sleep(max(0.005, 0.05 - self.f_time))
 
     def step(self):
-        final_angle = 0
-        final_throttle = 0
+        final_angle = 0.
+        final_throttle = None
         for pilot in self.manual_pilots:
             pilot_angle, pilot_throttle = pilot.decide(
                 self.vision_sensor.frame)
             final_angle += pilot_angle
-            final_throttle += pilot_throttle
+            final_throttle = min_abs(final_throttle, pilot_throttle)
 
         if self.auto_pilot_index > -1:
             pilot = self.auto_pilots[self.auto_pilot_index];
             pilot_angle, pilot_throttle = pilot.decide(
                 self.vision_sensor.frame)
             final_angle += pilot_angle
-            final_throttle += pilot_throttle
+            final_throttle = min_abs(final_throttle, pilot_throttle)
 
         self.mixer.update(final_throttle, final_angle)
 

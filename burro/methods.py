@@ -110,3 +110,15 @@ def current_milis():
     Return the current time in miliseconds
     '''
     return int(round(time.time() * 1000))
+
+'''
+MISC
+'''
+
+def min_abs(vm, v):
+    if vm is None:
+        return v
+    if abs(vm) <= abs(v):
+        return vm
+    sign = -1 if vm < 0 else 1
+    return abs(v) * sign

@@ -19,7 +19,7 @@ class BaseCamera(BaseSensor):
 
     def __init__(self, resolution=config.camera.resolution, **kwargs):
         super(BaseCamera, self).__init__(**kwargs)
-        
+
         self.resolution = resolution
         self.frame = np.zeros(
             shape=(
